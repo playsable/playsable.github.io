@@ -2,6 +2,8 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
 		<title>SABLE | Gloamwood Sandbox</title>
 		<style>
@@ -109,9 +111,9 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="index.js"></script>
+		<script src="index.d328744.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":28143792,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.d328744","experimentalVK":false,"fileSizes":{"index.d328744.pck":28217156,"index.d328744.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -215,6 +217,24 @@ const engine = new Engine(GODOT_CONFIG);
 	}
 }());
 		</script>
-	</body>
+	
+		<script>
+const SABLE_BUILD = "d328744";
+(function () {
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.getRegistrations().then(function (regs) {
+			regs.forEach(function (r) { r.unregister(); });
+		}).catch(function () {});
+	}
+	fetch('version.json?t=' + Date.now(), {cache: 'no-store'}).then(function (r) { return r.json(); }).then(function (v) {
+		if (!v || !v.sha || v.sha === SABLE_BUILD) return;
+		var u = new URL(location.href);
+		if (u.searchParams.get('v') === v.sha) return;
+		u.searchParams.set('v', v.sha);
+		location.replace(u.toString());
+	}).catch(function () {});
+})();
+		</script>
+</body>
 </html>
 
