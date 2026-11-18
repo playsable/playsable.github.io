@@ -255,7 +255,9 @@ canvas.getContext = function (kind, ...options) {
 	canvas.addEventListener('webglcontextrestored', () => { scissorEnabled = undefined; });
 	return gl;
 };
-const renderCaps = [null, [1280, 720], [640, 360]];
+// The backing buffer includes the HUD. Keep it large enough for readable
+// text, and leave nearest-neighbor sampling to the game's pixel-art textures.
+const renderCaps = [null, [1600, 900], [1280, 720]];
 let renderQuality = 0;
 
 function resizeCanvas() {
@@ -273,7 +275,6 @@ function resizeCanvas() {
 
 window.SABLE_SET_RENDER_QUALITY = function (level) {
 	renderQuality = level;
-	canvas.style.imageRendering = level === 2 ? 'pixelated' : '';
 	resizeCanvas();
 };
 window.addEventListener('resize', resizeCanvas);
