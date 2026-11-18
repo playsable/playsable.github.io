@@ -116,7 +116,7 @@ body {
 
 		<script src="index.a34329f.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.a34329f","experimentalVK":false,"fileSizes":{"index.a34329f.pck":29641344,"index.a34329f.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.a34329f","experimentalVK":false,"fileSizes":{"index.4faa7968c98d.pck":29642544,"index.a34329f.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -205,6 +205,7 @@ const engine = new Engine(GODOT_CONFIG);
 	} else {
 		setStatusMode('progress');
 		engine.startGame({
+            mainPack: "index.4faa7968c98d.pck",
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -222,7 +223,7 @@ const engine = new Engine(GODOT_CONFIG);
 		</script>
 	
 		<script>
-const SABLE_BUILD = "a34329f";
+const SABLE_BUILD = "4faa7968c98d";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
