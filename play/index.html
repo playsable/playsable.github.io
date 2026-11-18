@@ -15,7 +15,7 @@
 		<style>
 @font-face {
 	font-family: 'SableTitle';
-	src: url('index.3d20f41.title.ttf') format('truetype');
+	src: url('index.d023605.title.ttf') format('truetype');
 	font-display: swap;
 }
 
@@ -34,6 +34,10 @@ body {
 
 #canvas {
 	display: block;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	inset: 0;
 }
 
 #canvas:focus {
@@ -56,7 +60,7 @@ body {
 #sable-backdrop {
 	position: absolute;
 	inset: -2%;
-	background: url('index.3d20f41.loading.webp') center / cover no-repeat;
+	background: url('index.d023605.loading.webp') center / cover no-repeat;
 	image-rendering: pixelated;
 	opacity: 0.32;
 	filter: saturate(0.85) brightness(0.8);
@@ -190,7 +194,7 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<script src="index.3d20f41.voice.js"></script>
+<script src="index.d023605.voice.js"></script>
 			<script>window.SABLE_SERVER="wss://51-81-86-210.sslip.io/ws";</script>
 	</head>
 	<body>
@@ -213,10 +217,68 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="index.3d20f41.js"></script>
+		<script src="index.d023605.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.3d20f41","experimentalVK":false,"fileSizes":{"index.3d20f41.pck":29785936,"index.3d20f41.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.d023605","experimentalVK":false,"fileSizes":{"index.d023605.pck":29813456,"index.d023605.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
+// Own the backing buffer while keeping CSS layout and input coordinates stable.
+// Godot observes changes to canvas.width/height with canvasResizePolicy 0.
+const canvas = document.getElementById('canvas');
+// The WebGL export reads SCISSOR_TEST before the final blit. Chrome can block
+// the main thread until the GPU catches up to answer this boolean. This canvas
+// belongs to Godot, so remember its own enable/disable calls on this context.
+const getCanvasContext = canvas.getContext;
+let gameGL = null;
+canvas.getContext = function (kind, ...options) {
+	const gl = getCanvasContext.call(this, kind, ...options);
+	if (kind !== 'webgl2' || !gl || gl === gameGL) return gl;
+	gameGL = gl;
+	let scissorEnabled;
+	const getParameter = gl.getParameter;
+	const enable = gl.enable;
+	const disable = gl.disable;
+	gl.enable = function (cap) {
+		enable.call(this, cap);
+		if (this === gl && cap === gl.SCISSOR_TEST) scissorEnabled = true;
+	};
+	gl.disable = function (cap) {
+		disable.call(this, cap);
+		if (this === gl && cap === gl.SCISSOR_TEST) scissorEnabled = false;
+	};
+	gl.getParameter = function (parameter) {
+		if (this !== gl || parameter !== gl.SCISSOR_TEST || gl.isContextLost()) {
+			return getParameter.call(this, parameter);
+		}
+		if (scissorEnabled === undefined) scissorEnabled = getParameter.call(gl, parameter);
+		return scissorEnabled;
+	};
+	canvas.addEventListener('webglcontextrestored', () => { scissorEnabled = undefined; });
+	return gl;
+};
+const renderCaps = [null, [1280, 720], [640, 360]];
+let renderQuality = 0;
+
+function resizeCanvas() {
+	const width = canvas.clientWidth;
+	const height = canvas.clientHeight;
+	if (width === 0 || height === 0) return;
+	const density = window.devicePixelRatio || 1;
+	const cap = renderCaps[renderQuality];
+	const scale = cap ? Math.min(density, cap[0] / width, cap[1] / height) : density;
+	const pixelWidth = Math.max(1, Math.floor(width * scale));
+	const pixelHeight = Math.max(1, Math.floor(height * scale));
+	if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
+	if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
+}
+
+window.SABLE_SET_RENDER_QUALITY = function (level) {
+	renderQuality = level;
+	canvas.style.imageRendering = level === 2 ? 'pixelated' : '';
+	resizeCanvas();
+};
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+GODOT_CONFIG.canvasResizePolicy = 0;
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {
@@ -334,7 +396,7 @@ const engine = new Engine(GODOT_CONFIG);
 		</script>
 	
 		<script>
-const SABLE_BUILD = "3d20f41";
+const SABLE_BUILD = "d023605";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
