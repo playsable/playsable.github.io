@@ -413,61 +413,12 @@
 
     .pledge h2 { max-width: 16ch; }
 
-    .alpha-form {
+    .beta-access {
       margin-top: 1.6rem;
       padding: 1.1rem;
       background: rgba(17, 29, 33, 0.78);
       border: 1px solid rgba(47, 101, 96, 0.7);
     }
-
-    .alpha-form label {
-      display: block;
-      margin-bottom: 0.4rem;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    .alpha-form input[type="email"] {
-      width: 100%;
-      min-height: 48px;
-      padding: 0.55rem 0.75rem;
-      border: 1px solid var(--plum-3);
-      background: var(--void);
-      color: var(--parchment);
-      font: inherit;
-      font-size: 1.1rem;
-    }
-
-    .field-error { margin: 0.45rem 0 0; color: #e7b2a8; }
-
-    .form-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.7rem;
-      align-items: center;
-      margin-top: 0.85rem;
-    }
-
-    .form-status {
-      min-height: 1.4em;
-      margin: 0.85rem 0 0;
-      font-size: 1.35rem;
-      font-weight: 650;
-    }
-
-    .alpha-form[data-state="success"] .fields,
-    .alpha-form[data-state="success"] .form-row { display: none; }
-
-    .alpha-form[data-state="success"] .form-status { color: var(--gold); font-size: clamp(1.6rem, 3vw, 2.1rem); }
-
-    .alpha-form[data-state="full"] .form-status,
-    .alpha-form[data-state="error"] .form-status { color: var(--parchment); font-size: 1.25rem; }
-
-    #alpha-retry { margin-top: 0.85rem; }
-    #alpha-retry[hidden] { display: none; }
 
     .faq { margin-top: 0.4rem; }
 
@@ -525,7 +476,6 @@
       .gallery { grid-template-columns: 1fr 1fr; }
       .pledge-grid { grid-template-columns: repeat(3, 1fr); }
       .form-row input[type="email"] { max-width: none; }
-      .alpha-form .fields input { max-width: 100%; }
     }
 
     @media (min-width: 1040px) {
