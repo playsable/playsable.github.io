@@ -7,8 +7,18 @@
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-		<title>SABLE | Gloamwood Sandbox</title>
+		<title>SABLE</title>
+		<!-- SABLE web shell (export preset html/custom_html_shell). No Godot branding: dark starry
+		     loader with the Gloamwood title art, a thin progress bar and a percentage. Keeps the
+		     ids deploy_web.sh and tools/web_smoke_cdp.mjs rely on: #status (removed when the game
+		     starts), #status-progress (a real <progress> carrying value/max), #status-notice. -->
 		<style>
+@font-face {
+	font-family: 'SableTitle';
+	src: url('index.d99596b.title.ttf') format('truetype');
+	font-display: swap;
+}
+
 html, body, #canvas {
 	margin: 0;
 	padding: 0;
@@ -16,8 +26,8 @@ html, body, #canvas {
 }
 
 body {
-	color: white;
-	background-color: black;
+	color: #e5dfce;
+	background-color: #0b0f10;
 	overflow: hidden;
 	touch-action: none;
 }
@@ -30,73 +40,157 @@ body {
 	outline: none;
 }
 
-#status, #status-splash, #status-progress {
-	position: absolute;
-	left: 0;
-	right: 0;
-}
-
-#status, #status-splash {
-	top: 0;
-	bottom: 0;
-}
-
 #status {
-	background-color: #242424;
+	position: absolute;
+	inset: 0;
+	background-color: #0b0f10;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	visibility: hidden;
+	overflow: hidden;
+	font-family: 'Alegreya', Georgia, 'Palatino Linotype', 'Noto Serif', serif;
 }
 
-#status-splash {
-	max-height: 100%;
-	max-width: 100%;
-	margin: auto;
-}
-
-#status-splash.show-image--false {
-	display: none;
-}
-
-#status-splash.fullsize--true {
-	height: 100%;
-	width: 100%;
-	object-fit: contain;
-}
-
-#status-splash.use-filter--false {
+#sable-backdrop {
+	position: absolute;
+	inset: -2%;
+	background: url('index.d99596b.loading.webp') center / cover no-repeat;
 	image-rendering: pixelated;
+	opacity: 0.32;
+	filter: saturate(0.85) brightness(0.8);
+	animation: sable-drift 40s ease-in-out infinite alternate;
 }
 
-#status-progress, #status-notice {
-	display: none;
+#sable-stars, #sable-stars::after {
+	position: absolute;
+	inset: 0;
+	background-image:
+		radial-gradient(1px 1px at 12% 18%, #f0d59f 50%, transparent 51%),
+		radial-gradient(1px 1px at 27% 62%, #e5dfce 50%, transparent 51%),
+		radial-gradient(1px 1px at 41% 9%, #e5dfce 50%, transparent 51%),
+		radial-gradient(1.5px 1.5px at 58% 31%, #f0d59f 50%, transparent 51%),
+		radial-gradient(1px 1px at 69% 74%, #e5dfce 50%, transparent 51%),
+		radial-gradient(1px 1px at 83% 16%, #e5dfce 50%, transparent 51%),
+		radial-gradient(1.5px 1.5px at 91% 52%, #6fc6b6 50%, transparent 51%),
+		radial-gradient(1px 1px at 6% 83%, #e5dfce 50%, transparent 51%),
+		radial-gradient(1px 1px at 35% 88%, #f0d59f 50%, transparent 51%),
+		radial-gradient(1px 1px at 76% 92%, #e5dfce 50%, transparent 51%);
+	pointer-events: none;
 }
 
+#sable-stars {
+	background-color: rgba(11, 15, 16, 0.35);
+	background-image:
+		radial-gradient(ellipse at 50% 45%, rgba(11, 15, 16, 0) 0%, rgba(11, 15, 16, 0.85) 75%);
+}
+
+#sable-stars::after {
+	content: '';
+	animation: sable-twinkle 4.5s ease-in-out infinite alternate;
+}
+
+#sable-title {
+	position: relative;
+	font-family: 'SableTitle', 'Alegreya', Georgia, serif;
+	font-weight: 700;
+	font-size: clamp(48px, 9vw, 96px);
+	letter-spacing: 0.08em;
+	color: #f1e6cd;
+	text-shadow: 0 3px 0 #10181c, 0 0 24px rgba(240, 213, 159, 0.18);
+	margin: 0 0 0.5rem;
+}
+
+#sable-sub {
+	position: relative;
+	font-size: 15px;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: #ac9b75;
+	margin-bottom: 2.6rem;
+}
+
+#sable-bar {
+	position: relative;
+	width: min(420px, 70vw);
+	height: 2px;
+	background: rgba(184, 167, 125, 0.22);
+	overflow: hidden;
+}
+
+#sable-fill {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 0%;
+	background: linear-gradient(90deg, #b8a77d, #f0d59f);
+	box-shadow: 0 0 8px rgba(240, 213, 159, 0.7);
+	transition: width 0.25s ease-out;
+}
+
+#sable-bar.indeterminate #sable-fill {
+	width: 30%;
+	animation: sable-sweep 1.4s ease-in-out infinite;
+}
+
+#sable-pct {
+	position: relative;
+	margin-top: 0.8rem;
+	font-size: 14px;
+	letter-spacing: 0.12em;
+	color: #cfc3a6;
+	min-height: 1.2em;
+}
+
+/* The real <progress> keeps value/max for the stall watchdog and smoke test; the bar above draws it. */
 #status-progress {
-	bottom: 10%;
-	width: 50%;
-	margin: 0 auto;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+	pointer-events: none;
 }
 
 #status-notice {
-	background-color: #5b3943;
-	border-radius: 0.5rem;
-	border: 1px solid #9b3943;
-	color: #e0e0e0;
+	display: none;
+	position: relative;
+	max-width: 32rem;
+	margin: 1.6rem 2rem 0;
+	padding: 1rem 1.2rem;
+	background-color: rgba(11, 15, 16, 0.92);
+	border: 1px solid #c0614f;
+	border-radius: 2px;
+	color: #e5dfce;
 	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
-	line-height: 1.3;
-	margin: 0 2rem;
-	overflow: hidden;
-	padding: 1rem;
+	line-height: 1.4;
 	text-align: center;
 	z-index: 1;
+}
+
+#status.notice #sable-bar, #status.notice #sable-pct {
+	display: none;
+}
+
+@keyframes sable-twinkle {
+	from { opacity: 0.35; }
+	to { opacity: 1; }
+}
+
+@keyframes sable-drift {
+	from { transform: scale(1.02) translate(0, 0); }
+	to { transform: scale(1.06) translate(-1%, -1%); }
+}
+
+@keyframes sable-sweep {
+	from { left: -30%; }
+	to { left: 100%; }
 }
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<script src="index.c567c5f.voice.js"></script>
+<script src="index.d99596b.voice.js"></script>
 			<script>window.SABLE_SERVER="wss://51-81-86-210.sslip.io/ws";</script>
 	</head>
 	<body>
@@ -105,18 +199,23 @@ body {
 		</canvas>
 
 		<noscript>
-			Your browser does not support JavaScript.
+			SABLE needs JavaScript to run.
 		</noscript>
 
 		<div id="status">
-			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="">
+			<div id="sable-backdrop"></div>
+			<div id="sable-stars"></div>
+			<div id="sable-title">SABLE</div>
+			<div id="sable-sub">The Gloamwood awaits</div>
+			<div id="sable-bar" class="indeterminate"><div id="sable-fill"></div></div>
+			<div id="sable-pct">Loading…</div>
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="index.c567c5f.js"></script>
+		<script src="index.d99596b.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.c567c5f","experimentalVK":false,"fileSizes":{"index.c567c5f.pck":29677064,"index.c567c5f.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.d99596b","experimentalVK":false,"fileSizes":{"index.d99596b.pck":29678308,"index.d99596b.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -124,6 +223,9 @@ const engine = new Engine(GODOT_CONFIG);
 	const statusOverlay = document.getElementById('status');
 	const statusProgress = document.getElementById('status-progress');
 	const statusNotice = document.getElementById('status-notice');
+	const bar = document.getElementById('sable-bar');
+	const fill = document.getElementById('sable-fill');
+	const pct = document.getElementById('sable-pct');
 
 	let initializing = true;
 	let statusMode = '';
@@ -138,7 +240,7 @@ const engine = new Engine(GODOT_CONFIG);
 			return;
 		}
 		statusOverlay.style.visibility = 'visible';
-		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusOverlay.classList.toggle('notice', mode === 'notice');
 		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
 		statusMode = mode;
 	}
@@ -167,6 +269,19 @@ const engine = new Engine(GODOT_CONFIG);
 		initializing = false;
 	}
 
+	function showProgress(current, total) {
+		if (current > 0 && total > 0) {
+			const p = Math.max(0, Math.min(100, Math.floor((current / total) * 100)));
+			bar.classList.remove('indeterminate');
+			fill.style.width = p + '%';
+			pct.textContent = p >= 100 ? 'Waking the Gloamwood…' : p + '%';
+		} else {
+			bar.classList.add('indeterminate');
+			fill.style.width = '';
+			pct.textContent = 'Loading…';
+		}
+	}
+
 	const missing = Engine.getMissingFeatures({
 		threads: GODOT_THREADS_ENABLED,
 	});
@@ -179,7 +294,6 @@ const engine = new Engine(GODOT_CONFIG);
 			} catch (err) {
 				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
 			}
-			// There's a chance that installing the service worker would fix the issue
 			Promise.race([
 				serviceWorkerRegistrationPromise.then((registration) => {
 					if (registration != null) {
@@ -187,19 +301,16 @@ const engine = new Engine(GODOT_CONFIG);
 					}
 					return registration;
 				}).then(() => engine.installServiceWorker()),
-				// For some reason, `getRegistration()` can stall
 				new Promise((resolve) => {
 					setTimeout(() => resolve(), 2000);
 				}),
 			]).then(() => {
-				// Reload if there was no error.
 				window.location.reload();
 			}).catch((err) => {
 				console.error('Error while registering service worker:', err);
 			});
 		} else {
-			// Display the message as usual
-			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			const missingMsg = 'SABLE can\'t run in this browser. It is missing:\n';
 			displayFailureNotice(missingMsg + missing.join('\n'));
 		}
 	} else {
@@ -213,6 +324,7 @@ const engine = new Engine(GODOT_CONFIG);
 					statusProgress.removeAttribute('value');
 					statusProgress.removeAttribute('max');
 				}
+				showProgress(current, total);
 			},
 		}).then(() => {
 			setStatusMode('hidden');
@@ -222,7 +334,7 @@ const engine = new Engine(GODOT_CONFIG);
 		</script>
 	
 		<script>
-const SABLE_BUILD = "c567c5f";
+const SABLE_BUILD = "d99596b";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
