@@ -111,9 +111,9 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="index.90a1346.js"></script>
+		<script src="index.1d98d9e.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.90a1346","experimentalVK":false,"fileSizes":{"index.90a1346.pck":17039304,"index.90a1346.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.1d98d9e","experimentalVK":false,"fileSizes":{"index.1d98d9e.pck":17167680,"index.1d98d9e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -219,7 +219,7 @@ const engine = new Engine(GODOT_CONFIG);
 		</script>
 	
 		<script>
-const SABLE_BUILD = "90a1346";
+const SABLE_BUILD = "1d98d9e";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
@@ -260,6 +260,34 @@ const SABLE_BUILD = "90a1346";
 			}
 		}
 	}, 3000);
+})();
+		</script>
+
+		<style>
+#sable-alpha {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 5;
+	margin: 0;
+	padding: 7px 16px;
+	text-align: center;
+	font: 13px/1.35 "Noto Sans", "Droid Sans", Arial, sans-serif;
+	color: #e5dfce;
+	background: #111d21;
+	border-top: 1px solid #0b0f10;
+	pointer-events: none;
+}
+		</style>
+		<div id="sable-alpha">SABLE is in early alpha: expect bugs, and progress may be wiped. Paid cosmetics always survive wipes.</div>
+		<script>
+(function () {
+	var n = document.getElementById("sable-alpha");
+	if (!n) return;
+	var iv = setInterval(function () {
+		if (!document.getElementById("status")) { n.parentNode && n.parentNode.removeChild(n); clearInterval(iv); }
+	}, 400);
 })();
 		</script>
 </body>
