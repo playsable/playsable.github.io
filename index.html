@@ -221,18 +221,45 @@ const engine = new Engine(GODOT_CONFIG);
 		<script>
 const SABLE_BUILD = "376f550";
 (function () {
+	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
+	function bust(sha, why) {
+		try {
+			var key = 'sable_bust_' + (sha || 'x') + '_' + why;
+			if (sessionStorage.getItem(key)) return false;
+			sessionStorage.setItem(key, '1');
+		} catch (e) {}
+		var u = new URL(location.href);
+		if (sha) u.searchParams.set('v', sha);
+		u.searchParams.set('r', String(Date.now()));
+		location.replace(u.toString());
+		return true;
+	}
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.getRegistrations().then(function (regs) {
 			regs.forEach(function (r) { r.unregister(); });
 		}).catch(function () {});
 	}
+	var loaderMissing = (typeof Engine === 'undefined');
 	fetch('version.json?t=' + Date.now(), {cache: 'no-store'}).then(function (r) { return r.json(); }).then(function (v) {
-		if (!v || !v.sha || v.sha === SABLE_BUILD) return;
-		var u = new URL(location.href);
-		if (u.searchParams.get('v') === v.sha) return;
-		u.searchParams.set('v', v.sha);
-		location.replace(u.toString());
-	}).catch(function () {});
+		if (v && v.sha && v.sha !== SABLE_BUILD) { bust(v.sha, 'ver'); return; }
+		if (loaderMissing) bust(SABLE_BUILD, 'loader');
+	}).catch(function () { if (loaderMissing) bust(SABLE_BUILD, 'loader'); });
+	// Stall watchdog: if the loading bar is still on screen with no bytes after 45s, retry once with a cache-bust, then explain.
+	var t0 = Date.now();
+	var iv = setInterval(function () {
+		var st = document.getElementById('status');
+		if (!st || st.style.visibility !== 'visible') { if (!st) clearInterval(iv); return; }
+		var p = document.getElementById('status-progress');
+		var moving = p && p.hasAttribute('value') && Number(p.value) > 0;
+		if (moving) { t0 = Date.now(); return; }
+		if (Date.now() - t0 > 45000) {
+			clearInterval(iv);
+			if (!bust(SABLE_BUILD, 'stall')) {
+				var n = document.getElementById('status-notice');
+				if (n) { n.textContent = 'SABLE is taking too long to load. Press Ctrl+Shift+R to retry.'; n.style.display = 'block'; }
+			}
+		}
+	}, 3000);
 })();
 		</script>
 </body>
