@@ -1,5 +1,5 @@
 // Netcode sets this to the game server host (no scheme, no path), e.g. "example.sslip.io".
-// GET https://<host>/status -> {"online":true,"players":3,"cap":64,"updated":<unix seconds>,...}
+// The health endpoint provides the world's online state and heartbeat timestamp.
 const STATUS_HOST = "51-81-86-210.sslip.io";
 const STATUS_URL = STATUS_HOST ? `https://${STATUS_HOST}/status` : "";
 
@@ -279,22 +279,17 @@ if (skyVideo) {
   skyVideo.load();
 }
 
-const STATUS_OFFLINE = "Server: offline · solo play available";
-const STATUS_COMPACT_OFFLINE = "Server: offline";
-const STATUS_SOON = "Server status: coming soon · solo play available";
-const STATUS_COMPACT_SOON = "Server: coming soon";
+const STATUS_OFFLINE = "World offline · solo play available";
+const STATUS_COMPACT_OFFLINE = "World offline";
+const STATUS_SOON = "Online world coming soon · solo play available";
+const STATUS_COMPACT_SOON = "Online world coming soon";
 
 function formatServerStatus(data) {
   if (data && data.online === true) {
-    const count = data.players;
-    const hasCount = typeof count === "number" && Number.isFinite(count) && count >= 0;
-    const hasCap = typeof data.cap === "number" && Number.isFinite(data.cap) && data.cap > 0;
-    const shown = hasCount ? (hasCap ? `${count}/${data.cap}` : `${count}`) : "";
-    const noun = !hasCap && count === 1 ? "player" : "players";
     return {
       online: true,
-      full: hasCount ? `Server: Online · ${shown} ${noun}` : "Server: Online",
-      compact: hasCount ? `Server: Online · ${shown}` : "Server: Online",
+      full: "World online",
+      compact: "World online",
     };
   }
   return { online: false, full: STATUS_OFFLINE, compact: STATUS_COMPACT_OFFLINE };
