@@ -2,7 +2,7 @@ import { joinAlphaWaitlist } from "./waitlist.js";
 
 // Netcode sets this to the game server host (no scheme, no path), e.g. "example.sslip.io".
 // GET https://<host>/status -> {"online":true,"players":3,"cap":64,"updated":<unix seconds>,...}
-const STATUS_HOST = "";
+const STATUS_HOST = "51-81-86-210.sslip.io";
 const STATUS_URL = STATUS_HOST ? `https://${STATUS_HOST}/status` : "";
 
 // Resolve site files from this script, so the page works at a subpath such as /sable-site/.
