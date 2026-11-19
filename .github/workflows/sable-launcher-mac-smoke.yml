@@ -1,0 +1,195 @@
+name: SABLE Launcher Mac smoke
+
+on:
+  push:
+    branches:
+      - qa/sable-launcher-mac-1.0.0
+
+permissions: {}
+
+jobs:
+  mac-launcher:
+    name: SABLE Launcher on Mac (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+            zip: SABLE-Launcher-Mac-Apple-Silicon.zip
+          - runner: macos-15-intel
+            arch: x86_64
+            zip: SABLE-Launcher-Mac-Intel.zip
+
+    steps:
+      - name: Open the published launcher and play SABLE
+        shell: bash
+        env:
+          TEST_ARCH: ${{ matrix.arch }}
+          RELEASE_ZIP: ${{ matrix.zip }}
+        run: |
+          set -euo pipefail
+          test "$(uname -m)" = "$TEST_ARCH"
+          node -e 'if (typeof WebSocket !== "function") throw Error("Node 22+ with built-in WebSocket is required")'
+          work="$(mktemp -d "$RUNNER_TEMP/sable-mac.XXXXXXXX")"
+          curl --fail --silent --show-error --location --retry 3 --retry-delay 5 \
+            --retry-max-time 140 --connect-timeout 15 --max-time 90 \
+            --output "$work/launcher.zip" \
+            "https://github.com/playsable/playsable.github.io/releases/download/launcher-v1.0.0/$RELEASE_ZIP"
+          /usr/bin/ditto -x -k "$work/launcher.zip" "$work"
+          bundle="$work/SABLE Launcher.app"
+          /usr/bin/plutil -lint "$bundle/Contents/Info.plist"
+          test -x "$bundle/Contents/MacOS/Sable"
+          test -x "$bundle/Contents/Runtime/Electron.app/Contents/MacOS/Electron"
+          export SABLE_MAC_WORK="$work"
+          node --input-type=module - "$bundle" <<'NODE'
+          import assert from "node:assert/strict";
+          import { execFileSync } from "node:child_process";
+          import { createServer } from "node:net";
+          import path from "node:path";
+          import { setTimeout as delay } from "node:timers/promises";
+
+          const bundle = process.argv[2];
+          const port = await new Promise((resolve, reject) => {
+            const socket = createServer();
+            socket.once("error", reject);
+            socket.listen(0, "127.0.0.1", () => {
+              const { port } = socket.address();
+              socket.close(error => (error ? reject(error) : resolve(port)));
+            });
+          });
+          const endpoint = "http://127.0.0.1:" + port;
+          const profile = path.join(process.env.SABLE_MAC_WORK, "profile");
+
+          execFileSync("/usr/bin/open", [
+            "-na", bundle, "--args",
+            "--remote-debugging-address=127.0.0.1",
+            "--remote-debugging-port=" + port,
+            "--user-data-dir=" + profile
+          ], { stdio: "inherit", timeout: 15000 });
+
+          async function until(description, timeout, predicate) {
+            const deadline = Date.now() + timeout;
+            let lastError;
+            while (Date.now() < deadline) {
+              try {
+                const result = await predicate();
+                if (result) return result;
+              } catch (error) {
+                lastError = error;
+              }
+              await delay(500);
+            }
+            throw new Error(description, { cause: lastError });
+          }
+
+          async function pages() {
+            const response = await fetch(endpoint + "/json/list", { signal: AbortSignal.timeout(3000) });
+            if (!response.ok) throw new Error("Chromium target discovery returned HTTP " + response.status);
+            return (await response.json()).filter(target => target.type === "page");
+          }
+
+          async function connect(target) {
+            const address = new URL(target.webSocketDebuggerUrl);
+            assert.equal(address.protocol, "ws:");
+            assert.match(address.hostname, /^(127\.0\.0\.1|localhost)$/);
+            assert.equal(address.port, String(port));
+            const socket = new WebSocket(address);
+            const pending = new Map();
+            let nextId = 0;
+            socket.addEventListener("message", ({ data }) => {
+              const message = JSON.parse(data);
+              const request = pending.get(message.id);
+              if (!request) return;
+              pending.delete(message.id);
+              clearTimeout(request.timer);
+              if (message.error) request.reject(new Error(message.error.message));
+              else request.resolve(message.result);
+            });
+            await new Promise((resolve, reject) => {
+              const timer = setTimeout(() => {
+                socket.close();
+                reject(new Error("Chromium debugging socket did not open"));
+              }, 7000);
+              socket.addEventListener("open", () => { clearTimeout(timer); resolve(); }, { once: true });
+              socket.addEventListener("error", () => {
+                clearTimeout(timer);
+                reject(new Error("Chromium debugging socket failed"));
+              }, { once: true });
+            });
+            return {
+              call(method, params = {}) {
+                const id = ++nextId;
+                return new Promise((resolve, reject) => {
+                  const timer = setTimeout(() => {
+                    pending.delete(id);
+                    reject(new Error("Chromium timed out on " + method));
+                  }, 7000);
+                  pending.set(id, { resolve, reject, timer });
+                  socket.send(JSON.stringify({ id, method, params }));
+                });
+              },
+              close() { socket.close(); }
+            };
+          }
+
+          async function evaluate(target, expression) {
+            const reply = await target.call("Runtime.evaluate", { expression, returnByValue: true });
+            if (reply.exceptionDetails) throw new Error(reply.exceptionDetails.text);
+            return reply.result.value;
+          }
+
+          function isOfficialGame(value) {
+            const url = new URL(value);
+            return url.origin === "https://playsable.github.io" &&
+              ["/play/", "/play/index.html"].includes(url.pathname);
+          }
+
+          const launcherPage = await until("LaunchServices did not open the launcher window", 40000, async () =>
+            (await pages()).find(target => {
+              const url = new URL(target.url);
+              return url.protocol === "file:" && url.pathname.endsWith("/Contents/Resources/SableApp/index.html");
+            }));
+          const launcher = await connect(launcherPage);
+          let game;
+          let latest;
+          try {
+            const launcherState = await until("Visible launcher never offered Play SABLE", 35000, async () => {
+              latest = await evaluate(launcher, '(() => { const button = document.querySelector("#play"); if (!button) return null; const rect = button.getBoundingClientRect(); return { label: button.firstElementChild.textContent.trim(), ready: !button.disabled, visible: !document.hidden && rect.width > 0 && rect.height > 0, sha: document.querySelector("#version").textContent.trim(), notice: document.querySelector("#notice").textContent.trim(), x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }; })()');
+              return latest?.ready && latest.visible && latest;
+            });
+            assert.equal(launcherState.label, "Play SABLE");
+            assert.match(launcherState.sha, /^[a-f0-9]{7,40}$/);
+            const { x, y } = launcherState;
+            await launcher.call("Input.dispatchMouseEvent", { type: "mousePressed", x, y, button: "left", buttons: 1, clickCount: 1 });
+            await launcher.call("Input.dispatchMouseEvent", { type: "mouseReleased", x, y, button: "left", clickCount: 1 });
+
+            const gamePage = await until("Play SABLE did not open the official game", 42000, async () => {
+              latest = await evaluate(launcher, '({ sha: document.querySelector("#version").textContent.trim(), notice: document.querySelector("#notice").textContent.trim() })');
+              return (await pages()).find(target => isOfficialGame(target.url));
+            });
+            const gameUrl = new URL(gamePage.url);
+            assert.equal(gameUrl.searchParams.get("v"), latest.sha);
+            game = await connect(gamePage);
+            const canvas = await until("Godot did not show the game canvas", 105000, async () => {
+              const state = await evaluate(game, '({ title: document.title, visible: !document.hidden, width: document.querySelector("canvas")?.width, height: document.querySelector("canvas")?.height, status: document.querySelector("#status")?.style.visibility, node: typeof require })');
+              return state?.visible && state.width > 0 && state.height > 0 && !state.status && state;
+            });
+            assert.match(canvas.title, /^SABLE(?:$|\s*\|)/);
+            assert.equal(canvas.node, "undefined");
+            const screenshot = await game.call("Page.captureScreenshot", { format: "png", fromSurface: true });
+            const png = Buffer.from(screenshot.data, "base64");
+            assert.equal(png.toString("ascii", 1, 4), "PNG");
+            assert.ok(png.readUInt32BE(16) > 0 && png.readUInt32BE(20) > 0);
+            console.log("LaunchServices opened SABLE Launcher, Play SABLE opened " + gameUrl.origin + gameUrl.pathname + " build " + latest.sha);
+            console.log("Godot canvas rendered at " + canvas.width + " x " + canvas.height);
+          } catch (error) {
+            console.error("Last launcher state", latest);
+            throw error;
+          } finally {
+            game?.close();
+            launcher.close();
+          }
+          NODE
