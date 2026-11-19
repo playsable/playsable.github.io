@@ -1,4 +1,4 @@
-name: SABLE Launcher Mac smoke
+name: SABLE Launcher Intel Mac diagnostics
 
 on:
   push:
@@ -9,29 +9,18 @@ permissions: {}
 
 jobs:
   mac-launcher:
-    name: SABLE Launcher on Mac (${{ matrix.arch }})
-    runs-on: ${{ matrix.runner }}
+    name: Intel Mac launcher, WebGL, and canvas
+    runs-on: macos-15-intel
     timeout-minutes: 8
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: macos-15
-            arch: arm64
-            zip: SABLE-Launcher-Mac-Apple-Silicon.zip
-          - runner: macos-15-intel
-            arch: x86_64
-            zip: SABLE-Launcher-Mac-Intel.zip
 
     steps:
-      - name: Open the published launcher and play SABLE
+      - name: Play the published build with the default GPU
         shell: bash
         env:
-          TEST_ARCH: ${{ matrix.arch }}
-          RELEASE_ZIP: ${{ matrix.zip }}
+          RELEASE_ZIP: SABLE-Launcher-Mac-Intel.zip
         run: |
           set -euo pipefail
-          test "$(uname -m)" = "$TEST_ARCH"
+          test "$(uname -m)" = x86_64
           node -e 'if (typeof WebSocket !== "function") throw Error("Node 22+ with built-in WebSocket is required")'
           work="$(mktemp -d "$RUNNER_TEMP/sable-mac.XXXXXXXX")"
           curl --fail --silent --show-error --location --retry 3 --retry-delay 5 \
@@ -44,14 +33,19 @@ jobs:
           test -x "$bundle/Contents/MacOS/Sable"
           test -x "$bundle/Contents/Runtime/Electron.app/Contents/MacOS/Electron"
           export SABLE_MAC_WORK="$work"
-          node --input-type=module - "$bundle" <<'NODE'
+          cat > "$work/smoke.mjs" <<'NODE'
           import assert from "node:assert/strict";
           import { execFileSync } from "node:child_process";
           import { createServer } from "node:net";
           import path from "node:path";
           import { setTimeout as delay } from "node:timers/promises";
 
-          const bundle = process.argv[2];
+          const [bundle, mode] = process.argv.slice(2);
+          const software = mode === "swiftshader";
+          console.log("Graphics mode:", mode);
+          const graphicsFlags = software
+            ? ["--use-gl=angle", "--use-angle=swiftshader-webgl", "--enable-unsafe-swiftshader"]
+            : [];
           const port = await new Promise((resolve, reject) => {
             const socket = createServer();
             socket.once("error", reject);
@@ -61,13 +55,14 @@ jobs:
             });
           });
           const endpoint = "http://127.0.0.1:" + port;
-          const profile = path.join(process.env.SABLE_MAC_WORK, "profile");
+          const profile = path.join(process.env.SABLE_MAC_WORK, "profile-" + mode);
 
           execFileSync("/usr/bin/open", [
             "-na", bundle, "--args",
             "--remote-debugging-address=127.0.0.1",
             "--remote-debugging-port=" + port,
-            "--user-data-dir=" + profile
+            "--user-data-dir=" + profile,
+            ...graphicsFlags
           ], { stdio: "inherit", timeout: 15000 });
 
           async function until(description, timeout, predicate) {
@@ -91,7 +86,7 @@ jobs:
             return (await response.json()).filter(target => target.type === "page");
           }
 
-          async function connect(target) {
+          async function connect(target, onEvent = () => {}) {
             const address = new URL(target.webSocketDebuggerUrl);
             assert.equal(address.protocol, "ws:");
             assert.match(address.hostname, /^(127\.0\.0\.1|localhost)$/);
@@ -102,7 +97,7 @@ jobs:
             socket.addEventListener("message", ({ data }) => {
               const message = JSON.parse(data);
               const request = pending.get(message.id);
-              if (!request) return;
+              if (!request) { onEvent(message); return; }
               pending.delete(message.id);
               clearTimeout(request.timer);
               if (message.error) request.reject(new Error(message.error.message));
@@ -147,6 +142,61 @@ jobs:
               ["/play/", "/play/index.html"].includes(url.pathname);
           }
 
+          function gameState() {
+            const el = document.querySelector("#canvas");
+            const status = document.querySelector("#status");
+            const notice = document.querySelector("#status-notice");
+            const progress = document.querySelector("#status-progress");
+            return {
+              title: document.title,
+              readyState: document.readyState,
+              hidden: document.hidden,
+              crossOriginIsolated: window.crossOriginIsolated,
+              sharedArrayBuffer: typeof SharedArrayBuffer,
+              canvas: el ? { width: el.width, height: el.height, visible: el.getBoundingClientRect().height > 0 } : null,
+              status: status ? {
+                className: status.className, display: getComputedStyle(status).display,
+                visibility: getComputedStyle(status).visibility,
+                notice: notice?.textContent.trim(),
+                progress: progress && { value: progress.value, max: progress.max }
+              } : null,
+              resources: performance.getEntriesByType("resource")
+                .filter(entry => /\.(?:wasm|pck|js)$/.test(new URL(entry.name).pathname))
+                .map(entry => ({ path: new URL(entry.name).pathname,
+                  status: entry.responseStatus, bytes: entry.encodedBodySize, ms: Math.round(entry.duration) })),
+              node: typeof require
+            };
+          }
+
+          function separateWebGLProbe() {
+            const test = document.createElement("canvas");
+            const gl = test.getContext("webgl2");
+            if (!gl) return { webgl2: false };
+            const debug = gl.getExtension("WEBGL_debug_renderer_info");
+            return {
+              webgl2: true,
+              version: gl.getParameter(gl.VERSION),
+              vendor: debug && gl.getParameter(debug.UNMASKED_VENDOR_WEBGL),
+              renderer: debug && gl.getParameter(debug.UNMASKED_RENDERER_WEBGL),
+              contextLost: gl.isContextLost()
+            };
+          }
+
+          async function gpuReport() {
+            let browser;
+            try {
+              const version = await fetch(endpoint + "/json/version", { signal: AbortSignal.timeout(3000) });
+              browser = await connect(await version.json());
+              const { gpu } = await browser.call("SystemInfo.getInfo");
+              return { devices: gpu.devices, featureStatus: gpu.featureStatus,
+                glRenderer: gpu.auxAttributes?.glRenderer, glVersion: gpu.auxAttributes?.glVersion };
+            } catch (error) {
+              return { unavailable: error.message };
+            } finally {
+              browser?.close();
+            }
+          }
+
           const launcherPage = await until("LaunchServices did not open the launcher window", 40000, async () =>
             (await pages()).find(target => {
               const url = new URL(target.url);
@@ -155,6 +205,17 @@ jobs:
           const launcher = await connect(launcherPage);
           let game;
           let latest;
+          let latestGame = null;
+          const errors = [];
+          function onGameEvent(event) {
+            const info = event.params;
+            const message = event.method === "Runtime.exceptionThrown"
+              ? info.exceptionDetails.exception?.description || info.exceptionDetails.text
+              : event.method === "Log.entryAdded" && ["warning", "error"].includes(info.entry.level)
+                ? info.entry.text
+                : null;
+            if (message && errors.length < 20) errors.push(String(message).slice(0, 700));
+          }
           try {
             const launcherState = await until("Visible launcher never offered Play SABLE", 35000, async () => {
               latest = await evaluate(launcher, '(() => { const button = document.querySelector("#play"); if (!button) return null; const rect = button.getBoundingClientRect(); return { label: button.firstElementChild.textContent.trim(), ready: !button.disabled, visible: !document.hidden && rect.width > 0 && rect.height > 0, sha: document.querySelector("#version").textContent.trim(), notice: document.querySelector("#notice").textContent.trim(), x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }; })()');
@@ -172,11 +233,20 @@ jobs:
             });
             const gameUrl = new URL(gamePage.url);
             assert.equal(gameUrl.searchParams.get("v"), latest.sha);
-            game = await connect(gamePage);
-            const canvas = await until("Godot did not show the game canvas", 105000, async () => {
-              const state = await evaluate(game, '({ title: document.title, visible: !document.hidden, width: document.querySelector("canvas")?.width, height: document.querySelector("canvas")?.height, status: document.querySelector("#status")?.style.visibility, node: typeof require })');
-              return state?.visible && state.width > 0 && state.height > 0 && !state.status && state;
+            game = await connect(gamePage, onGameEvent);
+            await game.call("Runtime.enable");
+            await game.call("Log.enable");
+            const observed = await until("Godot did not show the game canvas", software ? 95000 : 40000, async () => {
+              latestGame = await evaluate(game, "(" + gameState.toString() + ")()");
+              const { canvas, status, hidden } = latestGame;
+              if (status?.className.split(" ").includes("notice") && status.notice) {
+                return { gameError: status.notice };
+              }
+              if (!status && !hidden && canvas?.visible && canvas.width > 0 && canvas.height > 0) return latestGame;
+              return null;
             });
+            if (observed.gameError) throw new Error("Godot loading stopped: " + observed.gameError);
+            const canvas = { ...observed, ...observed.canvas };
             assert.match(canvas.title, /^SABLE(?:$|\s*\|)/);
             assert.equal(canvas.node, "undefined");
             const screenshot = await game.call("Page.captureScreenshot", { format: "png", fromSurface: true });
@@ -185,11 +255,35 @@ jobs:
             assert.ok(png.readUInt32BE(16) > 0 && png.readUInt32BE(20) > 0);
             console.log("LaunchServices opened SABLE Launcher, Play SABLE opened " + gameUrl.origin + gameUrl.pathname + " build " + latest.sha);
             console.log("Godot canvas rendered at " + canvas.width + " x " + canvas.height);
+            console.log("Game document hidden:", latestGame.hidden);
           } catch (error) {
-            console.error("Last launcher state", latest);
+            console.error("Last launcher state:", JSON.stringify(latest));
+            console.error("Last game state:", JSON.stringify(latestGame));
+            console.error("Game document hidden:", latestGame?.hidden ?? "unknown");
+            console.error("Godot status notice:", latestGame?.status?.notice || "(none)");
+            console.error("Game browser warnings:", JSON.stringify(errors));
+            if (game) {
+              try {
+                console.error("Independent WebGL2 probe:", JSON.stringify(await evaluate(game, "(" + separateWebGLProbe.toString() + ")()")));
+              } catch (probeError) {
+                console.error("Independent WebGL2 probe unavailable:", probeError.message);
+              }
+            }
+            console.error("Chromium GPU features:", JSON.stringify(await gpuReport()));
             throw error;
           } finally {
             game?.close();
             launcher.close();
           }
           NODE
+          if node "$work/smoke.mjs" "$bundle" default; then
+            echo "Intel Mac rendered SABLE with the published launcher's default graphics."
+          else
+            echo "::warning::Default graphics failed. Retrying in an isolated profile with test-only SwiftShader."
+            if node "$work/smoke.mjs" "$bundle" swiftshader; then
+              echo "::error::Intel Mac rendered SABLE only with test-only SwiftShader enabled."
+            else
+              echo "::error::Intel Mac failed to render SABLE with both default graphics and test-only SwiftShader."
+            fi
+            exit 1
+          fi
