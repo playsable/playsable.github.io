@@ -10,7 +10,7 @@ permissions: {}
 jobs:
   mac-launcher:
     name: Intel Mac launcher, WebGL, and canvas
-    runs-on: macos-15-intel
+    runs-on: macos-26-intel
     timeout-minutes: 8
 
     steps:
