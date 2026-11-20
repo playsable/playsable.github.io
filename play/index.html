@@ -7,6 +7,9 @@
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Seyble">
 		<title>Seyble</title>
 		<link rel="canonical" href="https://seyble.com/play/">
 		<!-- SABLE web shell (export preset html/custom_html_shell). No Godot branding: dark starry
@@ -47,6 +50,33 @@ body {
 }
 
 #seyble-turn { display: none; }
+#seyble-fullscreen {
+	position: fixed;
+	z-index: 2;
+	top: max(4px, env(safe-area-inset-top));
+	left: 45%;
+	transform: translateX(-50%);
+	min-height: 44px;
+	padding: 0 .8rem;
+	border: 1px solid #8b7758;
+	border-radius: 4px;
+	background: #172025;
+	color: #eee3cd;
+	font: 15px/1.25 Georgia, serif;
+	touch-action: manipulation;
+}
+#seyble-fullscreen[hidden], body:has(dialog[open]) #seyble-fullscreen { display: none; }
+#seyble-fullscreen-help {
+	box-sizing: border-box;
+	width: min(24rem, calc(100% - 2rem));
+	border: 1px solid #99835d;
+	background: #141d22;
+	color: #eee3cd;
+	font: 16px/1.45 Georgia, serif;
+}
+#seyble-fullscreen-help::backdrop { background: #080c0fbb; }
+#seyble-fullscreen-help h2, #seyble-fullscreen-help p { margin: 0 0 .65rem; }
+#seyble-fullscreen-help button { min-height: 44px; padding: 0 .8rem; font: inherit; background: #233038; color: inherit; border: 1px solid #8b7758; }
 @media (pointer: coarse) {
 	#canvas {
 		left: env(safe-area-inset-left, 0px);
@@ -295,6 +325,12 @@ body {
 			<span>Turn your phone sideways for larger controls.</span>
 			<button type="button" aria-label="Dismiss rotation tip" onclick="this.parentElement.hidden=true">×</button>
 		</div>
+		<button id="seyble-fullscreen" type="button" hidden>Full screen</button>
+		<dialog id="seyble-fullscreen-help" aria-labelledby="seyble-fullscreen-title">
+			<h2 id="seyble-fullscreen-title">Full screen</h2>
+			<p></p>
+			<form method="dialog"><button>Back to game</button></form>
+		</dialog>
 		<dialog id="seyble-mobile-account" aria-labelledby="seyble-account-title">
 			<form novalidate>
 				<h1 id="seyble-account-title" tabindex="-1" autofocus></h1>
@@ -413,6 +449,110 @@ body {
 	};
 })();
 		</script>
+		<script id="seyble-landscape-fullscreen">
+(() => {
+	if (!matchMedia('(pointer: coarse)').matches || !navigator.maxTouchPoints) return;
+	const root = document.documentElement;
+	const button = document.getElementById('seyble-fullscreen');
+	const help = document.getElementById('seyble-fullscreen-help');
+	const orientation = window.screen.orientation;
+	const landscape = matchMedia('(orientation: landscape)');
+	const standalone = matchMedia('(display-mode: standalone), (display-mode: fullscreen)');
+	const appleMobile = 'standalone' in navigator;
+	const fullscreenElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+	const available = () => (root.requestFullscreen && document.fullscreenEnabled !== false) ||
+		(root.webkitRequestFullscreen && document.webkitFullscreenEnabled !== false);
+	function isLandscape() {
+		// The software keyboard can make the viewport wider than tall in portrait.
+		if (orientation?.type) return orientation.type.startsWith('landscape');
+		if (typeof window.orientation === 'number') return Math.abs(window.orientation) === 90;
+		return landscape.matches;
+	}
+	function fits() { return !!fullscreenElement() || standalone.matches || navigator.standalone === true; }
+	function editing() {
+		return !!document.querySelector('dialog[open]') ||
+			document.activeElement?.matches('input, textarea, [contenteditable="true"]');
+	}
+	function refresh() {
+		button.hidden = !isLandscape() || fits() || (!available() && !appleMobile);
+	}
+	function explain() {
+		if (editing() || !isLandscape() || fits()) return;
+		help.querySelector('p').textContent = appleMobile
+			? 'In Safari, tap Share, then Add to Home Screen. Turn on Open as Web App, tap Add, and launch Seyble from its icon.'
+			: 'Your browser kept Seyble in this tab. You can keep playing in landscape or enable full screen in your browser.';
+		help.showModal();
+	}
+	let wasLandscape = isLandscape();
+	let nextTouch = wasLandscape;
+	let pending = false;
+	let requested = false;
+	let restoringPortrait = false;
+	async function enter(explicit = false) {
+		if (!isLandscape() || fits() || editing() || document.hidden || pending) return;
+		if (!available()) { if (explicit) explain(); return; }
+		pending = true;
+		requested = true;
+		try {
+			if (root.requestFullscreen) await root.requestFullscreen({navigationUI: 'hide'});
+			else root.webkitRequestFullscreen();
+		} catch {
+			requested = false;
+			if (explicit) explain();
+		} finally {
+			pending = false;
+			refresh();
+		}
+	}
+	function changed() {
+		const active = fullscreenElement();
+		if (active === root && requested && !isLandscape()) {
+			// Restore the browser when the player turns upright, including a fast double-turn.
+			requested = false;
+			const exit = document.exitFullscreen || document.webkitExitFullscreen;
+			if (exit) {
+				restoringPortrait = true;
+				Promise.resolve(exit.call(document)).catch(() => { restoringPortrait = false; });
+			}
+		}
+		if (!active) {
+			// A delayed portrait exit must not consume the next landscape gesture.
+			nextTouch = restoringPortrait && isLandscape();
+			requested = false;
+			restoringPortrait = false;
+		} else {
+			nextTouch = false;
+		}
+		refresh();
+	}
+	function turned() {
+		const now = isLandscape();
+		if (now === wasLandscape) return;
+		wasLandscape = now;
+		nextTouch = now;
+		if (now) enter();
+		else {
+			if (help.open) help.close();
+			if (fullscreenElement() === root && requested) changed();
+		}
+		refresh();
+	}
+	// Call directly inside the physical rotation event on browsers that grant it activation.
+	if (orientation?.addEventListener) orientation.addEventListener('change', turned);
+	else if (typeof window.orientation === 'number') window.addEventListener('orientationchange', turned);
+	else landscape.addEventListener('change', turned);
+	document.addEventListener('fullscreenchange', changed);
+	document.addEventListener('webkitfullscreenchange', changed);
+	button.addEventListener('click', () => { nextTouch = false; enter(true); });
+	const canvas = document.getElementById('canvas');
+	document.addEventListener('touchend', event => {
+		if (event.target !== canvas || !nextTouch || event.touches.length || editing() || !available()) return;
+		nextTouch = false;
+		enter();
+	}, {capture: true, passive: true});
+	refresh();
+})();
+		</script>
 		<script id="seyble-hosted-checkout">
 (() => {
 	const dialog = document.getElementById('seyble-checkout');
@@ -462,7 +602,7 @@ body {
 		<script src="index.140448e.js"></script>
 		<script>
 // Buffer streamed music and ambience while Web Audio plays short effects directly.
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.4e52fb25334d.pck":36391664,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.e5235c395286.pck":36534800,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 // Own the backing buffer while keeping CSS layout and input coordinates stable.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
@@ -680,7 +820,7 @@ function startGameWithCachedPack(config) {
 	} else {
 		setStatusMode('progress');
 		startGameWithCachedPack({
-            mainPack: "index.4e52fb25334d.pck",
+            mainPack: "index.e5235c395286.pck",
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -699,7 +839,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "4e52fb25334d";
+const SABLE_BUILD = "e5235c395286";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
