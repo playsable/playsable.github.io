@@ -192,6 +192,28 @@ body {
 	from { left: -30%; }
 	to { left: 100%; }
 }
+#seyble-checkout {
+	box-sizing: border-box;
+	width: min(28rem, calc(100% - 2rem));
+	padding: 1.6rem;
+	color: #e9dfcc;
+	background: #1d1b24;
+	border: 1px solid #8f7c60;
+	font: 1rem/1.5 Georgia, serif;
+}
+#seyble-checkout::backdrop { background: rgba(8, 8, 12, .82); }
+#seyble-checkout h2 { margin: 0; }
+#seyble-checkout a, #seyble-checkout button {
+	display: inline-block;
+	padding: .65rem 1rem;
+	color: #fff2d4;
+	background: #342a41;
+	border: 1px solid #a58e65;
+	font: inherit;
+	cursor: pointer;
+}
+#seyble-checkout form { display: inline-block; margin: .5rem 0 0; }
+#seyble-checkout :focus-visible { outline: 2px solid #e3ca90; outline-offset: 3px; }
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
@@ -202,6 +224,12 @@ body {
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.
 		</canvas>
+		<dialog id="seyble-checkout" aria-labelledby="seyble-checkout-title" aria-describedby="seyble-checkout-message">
+			<h2 id="seyble-checkout-title">Aether checkout</h2>
+			<p id="seyble-checkout-message">Open Stripe to pay securely. Your game will stay open here.</p>
+			<a id="seyble-checkout-link" target="_blank" rel="noopener noreferrer" autofocus>Continue to Stripe</a>
+			<form method="dialog"><button>Back to game</button></form>
+		</dialog>
 
 		<noscript>
 			Seyble needs JavaScript to run.
@@ -218,10 +246,72 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
+		<script id="seyble-hosted-checkout">
+(() => {
+	const dialog = document.getElementById('seyble-checkout');
+	const link = document.getElementById('seyble-checkout-link');
+	const reserved = new Map();
+	let shown = '';
+
+	function cancel(id) {
+		const tab = reserved.get(id);
+		reserved.delete(id);
+		if (tab && !tab.closed) tab.close();
+		if (shown === id && dialog.open) dialog.close();
+	}
+	dialog.addEventListener('close', () => {
+		shown = '';
+		link.removeAttribute('href');
+		document.getElementById('canvas').focus();
+	});
+	for (const event of ['keydown', 'keyup', 'pointerdown', 'pointerup', 'wheel']) {
+		dialog.addEventListener(event, input => input.stopPropagation());
+	}
+	window.SeybleHostedCheckout = {
+		prepare(id) {
+			if (reserved.has(id)) return;
+			// Reserve a tab while the pack click still has browser user activation.
+			let tab = null;
+			try {
+				tab = window.open('about:blank', '_blank');
+				if (tab) {
+					tab.opener = null;
+					tab.document.title = 'Seyble checkout';
+					tab.document.body.textContent = 'Opening secure checkout…';
+				}
+			} catch { if (tab) tab.close(); tab = null; }
+			reserved.set(id, tab);
+		},
+		show(id, value) {
+			let destination;
+			try { destination = new URL(value); } catch { cancel(id); return false; }
+			if (destination.origin !== 'https://checkout.stripe.com' || destination.username || destination.password) {
+				cancel(id); return false;
+			}
+			const tab = reserved.get(id);
+			reserved.delete(id);
+			if (tab && !tab.closed) {
+				try { tab.location.replace(destination.href); return true; } catch { tab.close(); }
+			}
+			shown = id;
+			link.href = destination.href;
+			if (!dialog.open) dialog.showModal();
+			link.focus();
+			return true;
+		},
+		cancel,
+		reset() {
+			for (const id of reserved.keys()) cancel(id);
+			if (dialog.open) dialog.close();
+		}
+	};
+	window.addEventListener('pagehide', () => window.SeybleHostedCheckout.reset());
+})();
+		</script>
 		<script src="index.140448e.js"></script>
 		<script>
 // Buffer streamed music and ambience while Web Audio plays short effects directly.
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.eb2388c2ea38.pck":35197956,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.9c23c1e65ff9.pck":35417880,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 // Own the backing buffer while keeping CSS layout and input coordinates stable.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
@@ -436,7 +526,7 @@ function startGameWithCachedPack(config) {
 	} else {
 		setStatusMode('progress');
 		startGameWithCachedPack({
-            mainPack: "index.eb2388c2ea38.pck",
+            mainPack: "index.9c23c1e65ff9.pck",
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -455,7 +545,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "eb2388c2ea38";
+const SABLE_BUILD = "9c23c1e65ff9";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {

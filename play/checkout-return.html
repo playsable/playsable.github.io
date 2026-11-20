@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="robots" content="noindex">
+	<meta name="referrer" content="no-referrer">
+	<title>Aether checkout · Seyble</title>
+	<style>
+		@font-face { font-family: Alegreya; src: url('../assets/fonts/Alegreya-Variable.ttf') format('truetype'); font-display: swap; }
+		* { box-sizing: border-box; }
+		body { min-height: 100vh; margin: 0; padding: 1.25rem; display: grid; place-items: center; background: #111118; color: #e8dfd0; font: 1.2rem/1.5 Alegreya, Georgia, serif; }
+		main { width: min(100%, 31rem); padding: clamp(1.5rem, 5vw, 3rem); border: 1px solid #6b5b47; background: #1c1923; }
+		.brand { margin: 0 0 2rem; color: #d5b981; letter-spacing: .3em; font-size: 1.1rem; }
+		h1 { margin: 0 0 .6rem; font-size: clamp(2rem, 7vw, 2.65rem); line-height: 1.1; }
+		p { margin: .8rem 0 1.45rem; }
+		a { display: inline-block; padding: .55rem 1.25rem; border: 1px solid #b8a17a; color: #f9e9c8; background: #352c40; text-decoration: none; }
+		a:focus-visible { outline: 2px solid #e8d29b; outline-offset: 4px; }
+	</style>
+</head>
+<body>
+	<main>
+		<p class="brand">SEYBLE</p>
+		<h1 id="heading">Aether checkout</h1>
+		<p id="message">Your balance updates in the game once Stripe confirms payment.</p>
+		<a href="./" id="return">Return to Seyble</a>
+	</main>
+	<script>
+		const outcome = new URLSearchParams(location.search).get('checkout');
+		if (outcome === 'cancel') {
+			document.getElementById('heading').textContent = 'Checkout canceled';
+			document.getElementById('message').textContent = 'You can return to your game and choose a pack whenever you’re ready.';
+		} else if (outcome === 'success') {
+			document.getElementById('heading').textContent = 'Checkout submitted';
+		}
+		document.getElementById('return').addEventListener('click', () => window.close());
+	</script>
+</body>
+</html>
