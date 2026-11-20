@@ -1,293 +1,86 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Seyble — Play the Open Beta</title>
-  <meta name="description" content="Seyble is a free-to-play 2D top-down pixel-art dark-fantasy MMO by Sable Studios. The open beta is free to play in your browser." />
-  <meta name="theme-color" content="#0b0f10" />
-  <link rel="canonical" href="https://seyble.com/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Seyble" />
-  <meta property="og:title" content="Seyble — Play the Open Beta" />
-  <meta property="og:description" content="A free-to-play 2D pixel-art dark-fantasy MMO by Sable Studios. Play the open beta in your browser." />
-  <meta property="og:url" content="https://seyble.com/" />
-  <meta property="og:image" content="https://seyble.com/assets/title_logo.png" />
-  <meta property="og:image:width" content="1150" />
-  <meta property="og:image:height" content="240" />
-  <meta property="og:image:alt" content="Seyble game logo" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Seyble — Play the Open Beta" />
-  <meta name="twitter:description" content="A free-to-play 2D pixel-art dark-fantasy MMO. Play the open beta in your browser." />
-  <meta name="twitter:image" content="https://seyble.com/assets/title_logo.png" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230b0f10'/%3E%3Crect x='6' y='2' width='4' height='4' fill='%23e6c98a'/%3E%3Crect x='4' y='6' width='8' height='4' fill='%23e6c98a'/%3E%3Crect x='6' y='10' width='4' height='4' fill='%23e6c98a'/%3E%3C/svg%3E" />
-  <link rel="preload" href="assets/fonts/Alegreya-Variable.ttf" as="font" type="font/ttf" crossorigin />
-  <link rel="stylesheet" href="css/site.css?v=4" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seyble — Free multiplayer RPG</title>
+  <meta name="description" content="Explore the Gloamwood, learn magic and build a home with friends. Play Seyble in your browser or download the launcher for Windows and Mac.">
+  <meta name="theme-color" content="#171b19">
+  <link rel="canonical" href="https://seyble.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Seyble">
+  <meta property="og:title" content="Seyble — Explore the Gloamwood">
+  <meta property="og:description" content="A free multiplayer RPG from Sable Studios. Play in your browser or on Windows and Mac.">
+  <meta property="og:url" content="https://seyble.com/">
+  <meta property="og:image" content="https://seyble.com/assets/cinderwatch-share.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Cinderwatch market and well at dusk">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="play/index.icon.png">
+  <link rel="preload" href="assets/fonts/Alegreya-Variable.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="css/site.css?v=5">
 </head>
 <body>
-  <a class="skip" href="#top">Skip to content</a>
-
-  <div class="sky" aria-hidden="true">
-    <div class="layer layer-nebula"></div>
-    <div class="layer layer-dim"></div>
-    <div class="layer layer-bright"></div>
-    <div class="layer layer-dust"></div>
-    <canvas id="twinkles"></canvas>
-  </div>
-  <div class="vignette" aria-hidden="true"></div>
-
-  <header class="constellation">
-    <div class="header-bar">
-      <nav aria-label="Seyble">
-        <ol>
-          <li><a href="#top" data-nav="top"><span class="star"></span><span>Seyble</span></a></li>
-          <li><a href="#world" data-nav="world"><span class="star"></span><span>World</span></a></li>
-          <li><a href="#scenes" data-nav="scenes"><span class="star"></span><span>Scenes</span></a></li>
-          <li><a href="#sky" data-nav="sky"><span class="star"></span><span>Sky</span></a></li>
-          <li><a href="#pledge" data-nav="pledge"><span class="star"></span><span>Free</span></a></li>
-          <li><a href="#faq" data-nav="faq"><span class="star"></span><span>FAQ</span></a></li>
-          <li><a href="patch-notes/"><span class="star"></span><span>Patch Notes</span></a></li>
-        </ol>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="top">
+    <div class="nav-wrap">
+      <a class="wordmark" href="./"><img src="assets/title_logo.png" width="1150" height="240" alt="Seyble home"></a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="#world">World</a><a href="#downloads">Downloads</a><a href="patch-notes/">Patch notes</a>
       </nav>
-      <div class="header-actions">
-        <p class="server-status server-status-compact" data-server-status="compact" role="status" aria-live="polite">
-          <span class="server-dot" aria-hidden="true"></span>
-          <span class="server-label">Checking world status</span>
-        </p>
-        <a class="cta cta-nav" href="/play/">Play Beta</a>
-      </div>
     </div>
   </header>
-
-  <main>
-    <section id="top" class="hero">
-      <div class="hero-copy">
-        <img class="logo" src="assets/title_logo.png" width="1150" height="240" alt="Seyble" />
-        <div class="badges">
-          <span class="badge">Free to play</span>
-          <span class="badge badge-alpha">Open beta</span>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-art" src="assets/scenes/cinderwatch.webp" srcset="assets/scenes/cinderwatch-mobile.webp 640w, assets/scenes/cinderwatch.webp 1280w" sizes="(max-width: 760px) 100vw, 83vw" width="1280" height="720" alt="Lanterns light the market stalls around the Cinderwatch well at dusk." fetchpriority="high">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="edition">Free multiplayer RPG <span aria-hidden="true">/</span> Open beta</p>
+          <h1 id="hero-title">Explore the <br>Gloamwood</h1>
+          <p class="intro">Leave Cinderwatch with a lantern and a friend. Gather ore, learn spells, and build a home out in the woods.</p>
+          <div class="hero-actions" id="access"><a class="play" href="/play/">Play in browser <span aria-hidden="true">→</span></a><a class="download-jump" href="#downloads">Get the launcher</a></div>
+          <p class="world-status" data-server-status role="status"><span class="server-dot" aria-hidden="true"></span><span class="server-label">Checking world status…</span></p>
         </div>
-        <h1>Free to play. No pay-to-win.</h1>
-        <p class="lede">Nobody can buy an advantage. Anything sold is cosmetic&nbsp;only.</p>
-        <p class="tag">A 2D top-down pixel-art dark-fantasy MMO from Sable Studios. Overhead days, moody 16-bit nights. Made in Godot.</p>
-        <div class="hero-actions">
-          <a class="cta" href="/play/">Play the Open Beta</a>
-          <a class="cta cta-secondary" href="#downloads">Desktop Downloads</a>
-        </div>
-        <p class="server-status" data-server-status>
-          <span class="server-dot" aria-hidden="true"></span>
-          <span class="server-label">Checking world status</span>
-        </p>
-        <p class="alpha-notice">Seyble is in open beta. Expect bugs and possible progress wipes. Paid cosmetics always survive wipes.</p>
       </div>
-      <div class="horizon" role="img" aria-label="Treeline under the skill sky"></div>
+      <p class="art-credit">Cinderwatch at dusk <span>World art</span></p>
     </section>
 
-    <section id="world" class="band">
-      <div class="wrap">
-        <div class="rule" aria-hidden="true"><span class="star"></span></div>
-        <p class="kicker">What Seyble is</p>
-        <h2>An overhead world, after dark.</h2>
-        <div class="prose narrow" style="margin-left:0">
-          <p>Seyble is a free-to-play dark-fantasy MMO set in a shared world. Set out from quiet towns into rain-soaked woods, meet other travelers, and make a place of your own.</p>
-        </div>
-        <div class="features">
-          <article class="feature">
-            <h3>Twelve schools of the Veil</h3>
-            <p>The skill sky is a constellation. Twelve schools, stars you light as you learn, a skill tree hung in a real night sky.</p>
-          </article>
-          <article class="feature">
-            <h3>A spell that opens the sky</h3>
-            <p>Cast a space spell and the world dissolves into that sky. The map you were standing on becomes the chart of stars.</p>
-          </article>
-          <article class="feature">
-            <h3>Friends as constellations</h3>
-            <p>People you travel with take a place among the stars. Company is something you can look up and find.</p>
-          </article>
-          <article class="feature">
-            <h3>Dark nights, torchlight</h3>
-            <p>Night is actually dark. What you can see is what the torch, the lantern, and the town windows give you.</p>
-          </article>
-        </div>
-        <ul class="schools" aria-label="The twelve schools of the Veil">
-          <li><span class="dot" style="background:#e0833a"></span>Pyromancy</li>
-          <li><span class="dot" style="background:#6fb3c4"></span>Cryomancy</li>
-          <li><span class="dot" style="background:#7f93c8"></span>Stormcalling</li>
-          <li><span class="dot" style="background:#a3855d"></span>Geomancy</li>
-          <li><span class="dot" style="background:#4f8fc9"></span>Hydromancy</li>
-          <li><span class="dot" style="background:#6f9a52"></span>Verdancy</li>
-          <li><span class="dot" style="background:#b84861"></span>Vitalism</li>
-          <li><span class="dot" style="background:#4f9a6a"></span>Necromancy</li>
-          <li><span class="dot" style="background:#8c64b6"></span>Hexcraft</li>
-          <li><span class="dot" style="background:#ac9b75"></span>Divination</li>
-          <li><span class="dot" style="background:#4f9a8a"></span>Transmutation</li>
-          <li><span class="dot" style="background:#b04aa8"></span>Conjuration</li>
-        </ul>
+    <section class="world section-wrap" id="world" aria-labelledby="world-title">
+      <div class="section-heading"><h2 id="world-title">In the game</h2><a href="patch-notes/">Read patch notes <span aria-hidden="true">↗</span></a></div>
+      <div class="gallery" id="scenes">
+        <figure><a class="shot" href="assets/scenes/gloamwood-game.webp" aria-label="Enlarge The Gloamwood screenshot"><img src="assets/scenes/gloamwood-game-small.webp" width="640" height="360" loading="lazy" alt="A player with Magelight equipped beside a campfire and waystone."></a><figcaption>The Gloamwood</figcaption></figure>
+        <figure><a class="shot" href="assets/scenes/arena-game.webp" aria-label="Enlarge Arena of the Gods screenshot"><img src="assets/scenes/arena-game-small.webp" width="640" height="360" loading="lazy" alt="Stone steps surround the dueling floor and its gold sun emblem."></a><figcaption>Arena of the Gods</figcaption></figure>
+        <figure><a class="shot" href="assets/scenes/blackreed-game.webp" aria-label="Enlarge Blackreed Swamp screenshot"><img src="assets/scenes/blackreed-game-small.webp" width="640" height="360" loading="lazy" alt="Narrow wooden walkways cross pools beneath the swamp willows."></a><figcaption>Blackreed Swamp</figcaption></figure>
       </div>
+      <details class="extra" id="sky"><summary>The twelve schools of magic</summary>
+        <div class="sky-content"><p>Open the skill sky with <kbd>K</kbd> to see the twelve schools. Warding spells include Iron Skin, a shield that can return damage to an attacker.</p><video controls poster="assets/skill-sky-poster.webp" preload="none" playsinline width="1280" height="720" aria-label="The skill sky in Seyble"><source src="assets/skill_sky_full.mp4" type="video/mp4"><a href="assets/skill_sky_full.mp4">Watch the skill sky</a></video></div>
+      </details>
+      <details class="extra"><summary>World artwork</summary><div class="art-gallery">
+        <figure><a class="shot" href="assets/scenes/gloamwood.webp" aria-label="Enlarge Gloamwood artwork"><img src="assets/scenes/gloamwood.webp" width="1280" height="720" loading="lazy" alt="Lantern on the ruin road through a dark pine valley."></a><figcaption>Gloamwood</figcaption></figure>
+        <figure><a class="shot" href="assets/scenes/cinderwatch.webp" aria-label="Enlarge Cinderwatch artwork"><img src="assets/scenes/cinderwatch.webp" width="1280" height="720" loading="lazy" alt="The market square and stone well at dusk."></a><figcaption>Cinderwatch</figcaption></figure>
+        <figure><a class="shot" href="assets/scenes/dawn.webp" aria-label="Enlarge Dawn artwork"><img src="assets/scenes/dawn.webp" width="1280" height="720" loading="lazy" alt="A traveler approaches a standing stone between tall trees."></a><figcaption>Dawn</figcaption></figure>
+        <figure><a class="shot" href="assets/scenes/marsh.webp" aria-label="Enlarge Marsh artwork"><img src="assets/scenes/marsh.webp" width="1280" height="720" loading="lazy" alt="Moonlight falls on a wooden walkway and ruined arch."></a><figcaption>Marsh</figcaption></figure>
+        <figure><a class="shot" href="assets/scenes/mine.webp" aria-label="Enlarge Mine artwork"><img src="assets/scenes/mine.webp" width="1280" height="720" loading="lazy" alt="A lantern and violet crystals light the cavern."></a><figcaption>Mine</figcaption></figure>
+        <figure><a class="shot" href="assets/scenes/storm.webp" aria-label="Enlarge Storm artwork"><img src="assets/scenes/storm.webp" width="1280" height="720" loading="lazy" alt="Rain beyond the window of a candlelit hall."></a><figcaption>Storm</figcaption></figure>
+      </div></details>
     </section>
 
-    <section id="scenes" class="band">
-      <div class="wrap">
-        <div class="rule" aria-hidden="true"><span class="star"></span></div>
-        <p class="kicker">Screenshots</p>
-        <h2>Places in the world.</h2>
-        <p class="tag" style="margin-left:0">Pixel art from Seyble, shown nearest-neighbor. No filters, no blur.</p>
-        <div class="gallery">
-          <figure>
-            <button class="shot" type="button" data-full="assets/scenes/gloamwood.webp">
-              <img src="assets/scenes/gloamwood.webp" width="1280" height="720" alt="A cloaked figure with a lantern on a stone path through a dark pine valley and ruined arches." />
-            </button>
-            <figcaption><strong>Gloamwood.</strong> A lantern on the ruin road.</figcaption>
-          </figure>
-          <figure>
-            <button class="shot" type="button" data-full="assets/scenes/cinderwatch.webp">
-              <img src="assets/scenes/cinderwatch.webp" width="1280" height="720" alt="A dusk town square with a stone well, market stalls, and warm windows." />
-            </button>
-            <figcaption><strong>Cinderwatch.</strong> The square at dusk.</figcaption>
-          </figure>
-          <figure>
-            <button class="shot" type="button" data-full="assets/scenes/dawn.webp">
-              <img src="assets/scenes/dawn.webp" width="1280" height="720" alt="A figure in a red cloak walking toward a mossy standing stone between huge trees at sunrise." />
-            </button>
-            <figcaption><strong>Dawn.</strong> The path to the standing stone.</figcaption>
-          </figure>
-          <figure>
-            <button class="shot" type="button" data-full="assets/scenes/marsh.webp">
-              <img src="assets/scenes/marsh.webp" width="1280" height="720" alt="A moonlit marsh with a wooden walkway, a hanging lantern, and a ruined arch." />
-            </button>
-            <figcaption><strong>Marsh.</strong> Moon over the walk.</figcaption>
-          </figure>
-          <figure>
-            <button class="shot" type="button" data-full="assets/scenes/mine.webp">
-              <img src="assets/scenes/mine.webp" width="1280" height="720" alt="A cavern mine with a lantern, crates, and purple crystals along a stone path." />
-            </button>
-            <figcaption><strong>Mine.</strong> Lantern in the crystal dark.</figcaption>
-          </figure>
-          <figure>
-            <button class="shot" type="button" data-full="assets/scenes/storm.webp">
-              <img src="assets/scenes/storm.webp" width="1280" height="720" alt="A timber hall with candles and a window looking out on rain and a distant lit keep." />
-            </button>
-            <figcaption><strong>Storm.</strong> Rain on the hall window.</figcaption>
-          </figure>
-        </div>
+    <section class="downloads" id="downloads" aria-labelledby="download-title"><div class="download-inner section-wrap">
+      <div class="download-copy"><h2 id="download-title">Desktop launcher</h2><p>Open the latest version of Seyble in its own window. The launcher needs an internet connection.</p></div>
+      <div class="platforms">
+        <a href="https://github.com/playsable/playsable.github.io/releases/download/launcher-v1.1.0/Seyble-Launcher-Windows-x64.zip"><span>Windows <small>x64</small></span><span class="file-kind">ZIP <b aria-hidden="true">↓</b></span></a>
+        <a href="https://github.com/playsable/playsable.github.io/releases/download/launcher-v1.1.0/Seyble-Launcher-Mac-Apple-Silicon.zip"><span>Mac <small>Apple silicon</small></span><span class="file-kind">ZIP <b aria-hidden="true">↓</b></span></a>
+        <a href="https://github.com/playsable/playsable.github.io/releases/download/launcher-v1.1.0/Seyble-Launcher-Mac-Intel.zip"><span>Mac <small>Intel</small></span><span class="file-kind">ZIP <b aria-hidden="true">↓</b></span></a>
+        <p class="install-note">Extract the ZIP, then open the launcher. On Mac, the unsigned app may need approval in Privacy &amp; Security. <a href="https://support.apple.com/en-us/102445">Mac install help</a></p>
       </div>
-    </section>
-
-    <section id="sky" class="band">
-      <div class="wrap">
-        <div class="rule" aria-hidden="true"><span class="star"></span></div>
-        <p class="kicker">The skill sky</p>
-        <h2>Learn by lighting stars.</h2>
-        <p class="tag" style="margin-left:0">Twelve schools hang around a gold lodestar. Cast into the sky, and the world you were walking dissolves into this chart. The film loops here. If it cannot play, the same chart is drawn in its place.</p>
-        <div class="sky-stage">
-          <canvas id="skill-sky" width="1280" height="720" aria-label="Constellation skill sky. Twelve schools around the lodestar Magelight."></canvas>
-          <video id="skill-video" autoplay muted loop playsinline hidden>
-            <source src="assets/skill_sky_full.mp4" type="video/mp4" />
-          </video>
-        </div>
-      </div>
-    </section>
-
-    <section id="pledge" class="band">
-      <div class="wrap">
-        <div class="rule" aria-hidden="true"><span class="star"></span></div>
-        <p class="kicker">Fair play</p>
-        <h2>Free. Forever. No advantage for sale.</h2>
-        <p class="lede" style="margin-left:0">Seyble is free to play during open beta and after launch. Nobody can buy an advantage.</p>
-        <div class="pledge-grid">
-          <article class="pledge-card">
-            <h3>Free to play</h3>
-            <p>You can play the open beta for free in your browser.</p>
-          </article>
-          <article class="pledge-card">
-            <h3>No advantage for sale</h3>
-            <p>Power, levels, gear, and progress are not on offer. The player beside you cannot be bought past.</p>
-          </article>
-          <article class="pledge-card">
-            <h3>Cosmetics only</h3>
-            <p>If something is sold, it changes how you look. It does not change what you can do.</p>
-          </article>
-        </div>
-
-        <div class="beta-access" id="access">
-          <a class="cta" href="/play/">Play the Open Beta</a>
-        </div>
-      </div>
-    </section>
-
-    <section id="downloads" class="band" aria-labelledby="downloads-title">
-      <div class="wrap">
-        <div class="narrow">
-          <div class="rule" aria-hidden="true"><span class="star"></span></div>
-          <h2 id="downloads-title">Download the Seyble launcher</h2>
-          <p>The launcher opens the latest published build of Seyble in its own window. An internet connection is required.</p>
-          <div class="hero-actions">
-            <a class="cta" href="https://github.com/playsable/playsable.github.io/releases/download/launcher-v1.1.0/Seyble-Launcher-Windows-x64.zip">Windows x64</a>
-            <a class="cta" href="https://github.com/playsable/playsable.github.io/releases/download/launcher-v1.1.0/Seyble-Launcher-Mac-Apple-Silicon.zip">Mac · Apple silicon</a>
-            <a class="cta" href="https://github.com/playsable/playsable.github.io/releases/download/launcher-v1.1.0/Seyble-Launcher-Mac-Intel.zip">Mac · Intel</a>
-          </div>
-          <p>Extract the ZIP and open the launcher. The Mac launchers are unsigned and may require approval in Privacy &amp; Security. <a href="https://support.apple.com/en-us/102445">Apple’s guide to opening apps</a></p>
-        </div>
-      </div>
-    </section>
-
-    <section id="faq" class="band">
-      <div class="wrap narrow">
-        <div class="rule" aria-hidden="true"><span class="star"></span></div>
-        <p class="kicker">FAQ</p>
-        <h2>Questions worth a straight answer.</h2>
-        <div class="faq">
-          <details>
-            <summary>How do I join the open beta?</summary>
-            <p>Visit <a href="/play/">the game page</a> to start playing the open beta in your browser.</p>
-          </details>
-          <details>
-            <summary>Will it stay free after beta?</summary>
-            <p>Yes. Seyble will stay free to play after launch. Anything sold is cosmetic only.</p>
-          </details>
-          <details>
-            <summary>Is there pay-to-win?</summary>
-            <p>No. An advantage is not for sale. Spending does not make the next player weaker, and it does not make you stronger.</p>
-          </details>
-          <details>
-            <summary>What can be bought?</summary>
-            <p>Cosmetics only. Nothing that changes what a character can do, how far they are, or what they can reach.</p>
-          </details>
-          <details>
-            <summary>What is Seyble?</summary>
-            <p>A free-to-play 2D top-down pixel-art dark-fantasy MMO by Sable Studios, made in Godot. Overhead, shared, and dark when the sun goes down.</p>
-          </details>
-          <details>
-            <summary>Do I need to download Seyble?</summary>
-            <p>You can play Seyble directly in your browser or get the <a href="#downloads">desktop launcher</a> for Windows or Mac.</p>
-          </details>
-        </div>
-      </div>
+    </div></section>
+    <section class="beta section-wrap" id="faq" aria-label="Open beta information">
+      <details class="extra" id="pledge"><summary>Purchases and beta progress</summary><p>Seyble will stay free after beta. The shop sells cosmetics. Character progress may reset during beta, and paid cosmetics carry over.</p></details>
     </section>
   </main>
-
-  <footer>
-    <p class="mark">Seyble</p>
-    <p>Free to play. No pay-to-win. Open beta.</p>
-    <p class="footer-links">
-      <a href="#downloads">Desktop Downloads</a>
-      <a href="patch-notes/">Patch Notes</a>
-      <a href="terms/">Terms of Service</a>
-      <a href="privacy/">Privacy Policy</a>
-      <a href="https://www.instagram.com/sabledept/" target="_blank" rel="noopener">@sabledept on Instagram</a>
-    </p>
-    <p class="server-status server-status-footer" data-server-status>
-      <span class="server-dot" aria-hidden="true"></span>
-      <span class="server-label">Checking world status</span>
-    </p>
-    <p>© Sable Studios. Made in Godot.</p>
-  </footer>
-
-  <dialog id="lightbox">
-    <form method="dialog"><button type="submit">Close</button></form>
-    <img id="lightbox-img" alt="" />
-  </dialog>
-
-  <script type="module" src="js/site.js?v=8"></script>
+  <footer class="site-footer"><div class="footer-wrap"><p>© Sable Studios</p><nav aria-label="Footer"><a href="patch-notes/">Patch notes</a><a href="terms/">Terms</a><a href="privacy/">Privacy</a><a href="https://www.instagram.com/sabledept/">Instagram</a></nav></div></footer>
+  <dialog id="lightbox" aria-labelledby="lightbox-caption"><div class="lightbox-top"><p id="lightbox-caption"></p><form method="dialog"><button type="submit" aria-label="Close image">Close <span aria-hidden="true">×</span></button></form></div><img id="lightbox-img" alt=""></dialog>
+  <script type="module" src="js/site.js?v=9"></script>
 </body>
 </html>

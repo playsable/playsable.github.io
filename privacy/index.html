@@ -22,160 +22,117 @@
   <meta name="twitter:image" content="https://seyble.com/assets/title_logo.png" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230b0f10'/%3E%3Crect x='6' y='2' width='4' height='4' fill='%23e6c98a'/%3E%3Crect x='4' y='6' width='8' height='4' fill='%23e6c98a'/%3E%3Crect x='6' y='10' width='4' height='4' fill='%23e6c98a'/%3E%3C/svg%3E" />
   <link rel="preload" href="../assets/fonts/Alegreya-Variable.ttf" as="font" type="font/ttf" crossorigin />
-  <link rel="stylesheet" href="../css/site.css?v=4" />
+  <link rel="stylesheet" href="../css/site.css?v=5" />
 </head>
 <body>
   <a class="skip" href="#legal">Skip to content</a>
-
-  <div class="sky" aria-hidden="true">
-    <div class="layer layer-nebula"></div>
-    <div class="layer layer-dim"></div>
-    <div class="layer layer-bright"></div>
-    <div class="layer layer-dust"></div>
-    <canvas id="twinkles"></canvas>
-  </div>
-  <div class="vignette" aria-hidden="true"></div>
-
-  <header class="constellation">
-    <div class="header-bar">
-      <nav aria-label="Seyble">
-        <ol>
-          <li><a href="../#top"><span class="star"></span><span>Seyble</span></a></li>
-          <li><a href="../#world"><span class="star"></span><span>World</span></a></li>
-          <li><a href="../#scenes"><span class="star"></span><span>Scenes</span></a></li>
-          <li><a href="../#sky"><span class="star"></span><span>Sky</span></a></li>
-          <li><a href="../#pledge"><span class="star"></span><span>Free</span></a></li>
-          <li><a href="../#faq"><span class="star"></span><span>FAQ</span></a></li>
-          <li><a href="../patch-notes/"><span class="star"></span><span>Patch Notes</span></a></li>
-        </ol>
+  <header class="site-header" id="top">
+    <div class="nav-wrap">
+      <a class="wordmark" href="../"><img src="../assets/title_logo.png" width="1150" height="240" alt="Seyble home" /></a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="../#world">World</a>
+        <a href="../#downloads">Downloads</a>
+        <a href="../patch-notes/">Patch notes</a>
+        <a class="nav-play" href="../play/">Play</a>
       </nav>
-      <div class="header-actions">
-        <p class="server-status server-status-compact" data-server-status="compact" role="status" aria-live="polite">
-          <span class="server-dot" aria-hidden="true"></span>
-          <span class="server-label">Server: offline</span>
-        </p>
-        <a class="cta cta-nav" href="/play/">Play</a>
-      </div>
     </div>
   </header>
 
-  <main>
-    <section class="page-hero" id="top">
-      <div class="hero-copy">
-        <a href="../"><img class="logo" src="../assets/title_logo.png" width="1150" height="240" alt="Seyble" /></a>
-        <div class="badges">
-          <span class="badge">Free to play</span>
-          <span class="badge badge-alpha">Open beta</span>
-        </div>
-        <h1>Privacy Policy</h1>
-        <p class="tag">What Seyble collects, why, and the choices you have.</p>
-      </div>
-    </section>
-
-    <section id="legal" class="band">
-      <div class="wrap narrow">
-        <div class="rule" aria-hidden="true"><span class="star"></span></div>
-        <p class="kicker">Sable Studios</p>
-        <article class="patch-entry prose">
-          <p class="kicker patch-date">Last updated: <time datetime="2026-11-18">November 18, 2026</time></p>
-          <h2>Seyble Privacy Policy</h2>
-          <p>This Privacy Policy explains how Sable Studios ("we," "us," "our") collects, uses, and shares information when you use the Seyble game, its beta and waitlist, and our website at <a href="https://seyble.com/">https://seyble.com/</a> (the "Service"). Sable Studios is a trade name of Barrier Holding LLC, a Texas limited liability company.</p>
-          <p><strong>Short version:</strong> We collect your email to sign you in and, if you choose, to send news. We collect game data and basic technical data to run and secure the game. We <strong>do not sell</strong> your personal information, <strong>do not share it for advertising</strong>, and <strong>do not use advertising cookies</strong>.</p>
-          <h3>1. What we collect</h3>
-          <ul>
-          <li><strong>Email address:</strong> the email you use to join the waitlist and sign in. <em>Source: you.</em></li>
-          <li><strong>Account and game data:</strong> username, character names and appearance, game progress, inventory, cosmetics, Aether and Gold balances, Ashbound membership status, account settings, your block list, and any messages or reports you send in the game where those features exist. <em>Source: you and your gameplay.</em></li>
-          <li><strong>Age information:</strong> the age or birth date information you give at sign-up, used to keep under-13s out and to apply parental-permission rules. <em>Source: you.</em></li>
-          <li><strong>Purchase records:</strong> what you bought (such as Aether or an Ashbound membership), when, the price, transaction ID, and status. <em>Source: our payment processor.</em></li>
-          <li><strong>Support messages:</strong> what you send us when you contact us. <em>Source: you.</em></li>
-          <li><strong>Technical data:</strong> we may collect basic technical data such as IP address, device and browser information, game client version, sign-in times, and crash or error logs, to run and secure the game. <em>Source: automatically.</em></li>
-          </ul>
-          <p><strong>Payment cards:</strong> Purchases are handled by a third-party payment processor (such as Stripe). <strong>We do not receive or store your full card number.</strong> If Seyble is later sold on a platform such as Steam, that platform handles payment for purchases made there.</p>
-          <p><strong>Cookies and local storage:</strong> Our website and game may use browser storage or cookies needed to keep you signed in and make the Service work. We do not use advertising cookies.</p>
-          <h3>2. How we use it</h3>
-          <ul>
-          <li><strong>Sign-in and account management:</strong> to create your account, send sign-in links or codes, and keep you signed in.</li>
-          <li><strong>Running the game:</strong> to save progress, deliver cosmetics and Aether, manage Ashbound memberships, run multiplayer, and provide features.</li>
-          <li><strong>News and updates:</strong> to send beta invitations, launch news, and game updates. <strong>You can unsubscribe at any time</strong> with the link in any news email or by contacting us. We will still send essential account emails (like sign-in codes, purchase receipts, membership renewal and price-change notices, and important notices about your account or these policies).</li>
-          <li><strong>Security, fair play, and anti-cheat:</strong> to detect and prevent cheating, fraud, abuse, and attacks, and to enforce our Terms of Service.</li>
-          <li><strong>Support:</strong> to answer your questions and handle refunds and cancellations.</li>
-          <li><strong>Fixing the game:</strong> to fix bugs and crashes and keep the Service running well.</li>
-          <li><strong>Legal:</strong> to comply with law and protect our rights and players' safety.</li>
-          </ul>
-          <h3>3. We do not sell or share for ads</h3>
-          <p>We <strong>do not sell</strong> your personal information. We <strong>do not share</strong> it for cross-context behavioral advertising or targeted ads. We do not use advertising cookies.</p>
-          <h3>4. Who we share it with</h3>
-          <p>We share information only with service providers that help us run Seyble, under terms limiting their use of it, and as required by law:</p>
-          <ul>
-          <li><strong>Supabase:</strong> account storage, sign-in, and our game database (hosted in the United States, US-East).</li>
-          <li><strong>GitHub (GitHub Pages):</strong> hosting our website. GitHub may log visitor IP addresses and technical data.</li>
-          <li><strong>An email delivery provider:</strong> sending sign-in, account, and news emails.</li>
-          <li><strong>A third-party payment processor (such as Stripe):</strong> processing purchases.</li>
-          <li><strong>Platform storefronts (such as Steam), if Seyble is sold there:</strong> processing purchases made on that platform.</li>
-          </ul>
-          <p>We may also disclose information: (a) to comply with law, a court order, or valid legal process; (b) to protect the safety, rights, or property of players, the public, or Sable Studios; or (c) to a buyer or successor if the business or its assets are sold or merged, subject to this policy.</p>
-          <p>Other players can see your username, your character and its cosmetics, and anything you choose to share in the game.</p>
-          <h3>5. How long we keep it</h3>
-          <p>We keep personal information for as long as your account is active and as needed for legal, tax, security, and fraud-prevention purposes. You can ask us to delete your account at any time. If you joined the waitlist only, you can ask us to remove your email at any time.</p>
-          <h3>6. Your choices and rights</h3>
-          <p>You can:</p>
-          <ul>
-          <li><strong>Access</strong> the personal information we have about you;</li>
-          <li><strong>Correct</strong> inaccurate information;</li>
-          <li><strong>Delete</strong> your account and personal information (subject to legal exceptions, such as purchase records);</li>
-          <li><strong>Get a copy</strong> of your data in a portable format;</li>
-          <li><strong>Unsubscribe</strong> from news emails at any time.</li>
-          </ul>
-          <p>To make a request, contact us (see Section 13) and tell us the email address on your account. We may need to verify your identity, for example by confirming a code sent to that email. We will respond within the time the law requires (generally 30 to 45 days). We won't treat you differently for exercising your rights.</p>
-          <h3>7. Children</h3>
-          <p>Seyble is <strong>not for children under 13</strong>, and we do not knowingly collect personal information from children under 13. We use an age check at sign-up and block users who say they are under 13. If we learn we have collected information from a child under 13, we will <strong>delete it</strong> and close the account. Parents who believe their child under 13 has signed up can contact us (see Section 13).</p>
-          <p>Players aged 13 to 17 need a parent or guardian's permission to use Seyble.</p>
-          <h3>8. U.S. state privacy rights (California and others)</h3>
-          <p>Depending on where you live (for example, California, Colorado, Connecticut, Virginia, Texas, Oregon, and other states with consumer privacy laws), you may have the right to: know what personal information we collect, use, and disclose; access and get a copy of it; correct it; delete it; and opt out of its "sale," "sharing" for targeted advertising, or profiling. <strong>We do not sell or share personal information for targeted advertising,</strong> so there is nothing to opt out of, but you can still contact us. We offer these rights to all players.</p>
-          <p><strong>Categories collected (California terms):</strong> identifiers (email, username, IP address); commercial information (purchase records); internet or network activity (technical data); and inferences limited to fraud and cheat detection. <strong>Sensitive personal information:</strong> we do not collect or use it to infer characteristics about you. <strong>Sources, purposes, and recipients:</strong> see Sections 1, 2, and 4. <strong>Retention:</strong> see Section 5.</p>
-          <p>You can use an authorized agent to make a request. If we deny your request, you may appeal by replying to our decision.</p>
-          <h3>9. EU, EEA, and UK players</h3>
-          <p>Seyble is available to players in the EU, EEA, and UK. If you are in the EU, EEA, or UK, Sable Studios is the <strong>controller</strong> of your personal information.</p>
-          <p><strong>Lawful bases we rely on:</strong></p>
-          <ul>
-          <li><strong>Contract:</strong> to create your account, sign you in, run the game, deliver purchases, and manage memberships.</li>
-          <li><strong>Consent:</strong> to send news and update emails (you can withdraw consent at any time by unsubscribing).</li>
-          <li><strong>Legitimate interests:</strong> security, anti-cheat, fraud prevention, fixing bugs and crashes, and enforcing our Terms. We balance these against your rights.</li>
-          <li><strong>Legal obligation:</strong> keeping purchase and tax records and responding to lawful requests.</li>
-          </ul>
-          <p><strong>Your rights:</strong> access, rectification, erasure, restriction, data portability, objection (including to processing based on legitimate interests), withdrawal of consent, and not being subject to solely automated decisions with legal or similarly significant effects. You can also <strong>complain to your local data protection authority</strong> (or the UK Information Commissioner's Office).</p>
-          <p><strong>Children in the EU/UK:</strong> some countries set the age of digital consent above 13 (up to 16). Where we rely on consent (for example, news emails) for a player under that country's age of digital consent, we will ask for a parent or guardian's consent.</p>
-          <h3>10. International transfers</h3>
-          <p>Sable Studios is based in the United States. Our account database is hosted by Supabase in the <strong>United States (US-East)</strong>, and our other providers also process data in the U.S. If you are outside the U.S., your information will be transferred to and processed in the U.S., which may have different data protection laws than your country.</p>
-          <p>For players in the EU, EEA, and UK, we protect these transfers with appropriate safeguards, such as the <strong>European Commission's Standard Contractual Clauses</strong> and the <strong>UK International Data Transfer Addendum</strong>, or the <strong>EU-U.S. Data Privacy Framework and its UK Extension</strong> where a provider is certified. You can ask us for more information about these safeguards.</p>
-          <h3>11. Security</h3>
-          <p>We use reasonable technical and organizational measures to protect your information, such as encryption in transit and access controls on our database. No system is perfectly secure. Keep your email account secure, since it is how you sign in. If a data breach affects you, we will notify you as the law requires.</p>
-          <h3>12. Changes to this policy</h3>
-          <p>We may update this policy. If changes are material, we will notify you by email or in the game before they take effect. The "Last updated" date shows the latest version.</p>
-          <h3>13. Contact us</h3>
-          <p>For privacy questions and requests, message Sable Studios on Instagram at <a href="https://www.instagram.com/sabledept/">@sabledept</a>. Please don't post personal information publicly; send it by direct message. A dedicated support email is coming soon; we'll post it on the official Seyble website at <a href="https://seyble.com/">https://seyble.com/</a> and on this page when it's ready.</p>
-          <p>See also our <a href="../terms/">Terms of Service</a>.</p>
-        </article>
-      </div>
-    </section>
+  <main class="document" id="legal">
+    <div class="doc-wrap">
+      <h1>Seyble Privacy Policy</h1>
+      <article class="legal">
+        <p class="patch-date">Last updated: <time datetime="2026-11-18">November 18, 2026</time></p>
+        <p>This Privacy Policy explains how Sable Studios ("we," "us," "our") collects, uses, and shares information when you use the Seyble game, its beta and waitlist, and our website at <a href="https://seyble.com/">https://seyble.com/</a> (the "Service"). Sable Studios is a trade name of Barrier Holding LLC, a Texas limited liability company.</p>
+        <p><strong>Short version:</strong> We collect your email to sign you in and, if you choose, to send news. We collect game data and basic technical data to run and secure the game. We <strong>do not sell</strong> your personal information, <strong>do not share it for advertising</strong>, and <strong>do not use advertising cookies</strong>.</p>
+        <h2>1. What we collect</h2>
+        <ul>
+        <li><strong>Email address:</strong> the email you use to join the waitlist and sign in. <em>Source: you.</em></li>
+        <li><strong>Account and game data:</strong> username, character names and appearance, game progress, inventory, cosmetics, Aether and Gold balances, Ashbound membership status, account settings, your block list, and any messages or reports you send in the game where those features exist. <em>Source: you and your gameplay.</em></li>
+        <li><strong>Age information:</strong> the age or birth date information you give at sign-up, used to keep under-13s out and to apply parental-permission rules. <em>Source: you.</em></li>
+        <li><strong>Purchase records:</strong> what you bought (such as Aether or an Ashbound membership), when, the price, transaction ID, and status. <em>Source: our payment processor.</em></li>
+        <li><strong>Support messages:</strong> what you send us when you contact us. <em>Source: you.</em></li>
+        <li><strong>Technical data:</strong> we may collect basic technical data such as IP address, device and browser information, game client version, sign-in times, and crash or error logs, to run and secure the game. <em>Source: automatically.</em></li>
+        </ul>
+        <p><strong>Payment cards:</strong> Purchases are handled by a third-party payment processor (such as Stripe). <strong>We do not receive or store your full card number.</strong> If Seyble is later sold on a platform such as Steam, that platform handles payment for purchases made there.</p>
+        <p><strong>Cookies and local storage:</strong> Our website and game may use browser storage or cookies needed to keep you signed in and make the Service work. We do not use advertising cookies.</p>
+        <h2>2. How we use it</h2>
+        <ul>
+        <li><strong>Sign-in and account management:</strong> to create your account, send sign-in links or codes, and keep you signed in.</li>
+        <li><strong>Running the game:</strong> to save progress, deliver cosmetics and Aether, manage Ashbound memberships, run multiplayer, and provide features.</li>
+        <li><strong>News and updates:</strong> to send beta invitations, launch news, and game updates. <strong>You can unsubscribe at any time</strong> with the link in any news email or by contacting us. We will still send essential account emails (like sign-in codes, purchase receipts, membership renewal and price-change notices, and important notices about your account or these policies).</li>
+        <li><strong>Security, fair play, and anti-cheat:</strong> to detect and prevent cheating, fraud, abuse, and attacks, and to enforce our Terms of Service.</li>
+        <li><strong>Support:</strong> to answer your questions and handle refunds and cancellations.</li>
+        <li><strong>Fixing the game:</strong> to fix bugs and crashes and keep the Service running well.</li>
+        <li><strong>Legal:</strong> to comply with law and protect our rights and players' safety.</li>
+        </ul>
+        <h2>3. We do not sell or share for ads</h2>
+        <p>We <strong>do not sell</strong> your personal information. We <strong>do not share</strong> it for cross-context behavioral advertising or targeted ads. We do not use advertising cookies.</p>
+        <h2>4. Who we share it with</h2>
+        <p>We share information only with service providers that help us run Seyble, under terms limiting their use of it, and as required by law:</p>
+        <ul>
+        <li><strong>Supabase:</strong> account storage, sign-in, and our game database (hosted in the United States, US-East).</li>
+        <li><strong>GitHub (GitHub Pages):</strong> hosting our website. GitHub may log visitor IP addresses and technical data.</li>
+        <li><strong>An email delivery provider:</strong> sending sign-in, account, and news emails.</li>
+        <li><strong>A third-party payment processor (such as Stripe):</strong> processing purchases.</li>
+        <li><strong>Platform storefronts (such as Steam), if Seyble is sold there:</strong> processing purchases made on that platform.</li>
+        </ul>
+        <p>We may also disclose information: (a) to comply with law, a court order, or valid legal process; (b) to protect the safety, rights, or property of players, the public, or Sable Studios; or (c) to a buyer or successor if the business or its assets are sold or merged, subject to this policy.</p>
+        <p>Other players can see your username, your character and its cosmetics, and anything you choose to share in the game.</p>
+        <h2>5. How long we keep it</h2>
+        <p>We keep personal information for as long as your account is active and as needed for legal, tax, security, and fraud-prevention purposes. You can ask us to delete your account at any time. If you joined the waitlist only, you can ask us to remove your email at any time.</p>
+        <h2>6. Your choices and rights</h2>
+        <p>You can:</p>
+        <ul>
+        <li><strong>Access</strong> the personal information we have about you;</li>
+        <li><strong>Correct</strong> inaccurate information;</li>
+        <li><strong>Delete</strong> your account and personal information (subject to legal exceptions, such as purchase records);</li>
+        <li><strong>Get a copy</strong> of your data in a portable format;</li>
+        <li><strong>Unsubscribe</strong> from news emails at any time.</li>
+        </ul>
+        <p>To make a request, contact us (see Section 13) and tell us the email address on your account. We may need to verify your identity, for example by confirming a code sent to that email. We will respond within the time the law requires (generally 30 to 45 days). We won't treat you differently for exercising your rights.</p>
+        <h2>7. Children</h2>
+        <p>Seyble is <strong>not for children under 13</strong>, and we do not knowingly collect personal information from children under 13. We use an age check at sign-up and block users who say they are under 13. If we learn we have collected information from a child under 13, we will <strong>delete it</strong> and close the account. Parents who believe their child under 13 has signed up can contact us (see Section 13).</p>
+        <p>Players aged 13 to 17 need a parent or guardian's permission to use Seyble.</p>
+        <h2>8. U.S. state privacy rights (California and others)</h2>
+        <p>Depending on where you live (for example, California, Colorado, Connecticut, Virginia, Texas, Oregon, and other states with consumer privacy laws), you may have the right to: know what personal information we collect, use, and disclose; access and get a copy of it; correct it; delete it; and opt out of its "sale," "sharing" for targeted advertising, or profiling. <strong>We do not sell or share personal information for targeted advertising,</strong> so there is nothing to opt out of, but you can still contact us. We offer these rights to all players.</p>
+        <p><strong>Categories collected (California terms):</strong> identifiers (email, username, IP address); commercial information (purchase records); internet or network activity (technical data); and inferences limited to fraud and cheat detection. <strong>Sensitive personal information:</strong> we do not collect or use it to infer characteristics about you. <strong>Sources, purposes, and recipients:</strong> see Sections 1, 2, and 4. <strong>Retention:</strong> see Section 5.</p>
+        <p>You can use an authorized agent to make a request. If we deny your request, you may appeal by replying to our decision.</p>
+        <h2>9. EU, EEA, and UK players</h2>
+        <p>Seyble is available to players in the EU, EEA, and UK. If you are in the EU, EEA, or UK, Sable Studios is the <strong>controller</strong> of your personal information.</p>
+        <p><strong>Lawful bases we rely on:</strong></p>
+        <ul>
+        <li><strong>Contract:</strong> to create your account, sign you in, run the game, deliver purchases, and manage memberships.</li>
+        <li><strong>Consent:</strong> to send news and update emails (you can withdraw consent at any time by unsubscribing).</li>
+        <li><strong>Legitimate interests:</strong> security, anti-cheat, fraud prevention, fixing bugs and crashes, and enforcing our Terms. We balance these against your rights.</li>
+        <li><strong>Legal obligation:</strong> keeping purchase and tax records and responding to lawful requests.</li>
+        </ul>
+        <p><strong>Your rights:</strong> access, rectification, erasure, restriction, data portability, objection (including to processing based on legitimate interests), withdrawal of consent, and not being subject to solely automated decisions with legal or similarly significant effects. You can also <strong>complain to your local data protection authority</strong> (or the UK Information Commissioner's Office).</p>
+        <p><strong>Children in the EU/UK:</strong> some countries set the age of digital consent above 13 (up to 16). Where we rely on consent (for example, news emails) for a player under that country's age of digital consent, we will ask for a parent or guardian's consent.</p>
+        <h2>10. International transfers</h2>
+        <p>Sable Studios is based in the United States. Our account database is hosted by Supabase in the <strong>United States (US-East)</strong>, and our other providers also process data in the U.S. If you are outside the U.S., your information will be transferred to and processed in the U.S., which may have different data protection laws than your country.</p>
+        <p>For players in the EU, EEA, and UK, we protect these transfers with appropriate safeguards, such as the <strong>European Commission's Standard Contractual Clauses</strong> and the <strong>UK International Data Transfer Addendum</strong>, or the <strong>EU-U.S. Data Privacy Framework and its UK Extension</strong> where a provider is certified. You can ask us for more information about these safeguards.</p>
+        <h2>11. Security</h2>
+        <p>We use reasonable technical and organizational measures to protect your information, such as encryption in transit and access controls on our database. No system is perfectly secure. Keep your email account secure, since it is how you sign in. If a data breach affects you, we will notify you as the law requires.</p>
+        <h2>12. Changes to this policy</h2>
+        <p>We may update this policy. If changes are material, we will notify you by email or in the game before they take effect. The "Last updated" date shows the latest version.</p>
+        <h2>13. Contact us</h2>
+        <p>For privacy questions and requests, message Sable Studios on Instagram at <a href="https://www.instagram.com/sabledept/">@sabledept</a>. Please don't post personal information publicly; send it by direct message. A dedicated support email is coming soon; we'll post it on the official Seyble website at <a href="https://seyble.com/">https://seyble.com/</a> and on this page when it's ready.</p>
+        <p>See also our <a href="../terms/">Terms of Service</a>.</p>
+      </article>
+    </div>
   </main>
 
-  <footer>
-    <p class="mark">Seyble</p>
-    <p>Free to play. No pay-to-win. Open beta.</p>
-    <p class="footer-links">
-      <a href="../patch-notes/">Patch Notes</a>
-      <a href="../terms/">Terms of Service</a>
-      <a href="./" aria-current="page">Privacy Policy</a>
-      <a href="https://www.instagram.com/sabledept/" target="_blank" rel="noopener">@sabledept on Instagram</a>
-    </p>
-    <p class="server-status server-status-footer" data-server-status>
-      <span class="server-dot" aria-hidden="true"></span>
-      <span class="server-label">Server status: coming soon · solo play available</span>
-    </p>
-    <p>© Sable Studios. Made in Godot.</p>
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <p>© Sable Studios</p>
+      <nav aria-label="Footer">
+        <a href="../patch-notes/">Patch notes</a>
+        <a href="../terms/">Terms</a>
+        <a href="./" aria-current="page">Privacy</a>
+        <a href="https://www.instagram.com/sabledept/">Instagram</a>
+      </nav>
+    </div>
   </footer>
-
-  <script type="module" src="../js/site.js?v=7"></script>
 </body>
 </html>

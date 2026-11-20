@@ -1,338 +1,68 @@
-// Netcode sets this to the game server host (no scheme, no path), e.g. "example.sslip.io".
-// The health endpoint provides the world's online state and heartbeat timestamp.
-const STATUS_HOST = "51-81-86-210.sslip.io";
-const STATUS_URL = STATUS_HOST ? `https://${STATUS_HOST}/status` : "";
+const lightbox = document.getElementById("lightbox");
+const lightboxImage = document.getElementById("lightbox-img");
+const caption = document.getElementById("lightbox-caption");
 
-// Resolve site files from this script, so the page works at a subpath such as /sable-site/.
-const siteRoot = new URL("../", import.meta.url);
-function assetUrl(path) {
-  return new URL(path, siteRoot).href;
+if (lightbox && typeof lightbox.showModal === "function") {
+  document.querySelectorAll(".shot").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (event.button !== 0 || event.ctrlKey || event.shiftKey || event.metaKey || event.altKey) return;
+      event.preventDefault();
+      lightboxImage.src = link.href;
+      lightboxImage.alt = link.querySelector("img").alt;
+      caption.textContent = link.closest("figure").querySelector("figcaption").textContent;
+      lightbox.showModal();
+    });
+  });
+  lightbox.addEventListener("click", (event) => {
+    if (event.target !== lightbox) return;
+    const bounds = lightbox.getBoundingClientRect();
+    if (event.clientX < bounds.left || event.clientX > bounds.right ||
+        event.clientY < bounds.top || event.clientY > bounds.bottom) lightbox.close();
+  });
 }
 
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const SCALE = 2;
-const LAYER_W = 640 * SCALE;
-const LAYER_H = 360 * SCALE;
-
-const layers = [
-  [document.querySelector(".layer-nebula"), 0.15],
-  [document.querySelector(".layer-dim"), 0.35],
-  [document.querySelector(".layer-bright"), 0.6],
-  [document.querySelector(".layer-dust"), 0.85],
-];
-
-const canvas = document.getElementById("twinkles");
-const ctx = canvas.getContext("2d", { alpha: true });
-ctx.imageSmoothingEnabled = false;
-
-let twinkles = [];
-let strip = null;
-let scrollY = window.scrollY;
-let running = true;
-
-function resizeTwinkles() {
-  const rect = canvas.getBoundingClientRect();
-  const w = Math.max(1, Math.round(rect.width));
-  const h = Math.max(1, Math.round(rect.height));
-  if (canvas.width !== w || canvas.height !== h) {
-    canvas.width = w;
-    canvas.height = h;
-    ctx.imageSmoothingEnabled = false;
-  }
+const sky = document.getElementById("sky");
+function openLinkedDetails() {
+  const target = document.getElementById(location.hash.slice(1));
+  if (target instanceof HTMLDetailsElement) target.open = true;
 }
-
-function frameFor(twinkle, now) {
-  const cycle = (now / 1000) / twinkle.period + twinkle.phase;
-  const frame = Math.floor(cycle * 8) % 8;
-  return frame < 0 ? frame + 8 : frame;
-}
-
-function drawTwinkles(now) {
-  if (!strip) return;
-  resizeTwinkles();
-  const w = canvas.width;
-  const h = canvas.height;
-  const offY = reduceMotion ? 0 : scrollY * 0.6;
-  ctx.clearRect(0, 0, w, h);
-  const y0 = Math.floor(offY / LAYER_H) - 1;
-  const y1 = Math.floor((offY + h) / LAYER_H) + 1;
-  const x1 = Math.ceil(w / LAYER_W) + 1;
-  for (let ty = y0; ty <= y1; ty += 1) {
-    for (let tx = -1; tx <= x1; tx += 1) {
-      for (let i = 0; i < twinkles.length; i += 1) {
-        const tw = twinkles[i];
-        const dx = tx * LAYER_W + tw.x * SCALE - 4 * SCALE;
-        const dy = ty * LAYER_H + tw.y * SCALE - 4 * SCALE - offY;
-        if (dx > w || dy > h || dx + 18 < 0 || dy + 18 < 0) continue;
-        const frame = frameFor(tw, now);
-        ctx.drawImage(strip, frame * 9, tw.tint * 9, 9, 9, dx, dy, 18, 18);
-      }
-    }
-  }
-}
-
-function applyParallax(now) {
-  const drift = reduceMotion ? 0 : (now / 1000) * 6;
-  for (let i = 0; i < layers.length; i += 1) {
-    const el = layers[i][0];
-    const factor = layers[i][1];
-    if (!el) continue;
-    const y = reduceMotion ? 0 : -scrollY * factor;
-    const x = el.classList.contains("layer-dust") ? drift : 0;
-    el.style.backgroundPosition = `${x}px ${y}px`;
-  }
-}
-
-function tick(now) {
-  if (!running) return;
-  scrollY = window.scrollY;
-  applyParallax(now);
-  drawTwinkles(now);
-  requestAnimationFrame(tick);
-}
-
-window.addEventListener("resize", () => {
-  resizeTwinkles();
-  if (reduceMotion) {
-    applyParallax(0);
-    drawTwinkles(0);
-  }
-}, { passive: true });
-
-document.addEventListener("visibilitychange", () => {
-  running = document.visibilityState !== "hidden";
-  if (running) requestAnimationFrame(tick);
+openLinkedDetails();
+window.addEventListener("hashchange", openLinkedDetails);
+sky.addEventListener("toggle", () => {
+  if (!sky.open) sky.querySelector("video").pause();
 });
 
-fetch(assetUrl("assets/sky/sky_twinkles.json"))
-  .then((res) => res.json())
-  .then((data) => {
-    twinkles = data.twinkles || [];
-    // Extra seeded twinkles so the sky visibly shimmers (deterministic, same every load).
-    let seed = 1337;
-    const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    for (let i = 0; i < 64; i += 1) {
-      twinkles.push({
-        x: Math.floor(rnd() * 632) + 4,
-        y: Math.floor(rnd() * 352) + 4,
-        tint: Math.floor(rnd() * 5),
-        period: 1.8 + rnd() * 2.6,
-        phase: rnd(),
-      });
-    }
-    strip = new Image();
-    strip.onload = () => {
-      if (reduceMotion) {
-        applyParallax(0);
-        drawTwinkles(0);
-      }
-    };
-    strip.src = assetUrl("assets/sky/sky_twinkle_strip.png");
-  })
-  .catch(() => {});
-
-if (reduceMotion) applyParallax(0);
-requestAnimationFrame(tick);
-
-const navLinks = [...document.querySelectorAll("[data-nav]")];
-const sections = navLinks
-  .map((link) => document.getElementById(link.dataset.nav))
-  .filter(Boolean);
-
-function setCurrent(id) {
-  navLinks.forEach((link) => {
-    const on = link.dataset.nav === id;
-    link.classList.toggle("is-you", on);
-    if (on) link.setAttribute("aria-current", "location");
-    else link.removeAttribute("aria-current");
-  });
-}
-
-const seen = new Set();
-const spy = new IntersectionObserver((entries) => {
-  const visible = entries
-    .filter((entry) => entry.isIntersecting)
-    .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-  entries.forEach((entry) => {
-    if (!entry.isIntersecting) return;
-    entry.target.classList.add("is-lit");
-    seen.add(entry.target.id);
-    const link = document.querySelector(`[data-nav="${entry.target.id}"]`);
-    if (link) link.classList.add("is-lit");
-  });
-  if (visible[0]) setCurrent(visible[0].target.id);
-}, { rootMargin: "-35% 0px -45% 0px", threshold: [0.15, 0.35, 0.6] });
-
-sections.forEach((section) => spy.observe(section));
-const top = document.getElementById("top");
-if (top) {
-  top.classList.add("is-lit");
-  const home = document.querySelector('[data-nav="top"]');
-  if (home) home.classList.add("is-lit");
-  setCurrent("top");
-}
-
-const dialog = document.getElementById("lightbox");
-const dialogImg = document.getElementById("lightbox-img");
-document.querySelectorAll(".shot").forEach((button) => {
-  button.addEventListener("click", () => {
-    const img = button.querySelector("img");
-    dialogImg.src = button.dataset.full || img.src;
-    dialogImg.alt = img.alt;
-    if (typeof dialog.showModal === "function") dialog.showModal();
-  });
-});
-dialog?.addEventListener("click", (event) => {
-  if (event.target === dialog) dialog.close();
-});
-
-const skyStage = document.getElementById("skill-sky");
-const skyVideo = document.getElementById("skill-video");
-const skyCtx = skyStage?.getContext("2d", { alpha: true });
-let skyMap = null;
-
-function drawSkillSky(now) {
-  if (!skyStage || !skyCtx || !skyMap) return;
-  const { size, schools, nodes, edges, lodestar } = skyMap;
-  skyCtx.clearRect(0, 0, size[0], size[1]);
-  skyCtx.imageSmoothingEnabled = false;
-  const byId = new Map(nodes.map((node) => [node.id, node]));
-  const colors = schools.map((school) => school.color);
-  skyCtx.lineWidth = 2;
-  edges.forEach(([a, b]) => {
-    const na = byId.get(a);
-    const nb = byId.get(b);
-    if (!na || !nb) return;
-    skyCtx.strokeStyle = colors[na.s] || "#4c376a";
-    skyCtx.globalAlpha = 0.85;
-    skyCtx.beginPath();
-    skyCtx.moveTo(na.x, na.y);
-    skyCtx.lineTo(nb.x, nb.y);
-    skyCtx.stroke();
-  });
-  skyCtx.globalAlpha = 1;
-  nodes.forEach((node) => {
-    const color = colors[node.s] || "#e5dfce";
-    const r = node.root ? 5 : 2;
-    skyCtx.fillStyle = color;
-    skyCtx.fillRect(node.x - r, node.y - r, r * 2, r * 2);
-  });
-  schools.forEach((school) => {
-    skyCtx.fillStyle = school.color;
-    skyCtx.font = "600 18px Alegreya, Palatino, serif";
-    skyCtx.textAlign = "center";
-    skyCtx.fillText(school.label, school.labelAt[0], school.labelAt[1]);
-  });
-  if (lodestar) {
-    const pulse = reduceMotion ? 1 : 0.72 + 0.28 * Math.sin(now / 520);
-    skyCtx.save();
-    skyCtx.translate(lodestar.x, lodestar.y);
-    skyCtx.rotate(Math.PI / 4);
-    skyCtx.globalAlpha = pulse;
-    skyCtx.fillStyle = "#e6c98a";
-    skyCtx.fillRect(-7, -7, 14, 14);
-    skyCtx.restore();
-    skyCtx.globalAlpha = 1;
-    skyCtx.fillStyle = "#f3e2b8";
-    skyCtx.font = "700 18px Alegreya, Palatino, serif";
-    skyCtx.textAlign = "center";
-    skyCtx.fillText(lodestar.name, lodestar.x, lodestar.y + 28);
-  }
-}
-
-if (skyStage) {
-  fetch(assetUrl("assets/skill_sky_map.json"))
-    .then((res) => res.json())
-    .then(async (map) => {
-      skyMap = map;
-      skyStage.width = map.size[0];
-      skyStage.height = map.size[1];
-      try {
-        await document.fonts.load("600 18px Alegreya");
-      } catch (_) { /* still draw nodes */ }
-      const paint = (now) => {
-        if (skyVideo && !skyVideo.hidden) return;
-        drawSkillSky(now || 0);
-        if (!reduceMotion && running) requestAnimationFrame(paint);
-      };
-      if (reduceMotion) paint(0);
-      else requestAnimationFrame(paint);
-    })
-    .catch(() => {});
-}
-
-if (skyVideo) {
-  const revealVideo = () => {
-    if (skyVideo.videoWidth > 0) {
-      skyVideo.hidden = false;
-      if (skyStage) skyStage.hidden = true;
-      if (!reduceMotion) skyVideo.play().catch(() => {});
-    }
-  };
-  skyVideo.addEventListener("loadeddata", revealVideo);
-  skyVideo.addEventListener("error", () => {
-    skyVideo.hidden = true;
-    if (skyStage) skyStage.hidden = false;
-  });
-  const source = skyVideo.querySelector("source");
-  if (source) source.src = assetUrl("assets/skill_sky_full.mp4");
-  skyVideo.load();
-}
-
-const STATUS_OFFLINE = "World offline · solo play available";
-const STATUS_COMPACT_OFFLINE = "World offline";
-const STATUS_SOON = "Online world coming soon · solo play available";
-const STATUS_COMPACT_SOON = "Online world coming soon";
-
-function formatServerStatus(data) {
-  if (data && data.online === true) {
-    return {
-      online: true,
-      full: "World online",
-      compact: "World online",
-    };
-  }
-  return { online: false, full: STATUS_OFFLINE, compact: STATUS_COMPACT_OFFLINE };
-}
-
-async function fetchServerStatus() {
-  if (!STATUS_URL) return { online: false, full: STATUS_SOON, compact: STATUS_COMPACT_SOON };
-
+const status = document.querySelector("[data-server-status]");
+let pending = false;
+async function refreshWorldStatus() {
+  if (document.hidden || pending) return;
+  pending = true;
   const controller = new AbortController();
-  const timer = window.setTimeout(() => controller.abort(), 5000);
+  const timeout = window.setTimeout(() => controller.abort(), 5000);
+  let state = "unknown";
+  let text = "World status unavailable";
   try {
-    const response = await fetch(STATUS_URL, { signal: controller.signal, cache: "no-store" });
-    if (!response.ok) return formatServerStatus(null);
-    const data = await response.json();
-    if (!data || typeof data !== "object" || typeof data.online !== "boolean") {
-      return formatServerStatus(null);
+    const response = await fetch("https://51-81-86-210.sslip.io/status", {cache: "no-store", signal: controller.signal});
+    if (response.ok) {
+      const data = await response.json();
+      const age = Date.now() / 1000 - Number(data?.updated);
+      if (Number.isFinite(age) && age >= -30 && age <= 30 && typeof data.online === "boolean") {
+        state = data.online ? "online" : "offline";
+        text = data.online ? "World online" : "World offline · solo play available";
+      }
     }
-    const age = Date.now() / 1000 - Number(data.updated);
-    if (!Number.isFinite(age) || age > 30) return formatServerStatus(null);
-    return formatServerStatus(data);
-  } catch (_) {
-    return formatServerStatus(null);
+  } catch {
+    // A failed heartbeat request leaves the world's availability unknown.
   } finally {
-    window.clearTimeout(timer);
+    window.clearTimeout(timeout);
+    pending = false;
+  }
+  if (status.dataset.state !== state) {
+    status.dataset.state = state;
+    status.querySelector(".server-label").textContent = text;
   }
 }
 
-function renderServerStatus(status) {
-  document.querySelectorAll("[data-server-status]").forEach((el) => {
-    const compact = el.getAttribute("data-server-status") === "compact";
-    const label = el.querySelector(".server-label");
-    if (label) label.textContent = compact ? status.compact : status.full;
-    el.dataset.state = status.online ? "online" : "offline";
-  });
-}
-
-async function refreshServerStatus() {
-  renderServerStatus(await fetchServerStatus());
-}
-
-function startServerStatus() {
-  refreshServerStatus();
-  window.setInterval(refreshServerStatus, 20000);
-}
-
-startServerStatus();
+refreshWorldStatus();
+window.setInterval(refreshWorldStatus, 20000);
+document.addEventListener("visibilitychange", refreshWorldStatus);
