@@ -219,7 +219,7 @@ body {
 
 		<script src="index.140448e.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.115625e0f9b3.pck":29920744,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.f46ca4064c90.pck":30014744,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 // Own the backing buffer while keeping CSS layout and input coordinates stable.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
@@ -255,8 +255,8 @@ canvas.getContext = function (kind, ...options) {
 	canvas.addEventListener('webglcontextrestored', () => { scissorEnabled = undefined; });
 	return gl;
 };
-// Keep the CSS viewport and input size stable while reducing the pixels we draw.
-const renderCaps = [null, [1280, 720], [640, 360]];
+// Keep the HUD at the 1280×720 game resolution when reducing world effects.
+const renderCaps = [null, [1280, 720], [1280, 720]];
 let renderQuality = 0;
 
 function resizeCanvas() {
@@ -434,7 +434,7 @@ function startGameWithCachedPack(config) {
 	} else {
 		setStatusMode('progress');
 		startGameWithCachedPack({
-            mainPack: "index.115625e0f9b3.pck",
+            mainPack: "index.f46ca4064c90.pck",
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -453,7 +453,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "115625e0f9b3";
+const SABLE_BUILD = "f46ca4064c90";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
