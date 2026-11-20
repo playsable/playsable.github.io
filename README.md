@@ -2,7 +2,7 @@
 
 Promotional site for **Seyble**, a free-to-play 2D top-down pixel-art dark-fantasy MMO by Sable Studios (`@sabledept`), made in Godot.
 
-Live at [https://playsable.github.io/](https://playsable.github.io/). The game plays at [/play/](https://playsable.github.io/play/).
+Live at [https://seyble.com/](https://seyble.com/). The game plays at [/play/](https://seyble.com/play/).
 
 The game is in **open beta**. It is free to play, with no pay-to-win: nobody can buy an advantage. Anything sold is cosmetic only.
 
