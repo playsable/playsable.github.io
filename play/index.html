@@ -6,7 +6,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Pragma" content="no-cache">
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 		<title>Seyble</title>
 		<link rel="canonical" href="https://seyble.com/play/">
 		<!-- SABLE web shell (export preset html/custom_html_shell). No Godot branding: dark starry
@@ -30,10 +30,11 @@ body {
 	color: #e5dfce;
 	background-color: #0b0f10;
 	overflow: hidden;
-	touch-action: none;
+	overscroll-behavior: none;
 }
 
 #canvas {
+	touch-action: none;
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -44,6 +45,72 @@ body {
 #canvas:focus {
 	outline: none;
 }
+
+#seyble-turn { display: none; }
+@media (pointer: coarse) {
+	#canvas {
+		left: env(safe-area-inset-left, 0px);
+		top: env(safe-area-inset-top, 0px);
+		width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+		height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+		height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+	}
+}
+@media (pointer: coarse) and (orientation: portrait) and (max-width: 700px) {
+	#seyble-turn:not([hidden]) {
+		position: absolute;
+		top: max(10px, env(safe-area-inset-top));
+		left: 50%;
+		transform: translateX(-50%);
+		width: max-content;
+		max-width: calc(100% - 24px);
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		gap: .4rem;
+		padding: 0 0 0 .9rem;
+		color: #eee3cd;
+		background: #172025;
+		border: 1px solid #78694f;
+		font: 15px/1.3 Georgia, serif;
+	}
+	#seyble-turn button { width: 44px; height: 44px; border: 0; color: inherit; background: none; font-size: 21px; }
+}
+#seyble-mobile-account {
+	color-scheme: dark;
+	box-sizing: border-box;
+	position: fixed;
+	inset: auto 0;
+	top: var(--account-center, 50%);
+	transform: translateY(-50%);
+	width: min(27rem, calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 1.5rem));
+	max-height: calc(100% - 1rem);
+	max-height: calc(var(--account-height, 100dvh) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 1rem);
+	margin: 0 auto;
+	padding: clamp(1rem, 4vw, 1.65rem);
+	border: 1px solid #99835d;
+	background: #141d22;
+	color: #e5dfce;
+	font: 16px/1.45 Georgia, serif;
+	overflow: auto;
+	overscroll-behavior: contain;
+	touch-action: pan-y;
+}
+#seyble-mobile-account::backdrop { background: rgba(8,12,15,.88); }
+#seyble-mobile-account [hidden] { display: none; }
+#seyble-mobile-account h1 { margin: 0; color: #f1dfb3; font: 600 1.65rem/1.1 SableTitle, Georgia, serif; }
+#seyble-mobile-account p { margin: .65rem 0 .9rem; }
+#seyble-mobile-account label { display: block; margin: .6rem 0; }
+#seyble-mobile-account input, #seyble-mobile-account button {
+	box-sizing: border-box; width: 100%; min-height: 44px; border: 1px solid #73664e;
+	padding: .45rem .7rem; border-radius: 3px; font: inherit; color: inherit;
+}
+#seyble-mobile-account input { display: block; margin-top: .2rem; background: #0e151b; }
+#seyble-mobile-account button { margin: .2rem 0; background: #233038; cursor: pointer; }
+#seyble-mobile-account button[type=submit] { background: #d7bc83; color: #1e211f; font-weight: 700; }
+#seyble-mobile-account button:disabled { opacity: .58; }
+#seyble-mobile-account :focus-visible { outline: 2px solid #e5c887; outline-offset: 1px; }
+#seyble-mobile-account [role=status] { color: #aed9df; }
 
 #status {
 	position: absolute;
@@ -224,6 +291,26 @@ body {
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.
 		</canvas>
+		<div id="seyble-turn">
+			<span>Turn your phone sideways for larger controls.</span>
+			<button type="button" aria-label="Dismiss rotation tip" onclick="this.parentElement.hidden=true">×</button>
+		</div>
+		<dialog id="seyble-mobile-account" aria-labelledby="seyble-account-title">
+			<form novalidate>
+				<h1 id="seyble-account-title" tabindex="-1" autofocus></h1>
+				<p data-account-reason></p>
+				<label><span></span><input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="17"></label>
+				<label><span></span><input name="email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254"></label>
+				<label><span></span><input name="phone" type="tel" autocomplete="tel" maxlength="16"></label>
+				<label><span></span><input name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10"></label>
+				<label><span></span><input name="invite" type="text" autocapitalize="none" spellcheck="false" maxlength="256"></label>
+				<button type="button" data-action="invite"></button>
+				<p role="status" aria-live="polite"></p>
+				<button type="submit" data-action="submit"></button>
+				<button type="button" data-action="switch"></button>
+				<button type="button" data-action="later"></button>
+			</form>
+		</dialog>
 		<dialog id="seyble-checkout" aria-labelledby="seyble-checkout-title" aria-describedby="seyble-checkout-message">
 			<h2 id="seyble-checkout-title">Aether checkout</h2>
 			<p id="seyble-checkout-message">Open Stripe to pay securely. Your game will stay open here.</p>
@@ -246,6 +333,86 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
+		<script id="seyble-mobile-account-bridge">
+(() => {
+	const dialog = document.getElementById('seyble-mobile-account');
+	const form = dialog.querySelector('form');
+	const buttons = form.querySelectorAll('[data-action]');
+	let handleAction = null;
+	let phase = '';
+	function fitKeyboard() {
+		const viewport = window.visualViewport;
+		if (!dialog.open || !viewport) return;
+		dialog.style.setProperty('--account-height', viewport.height + 'px');
+		dialog.style.setProperty('--account-center', (viewport.offsetTop + viewport.height / 2) + 'px');
+	}
+	window.visualViewport?.addEventListener('resize', fitKeyboard);
+	window.visualViewport?.addEventListener('scroll', fitKeyboard);
+
+	// The game owns the account flow and its validation. The browser owns text
+	// entry, autofill and scrolling while this touch form is open.
+	function act(action) {
+		if (!handleAction || !dialog.open) return;
+		const values = {};
+		for (const input of form.querySelectorAll('input')) {
+			if (!input.parentElement.hidden) values[input.name] = input.value;
+		}
+		handleAction(action, JSON.stringify(values));
+	}
+	form.addEventListener('submit', event => { event.preventDefault(); act('submit'); });
+	for (const button of buttons) {
+		if (button.type === 'button') button.addEventListener('click', () => act(button.dataset.action));
+	}
+	dialog.addEventListener('cancel', event => { event.preventDefault(); act('later'); });
+	for (const name of ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown', 'keyup']) {
+		dialog.addEventListener(name, event => event.stopPropagation());
+	}
+	window.SeybleMobileAccount = {
+		available() {
+			return typeof dialog.showModal === 'function' && matchMedia('(pointer: coarse)').matches;
+		},
+		present(payload, callback) {
+			const state = JSON.parse(payload);
+			handleAction = callback;
+			form.querySelector('h1').textContent = state.heading;
+			form.querySelector('[data-account-reason]').textContent = state.reason;
+			const message = form.querySelector('[role=status]');
+			message.textContent = state.message;
+			message.hidden = !state.message;
+			for (const input of form.querySelectorAll('input')) {
+				const field = state.fields[input.name];
+				const label = input.parentElement;
+				label.hidden = !field;
+				input.disabled = !field || state.busy;
+				if (field) {
+					label.querySelector('span').textContent = field.label;
+					input.placeholder = field.hint;
+					if (input.value !== field.value) input.value = field.value;
+				} else input.value = '';
+			}
+			for (const button of buttons) {
+				const text = state.actions[button.dataset.action];
+				button.hidden = !text;
+				button.disabled = state.busy;
+				button.textContent = text || '';
+			}
+			if (!dialog.open) dialog.showModal();
+			fitKeyboard();
+			if (phase !== state.phase) {
+				dialog.scrollTop = 0;
+				form.querySelector('h1').focus({preventScroll:true});
+			}
+			phase = state.phase;
+		},
+		close() {
+			handleAction = null;
+			phase = '';
+			form.reset();
+			if (dialog.open) dialog.close();
+		}
+	};
+})();
+		</script>
 		<script id="seyble-hosted-checkout">
 (() => {
 	const dialog = document.getElementById('seyble-checkout');
@@ -295,7 +462,7 @@ body {
 		<script src="index.140448e.js"></script>
 		<script>
 // Buffer streamed music and ambience while Web Audio plays short effects directly.
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.1179f4d8bb70.pck":36190196,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.4e52fb25334d.pck":36391664,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 // Own the backing buffer while keeping CSS layout and input coordinates stable.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
@@ -340,7 +507,8 @@ function resizeCanvas() {
 	const height = canvas.clientHeight;
 	if (width === 0 || height === 0) return;
 	const density = window.devicePixelRatio || 1;
-	const cap = renderCaps[renderQuality];
+	const phone = matchMedia('(pointer: coarse)').matches;
+	const cap = phone ? (width >= height ? [1280, 720] : [720, 1280]) : renderCaps[renderQuality];
 	const scale = cap ? Math.min(density, cap[0] / width, cap[1] / height) : density;
 	const pixelWidth = Math.max(1, Math.floor(width * scale));
 	const pixelHeight = Math.max(1, Math.floor(height * scale));
@@ -354,7 +522,9 @@ window.SABLE_SET_RENDER_QUALITY = function (level) {
 	resizeCanvas();
 };
 window.addEventListener('resize', resizeCanvas);
+if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(canvas);
 resizeCanvas();
+GODOT_CONFIG.experimentalVK = navigator.maxTouchPoints > 0;
 GODOT_CONFIG.canvasResizePolicy = 0;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -510,7 +680,7 @@ function startGameWithCachedPack(config) {
 	} else {
 		setStatusMode('progress');
 		startGameWithCachedPack({
-            mainPack: "index.1179f4d8bb70.pck",
+            mainPack: "index.4e52fb25334d.pck",
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -529,7 +699,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "1179f4d8bb70";
+const SABLE_BUILD = "4e52fb25334d";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
