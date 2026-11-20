@@ -602,7 +602,7 @@ body {
 		<script src="index.140448e.js"></script>
 		<script>
 // Buffer streamed music and ambience while Web Audio plays short effects directly.
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.ffdbe0675732.pck":36582880,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.3d932873de5b.pck":37104316,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 // Own the backing buffer while keeping CSS layout and input coordinates stable.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
@@ -820,7 +820,7 @@ function startGameWithCachedPack(config) {
 	} else {
 		setStatusMode('progress');
 		startGameWithCachedPack({
-            mainPack: "index.ffdbe0675732.pck",
+            mainPack: "index.3d932873de5b.pck",
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -839,7 +839,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "ffdbe0675732";
+const SABLE_BUILD = "3d932873de5b";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
