@@ -1,6 +1,6 @@
-# SABLE
+# Seyble
 
-Promotional site for **SABLE**, a free-to-play 2D top-down pixel-art dark-fantasy MMO by Sable Studios (`@sabledept`), made in Godot.
+Promotional site for **Seyble**, a free-to-play 2D top-down pixel-art dark-fantasy MMO by Sable Studios (`@sabledept`), made in Godot.
 
 Live at [https://playsable.github.io/](https://playsable.github.io/). The game plays at [/play/](https://playsable.github.io/play/).
 

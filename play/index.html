@@ -7,7 +7,7 @@
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-		<title>SABLE</title>
+		<title>Seyble</title>
 		<!-- SABLE web shell (export preset html/custom_html_shell). No Godot branding: dark starry
 		     loader with the Gloamwood title art, a thin progress bar and a percentage. Keeps the
 		     ids deploy_web.sh and tools/web_smoke_cdp.mjs rely on: #status (removed when the game
@@ -203,13 +203,13 @@ body {
 		</canvas>
 
 		<noscript>
-			SABLE needs JavaScript to run.
+			Seyble needs JavaScript to run.
 		</noscript>
 
 		<div id="status">
 			<div id="sable-backdrop"></div>
 			<div id="sable-stars"></div>
-			<div id="sable-title">SABLE</div>
+			<div id="sable-title">SEYBLE</div>
 			<div id="sable-sub">The Gloamwood awaits</div>
 			<div id="sable-bar" class="indeterminate"><div id="sable-fill"></div></div>
 			<div id="sable-pct">Loading…</div>
@@ -220,7 +220,7 @@ body {
 		<script src="index.140448e.js"></script>
 		<script>
 // Buffer streamed music and ambience while Web Audio plays short effects directly.
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.3813f21e1409.pck":32202156,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.463ae27570c6.pck":32599212,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 // Own the backing buffer while keeping CSS layout and input coordinates stable.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
@@ -429,13 +429,13 @@ function startGameWithCachedPack(config) {
 				console.error('Error while registering service worker:', err);
 			});
 		} else {
-			const missingMsg = 'SABLE can\'t run in this browser. It is missing:\n';
+			const missingMsg = 'Seyble can\'t run in this browser. It is missing:\n';
 			displayFailureNotice(missingMsg + missing.join('\n'));
 		}
 	} else {
 		setStatusMode('progress');
 		startGameWithCachedPack({
-            mainPack: "index.3813f21e1409.pck",
+            mainPack: "index.463ae27570c6.pck",
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -454,7 +454,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "3813f21e1409";
+const SABLE_BUILD = "463ae27570c6";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
@@ -491,7 +491,7 @@ const SABLE_BUILD = "3813f21e1409";
 			clearInterval(iv);
 			if (!bust(SABLE_BUILD, 'stall')) {
 				var n = document.getElementById('status-notice');
-				if (n) { n.textContent = 'SABLE is taking too long to load. Press Ctrl+Shift+R to retry.'; n.style.display = 'block'; }
+				if (n) { n.textContent = 'Seyble is taking too long to load. Press Ctrl+Shift+R to retry.'; n.style.display = 'block'; }
 			}
 		}
 	}, 3000);
@@ -515,7 +515,7 @@ const SABLE_BUILD = "3813f21e1409";
 	pointer-events: none;
 }
 		</style>
-		<div id="sable-alpha">SABLE is in early alpha: expect bugs, and progress may be wiped. Paid cosmetics always survive wipes.</div>
+		<div id="sable-alpha">Seyble is in open beta: expect bugs, and progress may be wiped. Paid cosmetics always survive wipes.</div>
 		<script>
 (function () {
 	var n = document.getElementById("sable-alpha");
