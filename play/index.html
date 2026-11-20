@@ -255,9 +255,8 @@ canvas.getContext = function (kind, ...options) {
 	canvas.addEventListener('webglcontextrestored', () => { scissorEnabled = undefined; });
 	return gl;
 };
-// The backing buffer includes the HUD. Keep it large enough for readable
-// text, and leave nearest-neighbor sampling to the game's pixel-art textures.
-const renderCaps = [null, [1600, 900], [1280, 720]];
+// Keep the CSS viewport and input size stable while reducing the pixels we draw.
+const renderCaps = [null, [1280, 720], [640, 360]];
 let renderQuality = 0;
 
 function resizeCanvas() {
@@ -275,12 +274,68 @@ function resizeCanvas() {
 
 window.SABLE_SET_RENDER_QUALITY = function (level) {
 	renderQuality = level;
+	canvas.style.imageRendering = level === 2 ? 'pixelated' : '';
 	resizeCanvas();
 };
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 GODOT_CONFIG.canvasResizePolicy = 0;
 const engine = new Engine(GODOT_CONFIG);
+
+const GAME_PACK_CACHE = 'sable-play-game-packs-v1';
+
+// Keep the content-addressed pack in Cache Storage. The default HTTP cache
+// can decline oversized entries. Godot still owns streaming and progress.
+function startGameWithCachedPack(config) {
+	const originalFetch = window.fetch;
+	const packURL = new URL(config.mainPack, location.href).href;
+	let servedFromCache = false;
+
+	async function fetchPack() {
+		let cache;
+		try {
+			cache = await window.caches.open(GAME_PACK_CACHE);
+			const saved = await cache.match(packURL);
+			if (saved) {
+				servedFromCache = true;
+				return saved;
+			}
+		} catch (_) {
+			// Storage can be unavailable in private browsing or under quota pressure.
+		}
+
+		const response = await originalFetch.call(window, config.mainPack);
+		if (cache && response.status === 200 && response.url === packURL) {
+			const expectedSize = GODOT_CONFIG.fileSizes[config.mainPack];
+			response.clone().blob().then(async bytes => {
+				if (!bytes.size || (expectedSize && bytes.size !== expectedSize)) return;
+				// Store the decoded bytes with neutral headers, rather than the CDN's gzip response.
+				await cache.put(packURL, new Response(bytes, { headers: {
+					'Content-Type': 'application/octet-stream',
+					'Content-Length': String(bytes.size),
+				} }));
+				const entries = await cache.keys();
+				await Promise.all(entries.slice(0, -2).map(entry => cache.delete(entry)));
+			}).catch(() => {});
+		}
+		return response;
+	}
+
+	function fetchDuringStartup(resource, init) {
+		if (resource === config.mainPack && init === undefined) return fetchPack();
+		return originalFetch.call(window, resource, init);
+	}
+
+	window.fetch = fetchDuringStartup;
+	return Promise.resolve().then(() => engine.startGame(config)).catch(error => {
+		if (servedFromCache) {
+			window.caches.open(GAME_PACK_CACHE).then(cache => cache.delete(packURL)).catch(() => {});
+		}
+		throw error;
+	}).finally(() => {
+		if (window.fetch === fetchDuringStartup) window.fetch = originalFetch;
+	});
+}
 
 (function () {
 	const statusOverlay = document.getElementById('status');
@@ -378,7 +433,7 @@ const engine = new Engine(GODOT_CONFIG);
 		}
 	} else {
 		setStatusMode('progress');
-		engine.startGame({
+		startGameWithCachedPack({
             mainPack: "index.982aebb484cf.pck",
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
