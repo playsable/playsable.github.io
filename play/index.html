@@ -12,6 +12,82 @@
 		<meta name="apple-mobile-web-app-title" content="Seyble">
 		<title>Seyble</title>
 		<link rel="canonical" href="https://seyble.com/play/">
+		<link rel="preload" as="script" href="index.140448e.js">
+		<script id="seyble-boot-assets">
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.11722c38c3bb.pck":15776528,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const SEYBLE_BOOT = {mainPack: "index.11722c38c3bb.pck"};
+const startupAssets = (() => {
+	const runtime = GODOT_CONFIG.executable + '.wasm';
+	const files = new Map([
+		[SEYBLE_BOOT.mainPack, 'sable-play-game-packs-v1'],
+		[runtime, 'seyble-play-engines-v1'],
+	]);
+	const receivedFromCache = new Map();
+	const pending = new Map();
+	const networkFetch = window.fetch ? window.fetch.bind(window) : null;
+
+	async function download(file, cacheName) {
+		const url = new URL(file, location.href).href;
+		const size = GODOT_CONFIG.fileSizes[file];
+		let cache;
+		try {
+			cache = await window.caches.open(cacheName);
+			const saved = await cache.match(url);
+			if (saved && Number(saved.headers.get('Content-Length')) === size) {
+				receivedFromCache.set(url, cache);
+				return saved;
+			}
+			if (saved) await cache.delete(url);
+		} catch (_) {
+			// Private browsing and restricted storage can still play from the network.
+		}
+
+		const response = await networkFetch(file);
+		if (!cache || response.status !== 200 || response.url !== url ||
+				!response.body || typeof TransformStream === 'undefined') return response;
+
+		// A complete download becomes visible in the cache after its decoded size matches.
+		// Stream into storage so loading can continue if a cache write fails or hits quota.
+		let count = 0;
+		const checked = response.clone().body.pipeThrough(new TransformStream({
+			transform(chunk, controller) {
+				count += chunk.byteLength;
+				controller.enqueue(chunk);
+			},
+			flush() {
+				if (count !== size) throw new Error('Incomplete game download.');
+			},
+		}));
+		const headers = {
+			'Content-Type': file === runtime ? 'application/wasm' : 'application/octet-stream',
+			'Content-Length': String(size),
+		};
+		cache.put(url, new Response(checked, {headers})).then(async () => {
+			const entries = await cache.keys();
+			await Promise.all(entries.slice(0, -2).map(entry => cache.delete(entry)));
+		}).catch(() => {});
+		return response;
+	}
+
+	if (networkFetch && window.WebAssembly && window.WebGL2RenderingContext && window.isSecureContext) {
+		for (const [file, cacheName] of files) {
+			const request = download(file, cacheName);
+			request.catch(() => {}); // The engine may still be downloading when this settles.
+			pending.set(file, request);
+		}
+	}
+	return {
+		take(file) {
+			const request = pending.get(file);
+			pending.delete(file);
+			return request;
+		},
+		clearBadEntries() {
+			for (const [url, cache] of receivedFromCache) cache.delete(url).catch(() => {});
+		},
+	};
+})();
+		</script>
 		<!-- SABLE web shell (export preset html/custom_html_shell). No Godot branding: dark starry
 		     loader with the Gloamwood title art, a thin progress bar and a percentage. Keeps the
 		     ids deploy_web.sh and tools/web_smoke_cdp.mjs rely on: #status (removed when the game
@@ -150,7 +226,7 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	visibility: hidden;
+	visibility: visible;
 	overflow: hidden;
 	font-family: 'Alegreya', Georgia, 'Palatino Linotype', 'Noto Serif', serif;
 }
@@ -319,7 +395,7 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<script src="index.140448e.voice.js"></script>
+<script defer src="index.140448e.voice.js"></script>
 			<script>window.SABLE_SERVER="wss://51-81-86-210.sslip.io/ws";</script>
 	</head>
 	<body>
@@ -618,7 +694,6 @@ body {
 		<script src="index.140448e.js"></script>
 		<script>
 // Buffer streamed music and ambience while Web Audio plays short effects directly.
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.38b2fa316aea.pck":39112612,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 // Own the backing buffer while keeping CSS layout and input coordinates stable.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
@@ -684,59 +759,24 @@ GODOT_CONFIG.experimentalVK = navigator.maxTouchPoints > 0;
 GODOT_CONFIG.canvasResizePolicy = 0;
 const engine = new Engine(GODOT_CONFIG);
 
-const GAME_PACK_CACHE = 'sable-play-game-packs-v1';
-
-// Keep the content-addressed pack in Cache Storage. The default HTTP cache
-// can decline oversized entries. Godot still owns streaming and progress.
+// Give Godot the already-started transfers. Its own retry logic can make fresh
+// requests, and its loader continues to count bytes as they reach the engine.
 function startGameWithCachedPack(config) {
 	const originalFetch = window.fetch;
-	const packURL = new URL(config.mainPack, location.href).href;
-	let servedFromCache = false;
-
-	async function fetchPack() {
-		let cache;
-		try {
-			cache = await window.caches.open(GAME_PACK_CACHE);
-			const saved = await cache.match(packURL);
-			if (saved) {
-				servedFromCache = true;
-				return saved;
-			}
-		} catch (_) {
-			// Storage can be unavailable in private browsing or under quota pressure.
-		}
-
-		const response = await originalFetch.call(window, config.mainPack);
-		if (cache && response.status === 200 && response.url === packURL) {
-			const expectedSize = GODOT_CONFIG.fileSizes[config.mainPack];
-			response.clone().blob().then(async bytes => {
-				if (!bytes.size || (expectedSize && bytes.size !== expectedSize)) return;
-				// Store the decoded bytes with neutral headers, rather than the CDN's gzip response.
-				await cache.put(packURL, new Response(bytes, { headers: {
-					'Content-Type': 'application/octet-stream',
-					'Content-Length': String(bytes.size),
-				} }));
-				const entries = await cache.keys();
-				await Promise.all(entries.slice(0, -2).map(entry => cache.delete(entry)));
-			}).catch(() => {});
-		}
-		return response;
-	}
-
 	function fetchDuringStartup(resource, init) {
-		if (resource === config.mainPack && init === undefined) return fetchPack();
-		return originalFetch.call(window, resource, init);
+		const pending = init === undefined && startupAssets.take(resource);
+		return pending || originalFetch.call(window, resource, init);
 	}
-
 	window.fetch = fetchDuringStartup;
-	return Promise.resolve().then(() => engine.startGame(config)).catch(error => {
-		if (servedFromCache) {
-			window.caches.open(GAME_PACK_CACHE).then(cache => cache.delete(packURL)).catch(() => {});
-		}
-		throw error;
-	}).finally(() => {
-		if (window.fetch === fetchDuringStartup) window.fetch = originalFetch;
-	});
+	try {
+		return engine.startGame(config).catch(error => {
+			startupAssets.clearBadEntries();
+			throw error;
+		});
+	} finally {
+		// Godot issues both initial fetches synchronously as startGame is entered.
+		window.fetch = originalFetch;
+	}
 }
 
 (function () {
@@ -836,7 +876,7 @@ function startGameWithCachedPack(config) {
 	} else {
 		setStatusMode('progress');
 		startGameWithCachedPack({
-            mainPack: "index.38b2fa316aea.pck",
+            mainPack: SEYBLE_BOOT.mainPack,
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -855,17 +895,19 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "38b2fa316aea";
+const SABLE_BUILD = "11722c38c3bb";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
+		var u = new URL(location.href);
+		if (u.searchParams.get('v') === String(sha) && u.searchParams.get('retry') === why) return false;
 		try {
 			var key = 'sable_bust_' + (sha || 'x') + '_' + why;
 			if (sessionStorage.getItem(key)) return false;
 			sessionStorage.setItem(key, '1');
 		} catch (e) {}
-		var u = new URL(location.href);
 		if (sha) u.searchParams.set('v', sha);
+		u.searchParams.set('retry', why);
 		u.searchParams.set('r', String(Date.now()));
 		location.replace(u.toString());
 		return true;
@@ -880,19 +922,23 @@ const SABLE_BUILD = "38b2fa316aea";
 		if (v && v.sha && v.sha !== SABLE_BUILD) { bust(v.sha, 'ver'); return; }
 		if (loaderMissing) bust(SABLE_BUILD, 'loader');
 	}).catch(function () { if (loaderMissing) bust(SABLE_BUILD, 'loader'); });
-	// Stall watchdog: if the loading bar is still on screen with no bytes after 45s, retry once with a cache-bust, then explain.
+	// Slow transfers stay active as long as the byte count changes. Allow extra
+	// time for compilation after all files arrive, and pause while the tab is hidden.
 	var t0 = Date.now();
+	var lastBytes = -1;
 	var iv = setInterval(function () {
 		var st = document.getElementById('status');
 		if (!st || st.style.visibility !== 'visible') { if (!st) clearInterval(iv); return; }
+		if (document.hidden || st.classList.contains('notice')) { t0 = Date.now(); return; }
 		var p = document.getElementById('status-progress');
-		var moving = p && p.hasAttribute('value') && Number(p.value) > 0;
-		if (moving) { t0 = Date.now(); return; }
-		if (Date.now() - t0 > 45000) {
+		var bytes = p && p.hasAttribute('value') ? Number(p.value) : 0;
+		if (bytes !== lastBytes) { lastBytes = bytes; t0 = Date.now(); return; }
+		var complete = p && p.hasAttribute('max') && bytes >= p.max;
+		if (Date.now() - t0 > (complete ? 120000 : 45000)) {
 			clearInterval(iv);
 			if (!bust(SABLE_BUILD, 'stall')) {
 				var n = document.getElementById('status-notice');
-				if (n) { n.textContent = 'Seyble is taking too long to load. Press Ctrl+Shift+R to retry.'; n.style.display = 'block'; }
+				if (n) { n.textContent = 'Seyble is taking too long to load. Refresh this page to try again.'; n.style.display = 'block'; }
 			}
 		}
 	}, 3000);
