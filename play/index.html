@@ -292,6 +292,8 @@ body {
 #seyble-checkout {
 	box-sizing: border-box;
 	width: min(28rem, calc(100% - 2rem));
+	max-height: calc(100dvh - 1rem);
+	overflow-y: auto;
 	padding: 1.6rem;
 	color: #e9dfcc;
 	background: #1d1b24;
@@ -302,6 +304,9 @@ body {
 #seyble-checkout h2 { margin: 0; }
 #seyble-checkout a, #seyble-checkout button {
 	display: inline-block;
+	box-sizing: border-box;
+	min-height: 44px;
+	touch-action: manipulation;
 	padding: .65rem 1rem;
 	color: #fff2d4;
 	background: #342a41;
@@ -557,10 +562,13 @@ body {
 (() => {
 	const dialog = document.getElementById('seyble-checkout');
 	const link = document.getElementById('seyble-checkout-link');
+	const message = document.getElementById('seyble-checkout-message');
 	let activeRequest = null;
+	let shownRequest = null;
 
 	function reset() {
 		activeRequest = null;
+		shownRequest = null;
 		link.removeAttribute('href');
 		if (dialog.open) dialog.close();
 	}
@@ -569,10 +577,12 @@ body {
 	}
 	dialog.addEventListener('close', () => {
 		if (dialog.open) return;
+		if (activeRequest === shownRequest) activeRequest = null;
+		shownRequest = null;
 		link.removeAttribute('href');
 		document.getElementById('canvas').focus();
 	});
-	for (const event of ['keydown', 'keyup', 'pointerdown', 'pointerup', 'wheel']) {
+	for (const event of ['keydown', 'keyup', 'pointerdown', 'pointerup', 'touchstart', 'touchmove', 'touchend', 'wheel']) {
 		dialog.addEventListener(event, input => input.stopPropagation());
 	}
 	window.SeybleHostedCheckout = {
@@ -588,7 +598,13 @@ body {
 				cancel(id); return false;
 			}
 			if (id !== activeRequest) return false;
+			const currentTab = matchMedia('(pointer: coarse), (display-mode: standalone)').matches;
+			link.target = currentTab ? '_self' : '_blank';
+			message.textContent = currentTab
+				? 'Stripe will open in this tab. Return to Seyble after checkout.'
+				: 'Open Stripe to pay securely. Your game will stay open here.';
 			link.href = destination.href;
+			shownRequest = id;
 			if (!dialog.open) dialog.showModal();
 			link.focus();
 			return true;
@@ -602,7 +618,7 @@ body {
 		<script src="index.140448e.js"></script>
 		<script>
 // Buffer streamed music and ambience while Web Audio plays short effects directly.
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.00ba2580a2a1.pck":37134892,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.d857abc92b6a.pck":37193036,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 // Own the backing buffer while keeping CSS layout and input coordinates stable.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
@@ -820,7 +836,7 @@ function startGameWithCachedPack(config) {
 	} else {
 		setStatusMode('progress');
 		startGameWithCachedPack({
-            mainPack: "index.00ba2580a2a1.pck",
+            mainPack: "index.d857abc92b6a.pck",
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -839,7 +855,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "00ba2580a2a1";
+const SABLE_BUILD = "d857abc92b6a";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {

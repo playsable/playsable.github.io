@@ -33,7 +33,9 @@
 		} else if (outcome === 'success') {
 			document.getElementById('heading').textContent = 'Checkout submitted';
 		}
-		document.getElementById('return').addEventListener('click', () => window.close());
+		document.getElementById('return').addEventListener('click', () => {
+			if (!matchMedia('(pointer: coarse), (display-mode: standalone)').matches) window.close();
+		});
 	</script>
 </body>
 </html>
