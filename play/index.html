@@ -10,12 +10,20 @@
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-title" content="Seyble">
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.stripe.com https://*.link.com; frame-src https://*.stripe.com https://*.link.com; connect-src 'self' https: wss: blob: http://localhost:* http://127.0.0.1:* ws:">
 		<title>Seyble</title>
-		<link rel="canonical" href="https://seyble.com/play/">
-		<link rel="preload" as="script" href="index.140448e.js">
 		<script id="seyble-boot-assets">
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.8d00e499908e.pck":18974108,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
-const SEYBLE_BOOT = {mainPack: "index.8d00e499908e.pck"};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.11c6b7646788","experimentalVK":false,"fileSizes":{"index.11c6b7646788.pck":22101248,"index.11c6b7646788.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+// The release script stamps the pack filename. Direct exports can have a custom name.
+const SEYBLE_BOOT = {mainPack: "index.11c6b7646788.pck"};
+if (!(SEYBLE_BOOT.mainPack in GODOT_CONFIG.fileSizes)) {
+	SEYBLE_BOOT.mainPack = GODOT_CONFIG.executable + '.pck';
+}
+const loaderPreload = document.createElement('link');
+loaderPreload.rel = 'preload';
+loaderPreload.as = 'script';
+loaderPreload.href = GODOT_CONFIG.executable + '.js';
+document.head.appendChild(loaderPreload);
 // Migrate existing players once, outside the startup download path.
 if (window.isSecureContext && 'caches' in window) {
     caches.has('sable-play-game-packs-v1').then(async present => {
@@ -43,6 +51,8 @@ const startupAssets = (() => {
 	const networkFetch = window.fetch ? window.fetch.bind(window) : null;
 
 	async function download(file, cacheName) {
+		// Unversioned local exports can replace a file with another of the same size.
+		if (!/\.[a-f0-9]{7,40}\.(?:pck|wasm)$/.test(file)) return networkFetch(file);
 		const url = new URL(file, location.href).href;
 		const size = GODOT_CONFIG.fileSizes[file];
 		let cache;
@@ -111,7 +121,7 @@ const startupAssets = (() => {
 		<style>
 @font-face {
 	font-family: 'SeybleTitle';
-	src: url('index.140448e.title.ttf') format('truetype');
+	src: url('index.11c6b7646788.title.ttf') format('truetype');
 	font-display: swap;
 }
 
@@ -213,31 +223,6 @@ body {
 #seyble-mobile-account :focus-visible { outline: 2px solid #e5c887; outline-offset: 1px; }
 #seyble-mobile-account [role=status] { color: #aed9df; }
 
-#seyble-mobile-account {
-	border-color: #8c7958;
-	border-radius: 11px;
-	background: #142020;
-	box-shadow: 0 14px 54px #0008;
-}
-#seyble-mobile-account .account-wordmark {
-	display: block;
-	width: min(9rem, 55%);
-	height: auto;
-	margin: 0 0 .6rem -.45rem;
-}
-#seyble-mobile-account [data-account-reason] {
-	color: #b9c4ba;
-	border-bottom: 1px solid #655b43;
-	padding-bottom: .65rem;
-}
-#seyble-mobile-account label span { color: #dbcaa9; font-size: .91rem; }
-#seyble-mobile-account input, #seyble-mobile-account button { border-radius: 6px; }
-#seyble-mobile-account input { background: #0d1517; border-color: #52625b; }
-#seyble-mobile-account button { background: #1b2929; border-color: #54645b; }
-#seyble-mobile-account button[type=submit] { background: #dfc48c; border-color: #cfa972; color: #172321; }
-#seyble-mobile-account [data-action=later] { background: transparent; }
-#seyble-mobile-account [role=status]:empty { display: none; }
-
 #status {
 	position: absolute;
 	inset: 0;
@@ -246,7 +231,7 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	visibility: visible;
+	visibility: hidden;
 	overflow: hidden;
 	font-family: 'Alegreya', Georgia, 'Palatino Linotype', 'Noto Serif', serif;
 }
@@ -431,7 +416,7 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<script defer src="index.140448e.voice.js"></script>
+<script src="index.11c6b7646788.voice.js"></script>
 			<script>window.SABLE_SERVER="wss://51-81-86-210.sslip.io/ws";</script>
 	</head>
 	<body>
@@ -446,7 +431,6 @@ body {
 		</dialog>
 		<dialog id="seyble-mobile-account" aria-labelledby="seyble-account-title">
 			<form novalidate>
-				<img class="account-wordmark" src="../assets/title_logo_pixel09.png" width="2172" height="724" alt="" />
 				<h1 id="seyble-account-title" tabindex="-1" autofocus></h1>
 				<p data-account-reason></p>
 				<label><span></span><input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="17"></label>
@@ -469,7 +453,7 @@ body {
 		</dialog>
 
 		<noscript>
-			Seyble needs JavaScript to run.
+			SABLE needs JavaScript to run.
 		</noscript>
 
 		<div id="status">
@@ -817,10 +801,10 @@ body {
 	window.addEventListener('pagehide', () => window.SeybleHostedCheckout.reset());
 })();
 		</script>
-		<script src="index.140448e.js"></script>
+		<script src="index.11c6b7646788.js"></script>
 		<script>
-// Buffer streamed music and ambience while Web Audio plays short effects directly.
 const GODOT_THREADS_ENABLED = false;
+
 // Own the backing buffer while keeping CSS layout and input coordinates stable.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
 const canvas = document.getElementById('canvas');
@@ -855,7 +839,6 @@ canvas.getContext = function (kind, ...options) {
 	canvas.addEventListener('webglcontextrestored', () => { scissorEnabled = undefined; });
 	return gl;
 };
-// Keep the HUD at the 1280×720 game resolution when reducing world effects.
 const renderCaps = [null, [1280, 720], [1280, 720]];
 let renderQuality = 0;
 
@@ -997,13 +980,13 @@ function startGameWithCachedPack(config) {
 				console.error('Error while registering service worker:', err);
 			});
 		} else {
-			const missingMsg = 'Seyble can\'t run in this browser. It is missing:\n';
+			const missingMsg = 'SABLE can\'t run in this browser. It is missing:\n';
 			displayFailureNotice(missingMsg + missing.join('\n'));
 		}
 	} else {
 		setStatusMode('progress');
 		startGameWithCachedPack({
-            mainPack: SEYBLE_BOOT.mainPack,
+			mainPack: SEYBLE_BOOT.mainPack,
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -1022,51 +1005,39 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "8d00e499908e";
+const SABLE_BUILD = "11c6b7646788";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
-		var u = new URL(location.href);
-		if (u.searchParams.get('v') === String(sha) && u.searchParams.get('retry') === why) return false;
 		try {
 			var key = 'sable_bust_' + (sha || 'x') + '_' + why;
 			if (sessionStorage.getItem(key)) return false;
 			sessionStorage.setItem(key, '1');
 		} catch (e) {}
+		var u = new URL(location.href);
 		if (sha) u.searchParams.set('v', sha);
-		u.searchParams.set('retry', why);
 		u.searchParams.set('r', String(Date.now()));
 		location.replace(u.toString());
 		return true;
-	}
-	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.getRegistrations().then(function (regs) {
-			const gameScope = new URL('./', document.baseURI).href;
-			regs.filter(r => r.scope === gameScope).forEach(r => r.unregister());
-		}).catch(function () {});
 	}
 	var loaderMissing = (typeof Engine === 'undefined');
 	fetch('version.json?t=' + Date.now(), {cache: 'no-store'}).then(function (r) { return r.json(); }).then(function (v) {
 		if (v && v.sha && v.sha !== SABLE_BUILD) { bust(v.sha, 'ver'); return; }
 		if (loaderMissing) bust(SABLE_BUILD, 'loader');
 	}).catch(function () { if (loaderMissing) bust(SABLE_BUILD, 'loader'); });
-	// Slow transfers stay active as long as the byte count changes. Allow extra
-	// time for compilation after all files arrive, and pause while the tab is hidden.
+	// Stall watchdog: if the loading bar is still on screen with no bytes after 45s, retry once with a cache-bust, then explain.
 	var t0 = Date.now();
-	var lastBytes = -1;
 	var iv = setInterval(function () {
 		var st = document.getElementById('status');
 		if (!st || st.style.visibility !== 'visible') { if (!st) clearInterval(iv); return; }
-		if (document.hidden || st.classList.contains('notice')) { t0 = Date.now(); return; }
 		var p = document.getElementById('status-progress');
-		var bytes = p && p.hasAttribute('value') ? Number(p.value) : 0;
-		if (bytes !== lastBytes) { lastBytes = bytes; t0 = Date.now(); return; }
-		var complete = p && p.hasAttribute('max') && bytes >= p.max;
-		if (Date.now() - t0 > (complete ? 120000 : 45000)) {
+		var moving = p && p.hasAttribute('value') && Number(p.value) > 0;
+		if (moving) { t0 = Date.now(); return; }
+		if (Date.now() - t0 > 45000) {
 			clearInterval(iv);
 			if (!bust(SABLE_BUILD, 'stall')) {
 				var n = document.getElementById('status-notice');
-				if (n) { n.textContent = 'Seyble is taking too long to load. Refresh this page to try again.'; n.style.display = 'block'; }
+				if (n) { n.textContent = 'Seyble is taking too long to load. Press Ctrl+Shift+R to retry.'; n.style.display = 'block'; }
 			}
 		}
 	}, 3000);
