@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<script>(function(){if(window.__sableAudioHook)return;window.__sableAudioHook=true;var Orig=window.AudioContext||window.webkitAudioContext;if(!Orig)return;function Wrap(opts){var ctx=new Orig(opts);window.__sableAudioCtx=ctx;return ctx;}Wrap.prototype=Orig.prototype;window.AudioContext=Wrap;if(window.webkitAudioContext)window.webkitAudioContext=Wrap;})();</script>
+		<script>(function(){if(window.__seybleAudioHook)return;window.__seybleAudioHook=true;var Orig=window.AudioContext||window.webkitAudioContext;if(!Orig)return;function Wrap(opts){var ctx=new Orig(opts);window.__sableAudioCtx=ctx;return ctx;}Wrap.prototype=Orig.prototype;window.AudioContext=Wrap;if(window.webkitAudioContext)window.webkitAudioContext=Wrap;})();</script>
 
 		<meta charset="utf-8">
 		<meta http-equiv="Cache-Control" content="no-cache">
@@ -14,12 +14,28 @@
 		<link rel="canonical" href="https://seyble.com/play/">
 		<link rel="preload" as="script" href="index.140448e.js">
 		<script id="seyble-boot-assets">
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.cc49baeeafb1.pck":18975692,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
-const SEYBLE_BOOT = {mainPack: "index.cc49baeeafb1.pck"};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.b16e47390054.pck":18972812,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const SEYBLE_BOOT = {mainPack: "index.b16e47390054.pck"};
+// Migrate existing players once, outside the startup download path.
+if (window.isSecureContext && 'caches' in window) {
+    caches.has('sable-play-game-packs-v1').then(async present => {
+        if (!present) return;
+        if ('serviceWorker' in navigator) {
+            try {
+                await navigator.serviceWorker.register('./seyble-cache-migration.js', {scope: './.cache-migration/'});
+                return;
+            } catch (_) {
+                // Storage can be available even when worker registration is denied.
+            }
+        }
+        await caches.delete('sable-play-game-packs-v1');
+    }).catch(() => {});
+}
+
 const startupAssets = (() => {
 	const runtime = GODOT_CONFIG.executable + '.wasm';
 	const files = new Map([
-		[SEYBLE_BOOT.mainPack, 'sable-play-game-packs-v1'],
+		[SEYBLE_BOOT.mainPack, 'seyble-play-game-packs-v1'],
 		[runtime, 'seyble-play-engines-v1'],
 	]);
 	const receivedFromCache = new Map();
@@ -88,13 +104,13 @@ const startupAssets = (() => {
 	};
 })();
 		</script>
-		<!-- SABLE web shell (export preset html/custom_html_shell). No Godot branding: dark starry
+		<!-- Seyble web shell (export preset html/custom_html_shell). No Godot branding: dark starry
 		     loader with the Gloamwood title art, a thin progress bar and a percentage. Keeps the
 		     ids deploy_web.sh and tools/web_smoke_cdp.mjs rely on: #status (removed when the game
 		     starts), #status-progress (a real <progress> carrying value/max), #status-notice. -->
 		<style>
 @font-face {
-	font-family: 'SableTitle';
+	font-family: 'SeybleTitle';
 	src: url('index.140448e.title.ttf') format('truetype');
 	font-display: swap;
 }
@@ -125,7 +141,6 @@ body {
 	outline: none;
 }
 
-#seyble-turn { display: none; }
 #seyble-fullscreen {
 	position: fixed;
 	z-index: 2;
@@ -162,26 +177,6 @@ body {
 		height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
 	}
 }
-@media (pointer: coarse) and (orientation: portrait) and (max-width: 700px) {
-	#seyble-turn:not([hidden]) {
-		position: absolute;
-		top: max(10px, env(safe-area-inset-top));
-		left: 50%;
-		transform: translateX(-50%);
-		width: max-content;
-		max-width: calc(100% - 24px);
-		z-index: 2;
-		display: flex;
-		align-items: center;
-		gap: .4rem;
-		padding: 0 0 0 .9rem;
-		color: #eee3cd;
-		background: #172025;
-		border: 1px solid #78694f;
-		font: 15px/1.3 Georgia, serif;
-	}
-	#seyble-turn button { width: 44px; height: 44px; border: 0; color: inherit; background: none; font-size: 21px; }
-}
 #seyble-mobile-account {
 	color-scheme: dark;
 	box-sizing: border-box;
@@ -204,7 +199,7 @@ body {
 }
 #seyble-mobile-account::backdrop { background: rgba(8,12,15,.88); }
 #seyble-mobile-account [hidden] { display: none; }
-#seyble-mobile-account h1 { margin: 0; color: #f1dfb3; font: 600 1.65rem/1.1 SableTitle, Georgia, serif; }
+#seyble-mobile-account h1 { margin: 0; color: #f1dfb3; font: 600 1.65rem/1.1 SeybleTitle, Georgia, serif; }
 #seyble-mobile-account p { margin: .65rem 0 .9rem; }
 #seyble-mobile-account label { display: block; margin: .6rem 0; }
 #seyble-mobile-account input, #seyble-mobile-account button {
@@ -263,13 +258,13 @@ body {
 	color: #f6e9cb;
 	background: #101d24;
 }
-#sable-backdrop, .arrival-vista, #sable-stars {
+#seyble-backdrop, .arrival-vista, #sable-stars {
 	position: absolute;
 	inset: 0;
 	width: 100%;
 	height: 100%;
 }
-#sable-backdrop { overflow: hidden; z-index: 0; pointer-events: none; background-size: cover; background-position: 64% 50%; }
+#seyble-backdrop { overflow: hidden; z-index: 0; pointer-events: none; background-size: cover; background-position: 64% 50%; }
 .arrival-vista {
 	object-fit: cover;
 	object-position: 64% 50%;
@@ -443,10 +438,6 @@ body {
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.
 		</canvas>
-		<div id="seyble-turn">
-			<span>Turn your phone sideways for larger controls.</span>
-			<button type="button" aria-label="Dismiss rotation tip" onclick="this.parentElement.hidden=true">×</button>
-		</div>
 		<button id="seyble-fullscreen" type="button" hidden>Full screen</button>
 		<dialog id="seyble-fullscreen-help" aria-labelledby="seyble-fullscreen-title">
 			<h2 id="seyble-fullscreen-title">Full screen</h2>
@@ -482,7 +473,7 @@ body {
 		</noscript>
 
 		<div id="status">
-			<div id="sable-backdrop" aria-hidden="true"><img class="arrival-vista" alt=""><img class="arrival-vista" alt=""></div>
+			<div id="seyble-backdrop" aria-hidden="true"><img class="arrival-vista" alt=""><img class="arrival-vista" alt=""></div>
 			<div id="sable-stars" aria-hidden="true"></div>
 			<div id="arrival-wordmark"><img id="sable-title" src="../assets/title_logo_pixel09.png" width="2172" height="724" fetchpriority="high" decoding="async" alt="Seyble"></div>
 			<div id="arrival-progress">
@@ -503,7 +494,7 @@ body {
 	];
 	const frames = Array.from(document.querySelectorAll('.arrival-vista'));
 	const caption = document.getElementById('arrival-location');
-	const backdrop = document.getElementById('sable-backdrop');
+	const backdrop = document.getElementById('seyble-backdrop');
 	const logo = document.getElementById('sable-title');
 	logo.decode().then(() => logo.parentElement.classList.add('ready')).catch(()=>{});
 	const media = matchMedia('(prefers-reduced-motion: reduce)');
@@ -1031,7 +1022,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "cc49baeeafb1";
+const SABLE_BUILD = "b16e47390054";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
@@ -1050,7 +1041,8 @@ const SABLE_BUILD = "cc49baeeafb1";
 	}
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.getRegistrations().then(function (regs) {
-			regs.forEach(function (r) { r.unregister(); });
+			const gameScope = new URL('./', document.baseURI).href;
+			regs.filter(r => r.scope === gameScope).forEach(r => r.unregister());
 		}).catch(function () {});
 	}
 	var loaderMissing = (typeof Engine === 'undefined');

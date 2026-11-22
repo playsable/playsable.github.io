@@ -18,6 +18,10 @@ Then visit [http://127.0.0.1:47231](http://127.0.0.1:47231).
 
 The homepage is `index.html`. The homepage, patch notes and legal pages share `css/site.css`. There is no build step. Host the site at the domain root so root-absolute paths (`/css/site.css`, `/#latest`, `/favicon.ico`) resolve.
 
+## Publish a game build
+
+For web releases, copy the export and its updated `play/version.json` into place, then run `python tools/retain_web_builds.py play` before staging `play/` with `git add -A`. This keeps the current and preceding game packs and the engine files each uses in the same release commit.
+
 ## Layout
 
 - `index.html` — the homepage
