@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Seyble — Free multiplayer RPG</title>
-  <meta name="description" content="Explore the Gloamwood, learn magic and build a home with friends. Play Seyble in your browser or download the launcher for Windows and Mac.">
+  <meta name="description" content="Learn magic, build a home in the Gloamwood, or sail with friends from Lantern Cape. Play the free Seyble open beta in your browser or on Windows and Mac.">
   <meta name="theme-color" content="#171b19">
   <link rel="canonical" href="https://seyble.com/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Seyble">
   <meta property="og:title" content="Seyble — Explore the Gloamwood">
-  <meta property="og:description" content="A free multiplayer RPG from Sable Studios. Play in your browser or on Windows and Mac.">
+  <meta property="og:description" content="Explore the Gloamwood, follow the King&rsquo;s Road, or crew a ship with friends. Play the free open beta.">
   <meta property="og:url" content="https://seyble.com/">
   <meta property="og:image" content="https://seyble.com/assets/cinderwatch-share.jpg">
   <meta property="og:image:width" content="1200">
@@ -20,41 +20,73 @@
   <link rel="icon" href="play/index.icon.png">
   <link rel="preload" href="assets/fonts/Alegreya-Variable.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="css/site.css?v=5">
+  <link rel="stylesheet" href="css/home.css?v=1">
 </head>
-<body>
+<body class="homepage">
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header" id="top">
     <div class="nav-wrap">
       <a class="wordmark" href="./"><img src="assets/title_logo_pixel09.png" width="2172" height="724" alt="Seyble home"></a>
       <nav class="site-nav" aria-label="Main navigation">
-        <a href="#world">World</a><a href="#downloads">Downloads</a><a href="patch-notes/">Patch notes</a>
+        <a href="#latest">What&rsquo;s new</a><a href="#downloads">Downloads</a><a href="patch-notes/">Patch notes</a>
       </nav>
     </div>
   </header>
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-      <img class="hero-art" src="assets/scenes/cinderwatch.webp" srcset="assets/scenes/cinderwatch-mobile.webp 640w, assets/scenes/cinderwatch.webp 1280w" sizes="(max-width: 760px) 100vw, 83vw" width="1280" height="720" alt="Lanterns light the market stalls around the Cinderwatch well at dusk." fetchpriority="high">
+      <img class="hero-art" src="assets/scenes/cinderwatch.webp" srcset="assets/scenes/cinderwatch-mobile.webp 640w, assets/scenes/cinderwatch.webp 1280w" sizes="(max-width: 760px) 100vw, 85vw" width="1280" height="720" alt="" fetchpriority="high">
       <div class="hero-inner">
         <div class="hero-copy">
-          <p class="edition">Free multiplayer RPG <span aria-hidden="true">/</span> Open beta</p>
-          <h1 id="hero-title">Explore the <br>Gloamwood</h1>
-          <p class="intro">Leave Cinderwatch with a lantern and a friend. Gather ore, learn spells, and build a home out in the woods.</p>
-          <div class="hero-actions" id="access"><a class="play" href="/play/">Play in browser <span aria-hidden="true">→</span></a><a class="download-jump" href="#downloads">Get the launcher</a></div>
-          <p class="world-status" data-server-status role="status"><span class="server-dot" aria-hidden="true"></span><span class="server-label">Checking world status…</span></p>
+          <p class="edition"><span class="beta-mark">Open beta</span> <span class="edition-divider" aria-hidden="true">/</span> Free multiplayer RPG</p>
+          <h1 id="hero-title"><img src="assets/title_logo_pixel09.png" width="2172" height="724" alt="Seyble"></h1>
+          <p class="hero-line">The road goes past Cinderwatch.</p>
+          <p class="intro">Learn magic, build a home in the Gloamwood, or get some friends together and take a ship out of Lantern Cape.</p>
+          <div class="hero-actions" id="access"><a class="play" href="/play/">Play in browser <span aria-hidden="true">&rarr;</span></a><a class="download-jump" href="#downloads">Get the launcher</a></div>
+          <p class="world-status" data-server-status role="status"><span class="server-dot" aria-hidden="true"></span><span class="server-label">Checking world status.</span></p>
         </div>
       </div>
       <p class="art-credit">Cinderwatch at dusk <span>World art</span></p>
     </section>
 
+    <section class="dispatch section-wrap" id="latest" aria-labelledby="dispatch-title">
+      <div class="section-heading dispatch-heading">
+        <div><p class="eyebrow">The latest in open beta</p><h2 id="dispatch-title">New roads. Open water.</h2></div>
+        <a href="patch-notes/">Read patch notes <span aria-hidden="true">&nearr;</span></a>
+      </div>
+      <article class="lead-story">
+        <figure><a class="shot" href="assets/field-notes/kings-road.jpg"><img src="assets/field-notes/kings-road.jpg" width="1280" height="720" loading="lazy" decoding="async" alt="A dark woodland trail of worn stone with warm evening light between trees."></a><figcaption>In game &middot; The King&rsquo;s Road</figcaption></figure>
+        <div class="story-copy">
+          <p class="eyebrow">01 &nbsp; / &nbsp; On the mainland</p>
+          <h3>Take the long way home.</h3>
+          <p>Follow the King&rsquo;s Road over timber creek crossings and through old stone junctions. Stick around for sunset. The stone goes gold and the shadows turn violet.</p>
+          <p>Want longer shadows and more detail in the trees? Try <strong>Depth lighting</strong> in Settings. Classic is still the default.</p>
+        </div>
+      </article>
+      <div class="dispatch-grid">
+        <article>
+          <figure><a class="shot" href="assets/field-notes/mainland-atlas.jpg"><img src="assets/field-notes/mainland-atlas.jpg" width="1000" height="562" loading="lazy" decoding="async" alt="The mainland atlas showing named territories and a network of highways."></a><figcaption>In game &middot; Mainland atlas</figcaption></figure>
+          <div class="story-copy"><p class="eyebrow">02 &nbsp; / &nbsp; The atlas</p><h3>Same map, closer view.</h3><p>Zoom from the world map down to the local map. Copper lines mark highways, dashed lines mark connecting roads, and gold marks country borders. Sedgecrown and Cinder Skerry are out in the open ocean.</p></div>
+        </article>
+        <article>
+          <figure><a class="shot" href="assets/field-notes/lantern-cape-ships.jpg"><img src="assets/field-notes/lantern-cape-ships.jpg" width="1000" height="648" loading="lazy" decoding="async" alt="Large wooden sailing ships at the Lantern Cape pier."></a><figcaption>In game &middot; Lantern Cape</figcaption></figure>
+          <div class="story-copy"><p class="eyebrow">03 &nbsp; / &nbsp; The coast</p><h3>Get the crew aboard.</h3><p>Board a ship at Lantern Cape with friends. One person takes the helm. Everyone else can use the cargo hold and crafting bench while you&rsquo;re out.</p></div>
+        </article>
+        <article>
+          <figure><a class="shot" href="assets/field-notes/flag-market.jpg"><img src="assets/field-notes/flag-market.jpg" width="1000" height="562" loading="lazy" decoding="async" alt="Pixel-art flags and item cards in the Gods&rsquo; Emporium."></a><figcaption>In game &middot; Gods&rsquo; Emporium</figcaption></figure>
+          <div class="story-copy"><p class="eyebrow">04 &nbsp; / &nbsp; The shop</p><h3>Check the flags.</h3><p>The Emporium gets a new lineup every 12 hours. The flag color tells you the item&rsquo;s rarity. The Aether price follows it.</p></div>
+        </article>
+      </div>
+    </section>
+
     <section class="world section-wrap" id="world" aria-labelledby="world-title">
-      <div class="section-heading"><h2 id="world-title">In the game</h2><a href="patch-notes/">Read patch notes <span aria-hidden="true">↗</span></a></div>
+      <div class="section-heading"><h2 id="world-title">More of Seyble</h2><a href="/play/">Explore in-game <span aria-hidden="true">↗</span></a></div>
       <div class="gallery" id="scenes">
         <figure><a class="shot" href="assets/scenes/gloamwood-game.webp" aria-label="Enlarge The Gloamwood screenshot"><img src="assets/scenes/gloamwood-game-small.webp" width="640" height="360" loading="lazy" alt="A player with Magelight equipped beside a campfire and waystone."></a><figcaption>The Gloamwood</figcaption></figure>
         <figure><a class="shot" href="assets/scenes/arena-game.webp" aria-label="Enlarge Arena of the Gods screenshot"><img src="assets/scenes/arena-game-small.webp" width="640" height="360" loading="lazy" alt="Stone steps surround the dueling floor and its gold sun emblem."></a><figcaption>Arena of the Gods</figcaption></figure>
         <figure><a class="shot" href="assets/scenes/blackreed-game.webp" aria-label="Enlarge Blackreed Swamp screenshot"><img src="assets/scenes/blackreed-game-small.webp" width="640" height="360" loading="lazy" alt="Narrow wooden walkways cross pools beneath the swamp willows."></a><figcaption>Blackreed Swamp</figcaption></figure>
       </div>
       <details class="extra" id="sky"><summary>The twelve schools of magic</summary>
-        <div class="sky-content"><p>Open the skill sky with <kbd>K</kbd> to see the twelve schools. Warding spells include Iron Skin, a shield that can return damage to an attacker.</p><video controls poster="assets/skill-sky-poster.webp" preload="none" playsinline width="1280" height="720" aria-label="The skill sky in Seyble"><source src="assets/skill_sky_full.mp4" type="video/mp4"><a href="assets/skill_sky_full.mp4">Watch the skill sky</a></video></div>
+        <div class="sky-content"><p>Hold <kbd>Tab</kbd>, move down to Skill Sky, and release to see the twelve schools. Warding spells include Iron Skin, a shield that can return damage to an attacker.</p><video controls poster="assets/skill-sky-poster.webp" preload="none" playsinline width="1280" height="720" aria-label="The skill sky in Seyble"><source src="assets/skill_sky_full.mp4" type="video/mp4"><a href="assets/skill_sky_full.mp4">Watch the skill sky</a></video></div>
       </details>
       <details class="extra"><summary>World artwork</summary><div class="art-gallery">
         <figure><a class="shot" href="assets/scenes/gloamwood.webp" aria-label="Enlarge Gloamwood artwork"><img src="assets/scenes/gloamwood.webp" width="1280" height="720" loading="lazy" alt="Lantern on the ruin road through a dark pine valley."></a><figcaption>Gloamwood</figcaption></figure>
@@ -67,7 +99,7 @@
     </section>
 
     <section class="downloads" id="downloads" aria-labelledby="download-title"><div class="download-inner section-wrap">
-      <div class="download-copy"><h2 id="download-title">Desktop launcher</h2><p>The launcher opens the latest version of Seyble and needs an internet connection. On a phone or tablet, <a href="/play/">play in your browser</a> and turn sideways for touch controls.</p></div>
+      <div class="download-copy"><p class="eyebrow">Windows &amp; Mac &middot; v1.1.1</p><h2 id="download-title">Desktop launcher</h2><p>The launcher opens the latest version of Seyble and needs an internet connection. On a phone or tablet, <a href="/play/">play in your browser</a> and turn sideways for touch controls.</p></div>
       <div class="platforms">
         <a href="https://github.com/playsable/playsable.github.io/releases/download/launcher-v1.1.1/Seyble-Launcher-Windows-x64.zip"><span>Windows <small>x64</small></span><span class="file-kind">ZIP <b aria-hidden="true">↓</b></span></a>
         <a href="https://github.com/playsable/playsable.github.io/releases/download/launcher-v1.1.1/Seyble-Launcher-Mac-Apple-Silicon.zip"><span>Mac <small>Apple silicon</small></span><span class="file-kind">ZIP <b aria-hidden="true">↓</b></span></a>
