@@ -14,8 +14,8 @@
 		<link rel="canonical" href="https://seyble.com/play/">
 		<link rel="preload" as="script" href="index.140448e.js">
 		<script id="seyble-boot-assets">
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.a57d2caf0f2c.pck":17852884,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
-const SEYBLE_BOOT = {mainPack: "index.a57d2caf0f2c.pck"};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.140448e","experimentalVK":false,"fileSizes":{"index.90938b229a25.pck":18367140,"index.140448e.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const SEYBLE_BOOT = {mainPack: "index.90938b229a25.pck"};
 const startupAssets = (() => {
 	const runtime = GODOT_CONFIG.executable + '.wasm';
 	const files = new Map([
@@ -256,95 +256,101 @@ body {
 	font-family: 'Alegreya', Georgia, 'Palatino Linotype', 'Noto Serif', serif;
 }
 
-#sable-backdrop {
-	position: absolute;
-	inset: -2%;
-	background: url('index.140448e.loading.webp') center / cover no-repeat;
-	image-rendering: pixelated;
-	opacity: 0.32;
-	filter: saturate(0.85) brightness(0.8);
-	animation: sable-drift 40s ease-in-out infinite alternate;
+#status {
+	--wordmark-width: min(47vw, 116vh, 680px);
+	--logo-x: 30%;
+	--logo-y: 43%;
+	color: #f6e9cb;
+	background: #101d24;
 }
-
-#sable-stars, #sable-stars::after {
+#sable-backdrop, .arrival-vista, #sable-stars {
 	position: absolute;
 	inset: 0;
-	background-image:
-		radial-gradient(1px 1px at 12% 18%, #f0d59f 50%, transparent 51%),
-		radial-gradient(1px 1px at 27% 62%, #e5dfce 50%, transparent 51%),
-		radial-gradient(1px 1px at 41% 9%, #e5dfce 50%, transparent 51%),
-		radial-gradient(1.5px 1.5px at 58% 31%, #f0d59f 50%, transparent 51%),
-		radial-gradient(1px 1px at 69% 74%, #e5dfce 50%, transparent 51%),
-		radial-gradient(1px 1px at 83% 16%, #e5dfce 50%, transparent 51%),
-		radial-gradient(1.5px 1.5px at 91% 52%, #6fc6b6 50%, transparent 51%),
-		radial-gradient(1px 1px at 6% 83%, #e5dfce 50%, transparent 51%),
-		radial-gradient(1px 1px at 35% 88%, #f0d59f 50%, transparent 51%),
-		radial-gradient(1px 1px at 76% 92%, #e5dfce 50%, transparent 51%);
-	pointer-events: none;
+	width: 100%;
+	height: 100%;
 }
-
+#sable-backdrop { overflow: hidden; z-index: 0; pointer-events: none; }
+.arrival-vista {
+	object-fit: cover;
+	object-position: 64% 50%;
+	opacity: 0;
+	transition: opacity .9s ease-in-out;
+}
 #sable-stars {
-	background-color: rgba(11, 15, 16, 0.35);
-	background-image:
-		radial-gradient(ellipse at 50% 45%, rgba(11, 15, 16, 0) 0%, rgba(11, 15, 16, 0.85) 75%);
+	z-index: 1;
+	pointer-events: none;
+	background: linear-gradient(0deg,rgba(12,23,33,.35),transparent 65%),
+		linear-gradient(90deg,rgba(12,23,33,.52),rgba(12,23,33,.04));
 }
-
-#sable-stars::after {
-	content: '';
-	animation: sable-twinkle 4.5s ease-in-out infinite alternate;
-}
-
 #sable-title {
-	position: relative;
-	font-family: 'SableTitle', 'Alegreya', Georgia, serif;
-	font-weight: 700;
-	font-size: clamp(48px, 9vw, 96px);
-	letter-spacing: 0.08em;
-	color: #f1e6cd;
-	text-shadow: 0 3px 0 #10181c, 0 0 24px rgba(240, 213, 159, 0.18);
-	margin: 0 0 0.5rem;
+	z-index: 2;
+	position: absolute;
+	left: var(--logo-x);
+	top: var(--logo-y);
+	transform: translate(-50%, -50%);
+	width: var(--wordmark-width);
+	height: auto;
 }
-
-#sable-sub {
-	position: relative;
-	font-size: 15px;
-	letter-spacing: 0.2em;
-	text-transform: uppercase;
-	color: #ac9b75;
-	margin-bottom: 2.6rem;
+#arrival-progress {
+	z-index: 2;
+	position: absolute;
+	left: var(--logo-x);
+	top: calc(var(--logo-y) + var(--wordmark-width) / 6 + 11px);
+	transform: translateX(-50%);
+	width: clamp(164px, 21vw, 264px);
+	text-align: center;
 }
-
 #sable-bar {
 	position: relative;
-	width: min(420px, 70vw);
-	height: 2px;
-	background: rgba(184, 167, 125, 0.22);
+	height: 4px;
+	padding: 2px;
+	border: 1px solid #97815d;
+	background: rgba(14,26,33,.9);
+	box-shadow: 0 2px 5px #10151a;
 	overflow: hidden;
 }
-
 #sable-fill {
 	position: absolute;
-	left: 0;
-	top: 0;
-	bottom: 0;
-	width: 0%;
-	background: linear-gradient(90deg, #b8a77d, #f0d59f);
-	box-shadow: 0 0 8px rgba(240, 213, 159, 0.7);
-	transition: width 0.25s ease-out;
+	inset: 2px auto 2px 0;
+	width: 0;
+	background: linear-gradient(90deg, #997649, #f4d99b);
+	transition: width .22s ease;
 }
-
-#sable-bar.indeterminate #sable-fill {
-	width: 30%;
-	animation: sable-sweep 1.4s ease-in-out infinite;
-}
-
+#sable-bar.indeterminate #sable-fill { width: 30%; animation: sable-sweep 1.4s ease-in-out infinite; }
 #sable-pct {
-	position: relative;
-	margin-top: 0.8rem;
-	font-size: 14px;
-	letter-spacing: 0.12em;
-	color: #cfc3a6;
-	min-height: 1.2em;
+	margin-top: 9px;
+	font: 500 clamp(13px,1.4vw,17px)/1.35 Georgia,serif;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: .08em;
+	color: #ffedc7;
+	text-shadow: 0 1px 3px #101820;
+}
+#arrival-location {
+	z-index: 2;
+	position: absolute;
+	right: max(4%,env(safe-area-inset-right));
+	bottom: max(7.3%,env(safe-area-inset-bottom));
+	margin: 0;
+	padding-bottom: 6px;
+	font: clamp(16px,2vw,28px)/1.3 Georgia,serif;
+	text-shadow: 0 1px 3px #101820;
+}
+#arrival-location::after {
+	content: "";
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	width: 50px;
+	border-bottom: 1px solid #c6a776;
+}
+#status.notice #arrival-progress { display: none; }
+@media (orientation: portrait) {
+	#status { --logo-x: 50%; --logo-y: 41%; --wordmark-width: min(88vw,680px); }
+	#arrival-progress { width: min(52vw,264px); }
+}
+@media (prefers-reduced-motion: reduce) {
+	.arrival-vista, #sable-fill { transition: none; }
+	#sable-bar.indeterminate #sable-fill { animation: none; left: 35%; }
 }
 
 /* The real <progress> keeps value/max for the stall watchdog and smoke test; the bar above draws it. */
@@ -466,16 +472,103 @@ body {
 		</noscript>
 
 		<div id="status">
-			<div id="sable-backdrop"></div>
-			<div id="sable-stars"></div>
-			<div id="sable-title">SEYBLE</div>
-			<div id="sable-sub">The Gloamwood awaits</div>
-			<div id="sable-bar" class="indeterminate"><div id="sable-fill"></div></div>
-			<div id="sable-pct">Loading…</div>
-			<progress id="status-progress"></progress>
+			<div id="sable-backdrop" aria-hidden="true"><img class="arrival-vista" alt=""><img class="arrival-vista" alt=""></div>
+			<div id="sable-stars" aria-hidden="true"></div>
+			<img id="sable-title" src="../assets/title_logo_pixel09.png" width="2172" height="724" fetchpriority="high" alt="Seyble">
+			<div id="arrival-progress">
+				<div id="sable-bar" class="indeterminate" aria-hidden="true"><div id="sable-fill"></div></div>
+				<div id="sable-pct" aria-hidden="true">Loading…</div>
+				<progress id="status-progress" aria-label="Game download progress"></progress>
+			</div>
+			<p id="arrival-location"></p>
 			<div id="status-notice"></div>
 		</div>
 
+		<script id="seyble-arrival-scenes">
+(() => {
+	const views = [
+		['waygate', 'Gloamwood Waygate'],
+		['lantern-cape', 'Lantern Cape'],
+		['cinder-skerry', 'Cinder Skerry']
+	];
+	const frames = Array.from(document.querySelectorAll('.arrival-vista'));
+	const caption = document.getElementById('arrival-location');
+	const media = matchMedia('(prefers-reduced-motion: reduce)');
+	let last = -1;
+	try {
+		const saved = sessionStorage.getItem('seyble.arrival.last');
+		if (saved !== null) last = Number(saved);
+	} catch {}
+	let choices = [];
+	function choose(avoid) {
+		if (!choices.length) {
+			choices = views.map((_, index) => index).filter(index => index !== avoid);
+			if (Math.random() < .5) choices.reverse();
+		}
+		return choices.pop();
+	}
+	let current = last >= 0 && last < views.length ? choose(last) : Math.floor(Math.random()*views.length);
+	choices = [];
+	let front = 0, swap = null, timer = 0, frozen = false;
+	function remember(index) {
+		try { sessionStorage.setItem('seyble.arrival.last', String(index)); } catch {}
+	}
+	function visibleIndex() {
+		return swap !== null && Number(getComputedStyle(frames[1-front]).opacity) >= .5 ? swap : current;
+	}
+	window.seybleArrivalFreeze = () => {
+		if (!frozen) {
+			current = visibleIndex();
+			swap = null;
+			frozen = true;
+			clearTimeout(timer);
+			remember(current);
+		}
+		return current;
+	};
+	function schedule() {
+		clearTimeout(timer);
+		if (!frozen && !media.matches && !document.hidden) timer = setTimeout(change,8000);
+	}
+	async function change() {
+		const index = choose(current);
+		const frame = frames[1-front];
+		frame.style.zIndex = '2';
+		frame.style.opacity = '0';
+		frame.src = 'arrival/'+views[index][0]+'.webp';
+		try { await frame.decode(); } catch { schedule(); return; }
+		if (frozen || media.matches || document.hidden) { schedule(); return; }
+		swap = index;
+		void frame.offsetWidth;
+		frame.style.opacity = '1';
+		timer = setTimeout(() => {
+			if (frozen) return;
+			frames[front].style.opacity = '0';
+			frames[front].style.zIndex = '0';
+			frame.style.zIndex = '1';
+			front = 1-front;
+			current = index;
+			swap = null;
+			caption.textContent = views[current][1];
+			remember(current);
+			schedule();
+		},920);
+	}
+	function onPreferenceOrVisibility() {
+		if (swap === null) schedule();
+	}
+	document.addEventListener('visibilitychange',onPreferenceOrVisibility);
+	media.addEventListener('change',onPreferenceOrVisibility);
+	const initial = frames[0];
+	initial.style.zIndex = '1';
+	initial.style.opacity = '1';
+	initial.src = 'arrival/'+views[current][0]+'.webp';
+	caption.textContent = views[current][1];
+	remember(current);
+	schedule();
+})();
+
+</script>
 		<script id="seyble-mobile-account-bridge">
 (() => {
 	const dialog = document.getElementById('seyble-mobile-account');
@@ -821,6 +914,7 @@ function startGameWithCachedPack(config) {
 			return;
 		}
 		if (mode === 'hidden') {
+			window.seybleArrivalFreeze();
 			statusOverlay.remove();
 			initializing = false;
 			return;
@@ -860,7 +954,7 @@ function startGameWithCachedPack(config) {
 			const p = Math.max(0, Math.min(100, Math.floor((current / total) * 100)));
 			bar.classList.remove('indeterminate');
 			fill.style.width = p + '%';
-			pct.textContent = p >= 100 ? 'Waking the Gloamwood…' : p + '%';
+			pct.textContent = p >= 100 ? '100% · Entering Seyble' : p + '%';
 		} else {
 			bar.classList.add('indeterminate');
 			fill.style.width = '';
@@ -921,7 +1015,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "a57d2caf0f2c";
+const SABLE_BUILD = "90938b229a25";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
