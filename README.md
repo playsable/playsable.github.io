@@ -16,15 +16,14 @@ python3 -m http.server 47231
 
 Then visit [http://127.0.0.1:47231](http://127.0.0.1:47231).
 
-The homepage is `index.html`. The homepage, patch notes and legal pages share `css/site.css`. There is no build step.
-
-Asset paths are relative to the site root, so the folder can be hosted at a subpath such as `/sable-site/`.
+The homepage is `index.html`. The homepage, patch notes and legal pages share `css/site.css`. There is no build step. Host the site at the domain root so root-absolute paths (`/css/site.css`, `/#latest`, `/favicon.ico`) resolve.
 
 ## Layout
 
-- `index.html` — the page
+- `index.html` — the homepage
 - `js/site.js` — screenshot viewer, section links and world status
 - `assets/scenes/` — gameplay captures, thumbnails and world artwork
-- `assets/title_logo.png` — title
+- `assets/title_logo_pixel09.png` — Seyble wordmark
+- `favicon.ico`, `favicon-32.png`, `apple-touch-icon.png` — site icons from the wordmark S
 - `assets/fonts/` — Alegreya (SIL Open Font License)
 - `assets/skill_sky_full.mp4` — player-controlled film in the schools of magic section

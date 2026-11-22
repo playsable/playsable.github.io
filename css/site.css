@@ -17,7 +17,9 @@
   --ui: system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--ground); color: var(--type); font: 1.125rem/1.52 var(--reading); }
+html { height: 100%; }
+body { margin: 0; min-height: 100%; min-height: 100vh; display: flex; flex-direction: column; background: var(--ground); color: var(--type); font: 1.125rem/1.52 var(--reading); }
+main { flex: 1 0 auto; }
 h1, h2, h3, p, figure { margin: 0; }
 a { color: inherit; text-underline-offset: .23em; }
 a:hover { color: var(--brass); }
@@ -35,10 +37,12 @@ img, video { display: block; max-width: 100%; height: auto; }
 .wordmark img { width: 131px; }
 .site-nav { gap: clamp(18px, 3vw, 46px); }
 .site-nav a, .site-footer a { text-decoration: none; font: 500 .88rem/1.4 var(--ui); }
-.site-nav a { padding-block: 12px; }
+.site-nav a { padding-block: 12px; white-space: nowrap; }
 .site-nav a:hover, .site-footer a:hover { text-decoration: underline; }
 .site-nav [aria-current="page"] { color: var(--brass); }
 .site-nav .nav-play { border: 1px solid #9c875d; padding: 6px 20px; color: var(--brass); }
+.nav-wrap, .site-nav { flex-wrap: nowrap; }
+.nav-short { display: none; }
 
 .hero { position: relative; isolation: isolate; overflow: hidden; background: #1e201b; }
 .hero-art { position: absolute; right: 0; top: 0; width: 83%; height: 100%; object-fit: cover; object-position: 53% 54%; z-index: -2; }
@@ -158,10 +162,14 @@ dialog::backdrop { background: #080b09df; }
   .footer-wrap { align-items: start; gap: 12px; flex-direction: column; }
   .section-heading { gap: 12px; }
 }
-@media (max-width: 389px) {
-  .wordmark img { width: 76px; }
-  .site-nav { gap: 10px; }
-  .nav-wrap { padding-inline: 12px; }
+@media (max-width: 430px) {
+  .wordmark img { width: 72px; }
+  .site-nav { gap: 8px; }
+  .site-nav a { font-size: .75rem; }
+  .site-nav .nav-play { padding: 3px 9px; }
+  .nav-wrap { gap: 8px; padding-inline: 12px; min-height: 52px; }
+  .nav-full { display: none; }
+  .nav-short { display: inline; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto; }
