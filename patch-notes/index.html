@@ -66,191 +66,191 @@
 
       <article class="patch-entry" id="november-20-2026">
         <p class="patch-date"><time datetime="2026-11-20">Nov 20, 2026</time></p>
-        <h2>Cinderwatch, Spell Schools and mobile play</h2>
-        <p>Cinderwatch has walls and roads, spell loadouts are easier to manage, and the browser build now includes touch controls.</p>
+        <h2>Cinderwatch got walls. your phone got controls.</h2>
+        <p>put roads and walls around Cinderwatch, made it easier to set up spells, and got touch controls into the browser build.</p>
 
         <h3>16 hours, two APIs</h3>
         <p>spent 16 fucking hours slamming my head into my desk trying to get two APIs to talk to each other. they had one job. so did i, technically.</p>
         <p>checkout doesn’t throw you into an empty tab anymore. the game waits until stripe is ready and then gives you a button. revolutionary shit, i know.</p>
 
-        <h3>Phone and tablet</h3>
+        <h3>phones and tablets</h3>
         <ul>
-          <li>Play in landscape with touch movement, casting and interaction. Drag in the lower-left to move; the movement stick appears only while you drag.</li>
-          <li>The game fills more of the landscape screen, accounts for camera cutouts, and can prompt you to turn your phone sideways. The sign-in form uses your device’s keyboard.</li>
+          <li>turn your phone sideways to move, cast and interact. drag in the bottom left to move. the stick only shows up while you're dragging.</li>
+          <li>the game uses more of the screen in landscape, leaves room for camera cutouts, and can ask you to turn your phone sideways. sign-in uses your phone or tablet's own keyboard.</li>
         </ul>
 
-        <h3>Magic and combat</h3>
+        <h3>spells and combat</h3>
         <ul>
-          <li>The redesigned radial spellbook matches the Inventory and Quick Menu. The Spell Schools screen now lets you set up spell loadouts and assign Magelight.</li>
-          <li>The equipped spell has a school-colored cooldown dial. The spell panel shows the cost and whether to click or hold to cast.</li>
-          <li>Space once again triggers bare-handed Arcane Slash, with charge and multiplayer swing feedback. A completed Overdrawn strike resolves on the game simulation tick. The final strike can still kill your character, but the save remains valid so you can reload and respawn.</li>
-          <li>Warding adds Iron Skin, a short protective spell that absorbs damage and can send some of the first hit back to the attacker.</li>
-          <li>Equipped armor now follows the animated character more closely.</li>
+          <li>redid the spellbook wheel so it matches Inventory and the Quick Menu. set up your loadouts and assign Magelight in Spell Schools.</li>
+          <li>your equipped spell gets a cooldown dial in its school's color. the spell panel tells you what it costs and whether to click or hold.</li>
+          <li>Space does bare-handed Arcane Slash again, with charge feedback and swings other players can see. once you finish charging an Overdrawn strike, it goes off on a game tick. that last hit can still kill you. it won't break your save, so you can reload and respawn.</li>
+          <li>added Iron Skin to Warding. it soaks up damage for a bit and can send part of the first hit back at whoever hit you.</li>
+          <li>equipped armor follows your character's animations more closely now.</li>
         </ul>
 
-        <h3>Cinderwatch and the world</h3>
+        <h3>Cinderwatch and everywhere else</h3>
         <ul>
-          <li>Cinderwatch has new fortifications and staffed gates, with connecting roads leading out of town. Lanterns light the streets and the Ember Inn, and selected homes and hearthside buildings have lit fireplaces.</li>
-          <li>Indoor roof cutaways fade more smoothly and stay in place as nearby tiles load. From inside, you can see outdoors through window glass without revealing the whole exterior.</li>
-          <li>Puddles now draw beneath trees, and usable bookcases highlight so they’re easier to find.</li>
-          <li>This release also includes updates to world regions.</li>
+          <li>Cinderwatch has walls, guards at the gates and roads that actually lead out of town. lanterns light the streets and the Ember Inn. some homes and hearthside buildings have lit fireplaces, too.</li>
+          <li>roofs fade out more smoothly when you go inside and don't jump around as nearby tiles load. you can look out a window without seeing the whole outdoors at once.</li>
+          <li>puddles show up under trees now. bookcases you can use light up so you can actually find them.</li>
+          <li>updated some of the world regions, too.</li>
         </ul>
 
-        <h3>Menus, friends and crafting</h3>
+        <h3>menus, friends and crafting</h3>
         <ul>
-          <li>The Quick Menu opens more responsively and hands control back more reliably when you close it. Text chat is easier to read and can be collapsed.</li>
-          <li>The Friends constellation is back as the Social screen. The client includes a referral flow for a 100 Aether reward to the inviter after an eligible new player signs up.</li>
-          <li>Crafting menus have been reworked. The Mint lets you make and name a small pixel-art keepsake.</li>
+          <li>the Quick Menu opens faster and gives you your controls back when you close it. chat is easier to read, and you can tuck it away.</li>
+          <li>the Friends constellation is back in Social. there's a referral option in the game for the inviter to get 100 Aether after an eligible new player signs up.</li>
+          <li>redid the crafting menus. the Mint lets you draw and name a little pixel-art keepsake.</li>
         </ul>
 
-        <h3>The Gods’ Emporium</h3>
+        <h3>the Gods’ Emporium</h3>
         <ul>
-          <li>Open the Emporium from your first adventure or the multiplayer HUD. The shop adds item previews and a private bug-report option, and chat no longer covers the shop.</li>
-          <li>For checkout, the game stays in view while the Stripe link loads. A Continue to Stripe prompt opens the hosted checkout when it’s ready.</li>
+          <li>you can get to the shop from your first adventure or the multiplayer HUD. added item previews and a private bug report option. chat stays out of the way now.</li>
+          <li>the game stays on screen while Stripe loads. hit Continue to Stripe once the button is ready to open checkout.</li>
         </ul>
 
         <h3>Audio</h3>
         <p>also fixed the audio. grass, wood and snow sound different under your feet. doors make noise. rain and thunder chill out when you go inside. loading into the world shouldn’t take half the sound with it anymore.</p>
         <p>anyway that’s the update. go open a door or something.</p>
 
-        <h3>Browser and website</h3>
+        <h3>browser and website</h3>
         <ul>
-          <li>The browser caches the game pack for repeat visits. Shaders are prepared earlier, and rendering and movement changes target stalls and abrupt stops while keeping the HUD readable.</li>
-          <li>Seyble has a new home at <a href="../">seyble.com</a>, with Cinderwatch artwork, gameplay screenshots and clearer links to browser play and desktop downloads. The Seyble name is now on the game and desktop launcher too.</li>
+          <li>the browser keeps the game pack for next time. shaders get set up earlier, and i worked on the hitches and sudden stops without making the HUD harder to read.</li>
+          <li>the game's at <a href="../">seyble.com</a> now. there's Cinderwatch art, screenshots and easier-to-find links to play in-browser or download the game. the game and desktop launcher both say Seyble now.</li>
         </ul>
       </article>
 
       <article class="patch-entry">
         <p class="kicker patch-date"><time datetime="2026-11-17">Nov 17, 2026, late night</time></p>
-        <h2>Seyble Alpha Patch Notes: "Please Don't Run at the Ducks"</h2>
+        <h2>Seyble Alpha: please don't run at the ducks</h2>
 
-        <h3>The World</h3>
+        <h3>out in the world</h3>
         <ul>
-          <li>Odo Tumbrel is in, the upside-down handstander, along with the linger memory he leaves behind. He will not be righted. We asked.</li>
-          <li>Elven fountains are in, and a buff tray now shows whatever the water just did to you.</li>
-          <li>Ducks. They scatter when you run at them. We told you they would.</li>
+          <li>added Odo Tumbrel. he's the guy doing a handstand. he leaves a linger memory, and no, i'm not turning him over.</li>
+          <li>added elven fountains. the buff tray tells you what the water did to you.</li>
+          <li>the ducks scatter if you run at them. they don't appreciate it.</li>
         </ul>
 
-        <h3>The Menu</h3>
+        <h3>the Tab menu</h3>
         <ul>
-          <li>The Tab menu has starlit animations now. The brass was already there. The stars just caught up.</li>
-          <li>The Soulbound badge is in, for the things that mean to stay yours.</li>
+          <li>the Tab menu has little star animations now. kept the brass.</li>
+          <li>items that are tied to you get a Soulbound badge.</li>
         </ul>
 
-        <h3>The Storm</h3>
+        <h3>storm sounds</h3>
         <ul>
-          <li>New storm sounds: thunder, heavy rain, and a memory chime. The rain can finally say something.</li>
+          <li>added thunder, heavy rain and a memory chime.</li>
         </ul>
 
-        <h3>The Title</h3>
+        <h3>title card</h3>
         <ul>
-          <li>The Unbound title card is in. The game now introduces itself properly, which feels overdue.</li>
-        </ul>
-      </article>
-
-      <article class="patch-entry">
-        <p class="kicker patch-date"><time datetime="2026-11-17">Nov 17, 2026</time></p>
-        <h2>Seyble Alpha Patch Notes: "Everything Goes Quiet Except Your Heartbeat"</h2>
-
-        <h3>Magic</h3>
-        <ul>
-          <li>New spell: Arcane Slash. It is bare-handed, costs 4 arcana, and costs 15 stamina if you are out of arcana. Drain your stamina low enough and everything goes quiet except your heartbeat. One more strike after that kills you. We are not being poetic.</li>
-          <li>Arcane Bolt is in. It has range. Your hands do not, which is how we got here.</li>
-          <li>Restoration is hold-to-cast now. Keep holding. The mint glow is not a suggestion.</li>
-          <li>The Q wheel and the hotbar now show cooldowns and arcana costs, so you can see the bill before you pay it.</li>
-        </ul>
-
-        <h3>The First Night</h3>
-        <ul>
-          <li>The new storm opening is live: your first night, the rain, and Lio on the trail. He was already waiting. The weather finally showed up on time.</li>
-        </ul>
-
-        <h3>The Map</h3>
-        <ul>
-          <li>The map opens in about a twentieth of a second now and pans instantly. It used to make you wait. It has decided to be helpful instead.</li>
-        </ul>
-
-        <h3>Loot</h3>
-        <ul>
-          <li>Dropping items works again. Use the Drop button, drag the item out, or press Z. The little thuds missed you too.</li>
-          <li>Small popups appear when you pick up or drop items, in case you watched something vanish and briefly doubted yourself.</li>
-        </ul>
-
-        <h3>Getting Around</h3>
-        <ul>
-          <li>The old menu harp is back. In browsers it starts on your first click, like it was waiting to be asked.</li>
-          <li>Y, middle mouse or the right bumper switches targets. Tab now only opens the quick menu. Tab had too many jobs.</li>
-          <li>Movement got an overhaul. You will feel it in the first few steps and then forget there was ever another way to walk.</li>
-        </ul>
-
-        <h3>The World</h3>
-        <ul>
-          <li>The game runs smoother. The forest and towns are about 18-19% faster. The trees have not issued a statement.</li>
-          <li>Loading is faster, and it's fixed. If an update breaks something, the game rolls back on its own and pretends the whole thing was a bad dream.</li>
-          <li>When a world fills up, it overflows into a fresh copy with the same weather and the same time. The rain does not start over just because you needed more room.</li>
-          <li>Text is easier to read. The letters were tired of whispering.</li>
-        </ul>
-
-        <h3>Coming Soon (Not Live Yet)</h3>
-        <ul>
-          <li>More spells, and a new spell wheel. We'll tell you when the stars are ready.</li>
+          <li>added the Unbound title card. the game gets a proper introduction now.</li>
         </ul>
       </article>
 
       <article class="patch-entry">
         <p class="kicker patch-date"><time datetime="2026-11-17">Nov 17, 2026</time></p>
-        <h2>Seyble Alpha Patch Notes: "Please Don't Look Directly at the Shoreline"</h2>
+        <h2>Seyble Alpha: everything goes quiet except your heartbeat</h2>
 
-        <h3>Magic</h3>
+        <h3>magic</h3>
         <ul>
-          <li>Press Q to open a radial spell wheel for Spark, Frost, Growth and Magelight. Clicking way outside the ring now closes it instead of equipping Frost at a boar's funeral.</li>
-          <li>New spell: Restoration. It heals three hearts with a mint glow and little rising sparkles. It doesn't resurrect anyone, so please stop trying.</li>
-          <li>Casting at full health is free. That's not a bug. That's us respecting your anxiety.</li>
-          <li>Skill Sky moved to Tab, then down, then release. K no longer casts anything. K is unemployed now and taking it hard.</li>
+          <li>added Arcane Slash. you cast it bare-handed for 4 arcana, or 15 stamina if you're out. when your stamina gets low enough, all you can hear is your heartbeat. one more strike kills you. i mean that literally.</li>
+          <li>added Arcane Bolt if you want to hit something without getting right up next to it.</li>
+          <li>hold to cast Restoration now. keep holding when you see the mint glow.</li>
+          <li>the Q wheel and hotbar both show cooldowns and arcana costs. you can see what you're about to spend.</li>
         </ul>
 
-        <h3>The World</h3>
+        <h3>the first night</h3>
         <ul>
-          <li>Forests got thinned out, going from 1,436 trees to 755 in our test area. The other 681 trees moved to a farm upstate.</li>
-          <li>Shorelines are now smooth, curvy and natural instead of a staircase. Our artists cried. Our water also cried, but in a deeper teal.</li>
-          <li>Lakes have reeds, cattails, bank stones and reflected moonlight now. You may now stare at a pond for 40 minutes, as nature intended.</li>
-          <li>Grass no longer shows square tiles through its own corners. Grass is confident again.</li>
+          <li>the new opening is live. it's your first night, it's pouring, and Lio's waiting on the trail.</li>
         </ul>
 
-        <h3>Sneaking</h3>
+        <h3>the map</h3>
         <ul>
-          <li>Ctrl toggles sneak. You move at half speed, the screen goes dark at the edges, and a giant eye tells you whether you're Hidden or Seen. The eye has no further comment.</li>
-          <li>Enemies now remember where they last saw you for 2.5 seconds instead of forgetting you instantly like a goldfish. They still can't attack through walls, out of politeness.</li>
+          <li>the map opens in about a twentieth of a second now. drag it and it moves right away.</li>
         </ul>
 
-        <h3>Loot</h3>
+        <h3>loot</h3>
         <ul>
-          <li>Boars drop produce, seeds and fibre. They don't drop swords, furniture or cooked meals anymore. We don't know how they were carrying a wardrobe either.</li>
-          <li>Gilded Scamps still drop coins and stolen gear. They are thieves, and that's canon.</li>
-          <li>Furniture now actually stores things. Your bedside table finally has a purpose beyond holding up a candle.</li>
+          <li>you can drop stuff again. hit Drop, drag it out or press Z. yes, the little thud is back.</li>
+          <li>added a small popup when you pick something up or drop it, so you know where it went.</li>
         </ul>
 
-        <h3>Map</h3>
+        <h3>getting around</h3>
         <ul>
-          <li>The map got a fullscreen glow-up with mist, fog banks, serif labels and a north arrow, for when you're lost but want to feel classy about it.</li>
-          <li>Drag to pan, scroll to zoom, and press C to recenter on your ivory little self.</li>
+          <li>brought the old menu harp back. in the browser it starts on your first click.</li>
+          <li>switch targets with Y, middle mouse or the right bumper. Tab just opens the Quick Menu now.</li>
+          <li>redid movement. take a few steps and you'll feel it.</li>
         </ul>
 
-        <h3>Accounts</h3>
+        <h3>the world</h3>
         <ul>
-          <li>Seyble now asks "What should we call you?" Your answer is permanent-ish, lowercase and 3 to 16 characters long. Choose wisely.</li>
-          <li>The first player account, @top, is live and wears a teal DEV tag. Yes, the boss made his own account first. No, you can't have DEV. We checked.</li>
+          <li>the forest and towns ran about 18–19% faster. walking through them feels smoother.</li>
+          <li>fixed loading and made it faster. if an update breaks the game, it rolls back on its own.</li>
+          <li>when a world fills up, the next players go into a fresh copy. same weather, same time of day. the rain doesn't start over.</li>
+          <li>made the text easier to read.</li>
         </ul>
 
-        <h3>The Gods' Emporium</h3>
+        <h3>coming soon (not live yet)</h3>
         <ul>
-          <li>A divine shop where you can try on the Gloamcourt Jester hat, rotate it and admire yourself. Checkout is still disabled, because the gods aren't taking payments yet. They're gods. They're busy.</li>
+          <li>more spells and a new spell wheel. not in the game yet.</li>
+        </ul>
+      </article>
+
+      <article class="patch-entry">
+        <p class="kicker patch-date"><time datetime="2026-11-17">Nov 17, 2026</time></p>
+        <h2>Seyble Alpha: please don't look directly at the shoreline</h2>
+
+        <h3>magic</h3>
+        <ul>
+          <li>press Q for the spell wheel: Spark, Frost, Growth and Magelight. if you click way outside it, it closes instead of picking a spell you didn't want.</li>
+          <li>added Restoration. it heals three hearts and gives off a mint glow with little rising sparks. it can't bring anybody back.</li>
+          <li>casting it at full health doesn't cost you anything.</li>
+          <li>for Skill Sky, hold Tab, go down and release. K doesn't cast anything anymore.</li>
         </ul>
 
-        <h3>Known Issues</h3>
+        <h3>the world</h3>
         <ul>
-          <li>Your friends may notice you sneaking. That's a friendship issue, not a bug.</li>
-          <li>Boars are still upset about the wardrobe nerf.</li>
+          <li>thinned out the forest. went from 1,436 trees to 755 in the test area. the area needed some room.</li>
+          <li>smoothed out the shorelines so they curve instead of stepping down like stairs.</li>
+          <li>added reeds, cattails, stones on the banks and moonlight on the water. you can stare at a pond now. i get it.</li>
+          <li>no more square tile edges poking through the corners of the grass.</li>
+        </ul>
+
+        <h3>sneaking</h3>
+        <ul>
+          <li>Ctrl toggles sneak. you move at half speed, the screen darkens around the edges, and a big eye tells you if you're Hidden or Seen.</li>
+          <li>enemies remember where they last saw you for 2.5 seconds. they still can't hit you through a wall.</li>
+        </ul>
+
+        <h3>loot</h3>
+        <ul>
+          <li>boars drop produce, seeds and fibre. no more swords, furniture or cooked meals. i don't know where they kept any of that either.</li>
+          <li>Gilded Scamps still drop coins and stolen gear. they're thieves. that part makes sense.</li>
+          <li>furniture can hold stuff now. your bedside table finally has a job.</li>
+        </ul>
+
+        <h3>map</h3>
+        <ul>
+          <li>the map is fullscreen now, with mist, fog banks, serif labels and a north arrow.</li>
+          <li>drag to pan, scroll to zoom, or press C to center it on yourself.</li>
+        </ul>
+
+        <h3>accounts</h3>
+        <ul>
+          <li>Seyble asks “What should we call you?” now. your name is lowercase, 3 to 16 characters, and pretty much permanent. pick one you can live with.</li>
+          <li>@top is the first player account. that's mine, and the teal DEV tag isn't up for grabs.</li>
+        </ul>
+
+        <h3>the Gods' Emporium</h3>
+        <ul>
+          <li>try on the Gloamcourt Jester hat, spin it around, see how it looks. checkout isn't live in this build.</li>
+        </ul>
+
+        <h3>known issues</h3>
+        <ul>
+          <li>your friends might still notice you sneaking. take that up with your friends.</li>
+          <li>the boars are still mad about losing the furniture.</li>
         </ul>
       </article>
     </div>
