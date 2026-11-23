@@ -25,6 +25,13 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preload" href="../assets/fonts/Alegreya-Variable.ttf" as="font" type="font/ttf" crossorigin />
   <link rel="stylesheet" href="/css/site.css?v=6" />
+  <style>
+    .document .patch-history-shot { margin: 1.1rem 0 1.5rem; }
+    .document .patch-history-shot .shot { border: 1px solid var(--line); border-radius: .25rem; overflow: hidden; }
+    .document .patch-history-shot .shot:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+    .document .patch-history-shot figcaption { color: var(--quiet); font-size: 1rem; }
+    .document .patch-history-shot .patch-date { display: block; margin-bottom: .2rem; font-weight: 700; }
+  </style>
 </head>
 <body>
   <a class="skip" href="#notes">Skip to content</a>
@@ -131,8 +138,18 @@
           <li>the local map zooms out three times farther. faraway landmarks turn into dots instead of all trying to yell their names at once.</li>
         </ul>
 
+        <figure class="patch-history-shot" id="open-beta-atlas">
+          <a class="shot" href="/patch-notes/history/2026-11-21-world-atlas.png"><img src="/patch-notes/history/2026-11-21-world-atlas.png" width="1280" height="720" loading="lazy" decoding="async" alt="The early Seyble world map with colored territories, mainland highways and a Lantern Cape inset." /></a>
+          <figcaption><strong class="patch-date">Open beta · Nov 21 world map</strong> the atlas when the islands got their own markers. Lantern Cape still needed its own little box.</figcaption>
+        </figure>
+
         <h3>Water</h3>
         <p>you can actually see your reflection in the water now.</p>
+
+        <figure class="patch-history-shot" id="early-water-reflections">
+          <a class="shot" href="/patch-notes/history/2026-11-21-water-reflection.png"><img src="/patch-notes/history/2026-11-21-water-reflection.png" width="1280" height="720" loading="lazy" decoding="async" alt="A traveler and their reflection at the edge of a torchlit wooden boardwalk." /></a>
+          <figcaption><strong class="patch-date">Open beta update · Water reflection test</strong> here’s the boardwalk shot from testing. look just below the traveler’s boots.</figcaption>
+        </figure>
 
         <h3>Crabs and deer</h3>
         <ul>
@@ -185,6 +202,11 @@
           <li>puddles show up under trees now. bookcases you can use light up so you can actually find them.</li>
           <li>updated some of the world regions, too.</li>
         </ul>
+
+        <figure class="patch-history-shot" id="cinderwatch-before-the-walls">
+          <a class="shot" href="/patch-notes/history/pre-alpha-v03216-cinderwatch.png"><img src="/patch-notes/history/pre-alpha-v03216-cinderwatch.png" width="1280" height="720" loading="lazy" decoding="async" alt="Early Cinderwatch square with three striped market stalls, two statues and the public well." /></a>
+          <figcaption><strong class="patch-date">Pre-alpha flashback · SABLE v0.32.16</strong> Cinderwatch before this update. the Ember Inn, market stalls and public well were already there. the square was mostly one big grid.</figcaption>
+        </figure>
 
         <h3>menus, friends and crafting</h3>
         <ul>
@@ -342,6 +364,21 @@
           <li>your friends might still notice you sneaking. take that up with your friends.</li>
           <li>the boars are still mad about losing the furniture.</li>
         </ul>
+      </article>
+      <article class="patch-entry" id="pre-alpha">
+        <p class="patch-date">Pre-alpha · Before open beta</p>
+        <h2>Back when it was still SABLE</h2>
+        <p>dug these out of the old builds. there was a whole game here before it was called Seyble. it just looked a little different.</p>
+
+        <figure class="patch-history-shot" id="pre-alpha-underground">
+          <a class="shot" href="/patch-notes/history/pre-alpha-v03216-underground.png"><img src="/patch-notes/history/pre-alpha-v03216-underground.png" width="1280" height="720" loading="lazy" decoding="async" alt="The sprite lights a little patch of blue brick beside the traveler in an early underground room." /></a>
+          <figcaption><strong class="patch-date">SABLE v0.32.16 · Captured from the archived build</strong> the sprite down in the Gloamwood, back when Find Your Soul still pointed you straight to the starter spring.</figcaption>
+        </figure>
+
+        <figure class="patch-history-shot" id="pre-alpha-field-workshop">
+          <a class="shot" href="/patch-notes/history/pre-alpha-v03-field-workshop.jpg"><img src="/patch-notes/history/pre-alpha-v03-field-workshop.jpg" width="1280" height="720" loading="lazy" decoding="async" alt="A SABLE v0.3 interface mockup with a row of six construction options and a Protected Area warning." /></a>
+          <figcaption><strong class="patch-date">SABLE v0.3 · Archived design mockup, not an in-game capture</strong> the old Field Workshop pitched six things you could build. that big red square was already telling you to get your floor out of Cinderwatch.</figcaption>
+        </figure>
       </article>
     </div>
   </main>
