@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171b19">
+  <meta name="robots" content="noindex, follow">
+  <meta name="description" content="Apply to work with Seyble as a creator, streamer, writer, or community organizer.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; connect-src https://cbabwpvvwerumifvbema.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Affiliate applications | Seyble</title>
+  <link rel="canonical" href="https://seyble.com/affiliates/">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/css/site.css?v=6">
+  <link rel="stylesheet" href="portal.css?v=1">
+  <script src="portal.js?v=1" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header"><div class="nav-wrap">
+    <a class="wordmark" href="/"><img src="/assets/title_logo_pixel09.png" width="2172" height="724" alt="Seyble home"></a>
+    <nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a class="nav-play" href="/play/">Play</a></nav>
+  </div></header>
+  <main id="main" class="aff-main">
+    <div class="aff-intro">
+      <p class="aff-label">Sable Studios &nbsp; / &nbsp; Creator applications</p>
+      <h1>Work with Seyble.</h1>
+      <p>If you stream, make videos, cover indie games, or run a community, tell us what you&rsquo;d do with a free multiplayer RPG your audience can play right from the browser.</p>
+      <figure><img src="/assets/field-notes/lantern-cape-ships.jpg" alt="Wooden ships at the Lantern Cape docks in Seyble" width="1000" height="648" decoding="async"><figcaption>In game &middot; Lantern Cape</figcaption></figure>
+    </div>
+    <section class="aff-card" aria-labelledby="form-title">
+      <h2 id="form-title">Affiliate application</h2>
+      <p class="aff-muted">Applying is free and doesn&rsquo;t enroll you in a program or guarantee payment.</p>
+      <noscript><p>This form requires JavaScript to submit.</p></noscript>
+      <form id="affiliate-form" method="post">
+        <div class="aff-grid">
+          <label>Creator or community name<input name="name" required minlength="2" maxlength="80" autocomplete="nickname"></label>
+          <label>Contact email<input name="email" type="email" required maxlength="254" autocomplete="email"></label>
+        </div>
+        <label>Main channel or community link<input name="channel" type="url" required maxlength="500" placeholder="https://…" inputmode="url"></label>
+        <label>What do you do?<select name="kind" required>
+          <option value="" disabled selected>Select one</option>
+          <option value="streamer">Livestream</option><option value="video">Make videos</option>
+          <option value="writer">Write about games</option><option value="community">Run a community</option><option value="other">Something else</option>
+        </select></label>
+        <label>What would you like to do with Seyble?
+          <textarea name="pitch" required rows="4" minlength="20" maxlength="1200" aria-describedby="pitch-note"></textarea>
+        </label>
+        <p id="pitch-note" class="aff-hint">20–1,200 characters. A short idea is enough. Please don&rsquo;t include private or financial information.</p>
+        <div class="aff-trap" aria-hidden="true"><label>Leave this blank<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <label class="aff-check"><input name="adult" type="checkbox" required><span>I&rsquo;m 18 or older and agree that Sable Studios can review this application and contact me about it.</span></label>
+        <p class="aff-hint">Your application isn&rsquo;t public. We use the details you send to review it and follow up. See the <a href="/privacy/">privacy policy</a>.</p>
+        <button type="submit" disabled>Send application <span aria-hidden="true">&rarr;</span></button>
+        <p class="aff-status" id="submit-status" role="status" aria-live="polite" tabindex="-1"></p>
+      </form>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-wrap"><p>© Sable Studios</p><nav aria-label="Footer"><a href="/">Home</a><a href="/terms/">Terms</a><a href="/privacy/">Privacy</a></nav></div></footer>
+</body>
+</html>

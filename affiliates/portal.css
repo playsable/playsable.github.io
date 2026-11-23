@@ -1,0 +1,31 @@
+.aff-main{width:min(1120px,calc(100% - 40px));margin:0 auto;padding:clamp(36px,8vw,98px) 0;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,5vw,70px);align-items:start}
+.aff-intro,.aff-card{min-width:0}
+.aff-label{font-size:.82rem;letter-spacing:.11em;color:#e5b983;text-transform:uppercase;font-weight:700}
+.aff-intro h1{font-size:clamp(2.65rem,6vw,5.1rem);line-height:.96;margin:.22em 0;color:#fff1db}
+.aff-intro>p:not(.aff-label){font-size:1.2rem;color:#d4c8b5;max-width:34ch}
+.aff-intro figure{margin:1.4rem 0 0}
+.aff-intro img{width:100%;height:auto;display:block;border:1px solid #6b573b;border-radius:8px}
+.aff-intro figcaption,.aff-muted,.aff-hint{color:#c7bba7}
+.aff-intro figcaption{font-size:.88rem;margin-top:.3rem}
+.aff-card{background:#212620;border:1px solid #68553a;border-radius:12px;padding:clamp(18px,4vw,32px);box-shadow:0 15px 40px #0004}
+.aff-card h2{color:#fff1db;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.1;margin:0 0 .3rem}
+.aff-card p{margin:.25rem 0 .8rem}
+.aff-card form{position:relative;display:grid;gap:.78rem;margin-top:1rem}
+.aff-grid{display:grid;gap:.78rem;grid-template-columns:1fr 1fr}
+.aff-card label{font-weight:600;color:#fff1db;min-width:0}
+.aff-card :is(input:not([type=checkbox]),textarea,select){display:block;width:100%;box-sizing:border-box;margin-top:.22rem;min-height:44px;background:#151a17;color:#fff1db;border:1px solid #786b57;border-radius:6px;padding:.58rem .65rem;font:inherit;font-size:16px}
+.aff-card textarea{resize:vertical}
+.aff-card :is(input,textarea,select,button,a):focus-visible{outline:2px solid #efc389;outline-offset:3px}
+.aff-card .aff-hint{margin:0;font-size:.9rem;line-height:1.35}
+.aff-hint a{color:#f6cc98;text-decoration:underline}
+.aff-check{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:start;font-size:.98rem}
+.aff-check input{width:1.12rem;height:1.12rem;margin:.2rem 0 0;accent-color:#f2c083}
+.aff-card button{justify-self:start;min-height:44px;padding:.58rem 1rem;background:#edbc80;color:#1c180f;border:1px solid #edbc80;border-radius:6px;font:inherit;font-weight:800;cursor:pointer}
+.aff-card button:disabled{opacity:.55;cursor:default}
+.aff-card .aff-status{margin:0;line-height:1.35}
+.aff-status:empty{display:none}
+.aff-status[data-state=error]{color:#ffc0ad}
+.aff-status[data-state=success]{color:#c6edb8}
+.aff-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+@media(max-width:760px){.aff-main{grid-template-columns:1fr;gap:1.4rem}.aff-intro figure{display:none}}
+@media(max-width:475px){.aff-grid{grid-template-columns:1fr}.aff-main{width:calc(100% - 28px)}}
