@@ -102,3 +102,38 @@ body.ash { background: #050304; }
 .embers .e21 { left: 98%; animation-delay: -3.1s; animation-duration: 12.6s; }
 .embers .e22 { left: 55%; animation-delay: -0.4s; animation-duration: 11.0s; }
 .embers .e23 { left: 73%; animation-delay: -5.2s; animation-duration: 12.3s; }
+/* payments open (2026-11-24) */
+.starter { margin-top: 14px; font: 400 20px Jacquard, serif; padding: 7px 18px; color: #ffe2c2; background: #241009; border: 2px solid #b8562e; cursor: pointer; }
+.starter:disabled, .join:disabled { cursor: default; }
+.join:not(:disabled) { cursor: pointer; }
+.join:not(:disabled):hover, .starter:not(:disabled):hover { box-shadow: 0 0 22px #ff6a2a, 0 0 4px #ffd08a inset; }
+.acct { margin: 12px 0 0; font-size: 14px; color: var(--dim); }
+.linkish { background: none; border: 0; padding: 0 0 0 10px; color: #ffb37a; font: inherit; text-decoration: underline; cursor: pointer; }
+body.signed-in #ash-signin-link { display: none; }
+.ash-status { min-height: 1.2em; margin: 8px 0 0; color: #ffd9b8; font-size: 14px; }
+.ash-status.bad { color: #ff8f7a; }
+.ash-dialog { max-width: 420px; width: calc(100% - 32px); background: #120a0b; color: #f6e7d4; border: 2px solid #ff7a3a; box-shadow: 0 0 40px #b8301a; padding: 22px; }
+.ash-dialog::backdrop { background: rgba(4, 2, 3, .82); }
+.ash-dialog h2 { font: 400 34px Jacquard, serif; margin: 0 0 6px; color: #ffe2c2; }
+.ash-dialog label { display: block; margin: 12px 0 4px; font-family: FusionPixel, monospace; letter-spacing: .06em; color: #d9a58c; font-size: 13px; }
+.ash-dialog input { width: 100%; box-sizing: border-box; padding: 9px 10px; font-size: 17px; background: #0a0607; color: #fff1dc; border: 1px solid #8f3a1e; }
+.join.small { font-size: 20px; padding: 6px 18px; margin-top: 12px; }
+.ash-success { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(4, 2, 3, .88); }
+.ash-success[hidden] { display: none; }
+.ash-success-box { position: relative; max-width: 460px; width: calc(100% - 32px); text-align: center; background: #120a0b; border: 2px solid #ff7a3a; padding: 26px 22px; }
+.ash-success-box h2 { font: 400 42px Jacquard, serif; margin: 4px 0 10px; color: #ffe2c2; text-shadow: 0 0 14px #ff5a2a; }
+.reveal { list-style: none; padding: 0; margin: 12px 0; display: none; text-align: left; }
+.ash-success.revealed .reveal { display: block; }
+.reveal li { display: flex; align-items: center; gap: 10px; padding: 6px 4px; opacity: 0; transform: translateY(14px); animation: rise .5s forwards; }
+.reveal li:nth-child(2) { animation-delay: .12s } .reveal li:nth-child(3) { animation-delay: .24s } .reveal li:nth-child(4) { animation-delay: .36s } .reveal li:nth-child(5) { animation-delay: .48s }
+@keyframes rise { to { opacity: 1; transform: none; } }
+.aura.mini { width: 28px; height: 28px; position: static; display: inline-block; }
+.burst { position: absolute; inset: 0; pointer-events: none; }
+.burst i { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; background: #ffc76a; box-shadow: 0 0 10px #ff6a2a; opacity: 0; }
+.ash-success.revealed .burst i { animation: burst 1.3s ease-out forwards; }
+.burst i:nth-child(odd) { background: #ff7a2a; width: 4px; height: 4px; }
+.burst i:nth-child(1) { --x: 220px; --y: -160px } .burst i:nth-child(2) { --x: -230px; --y: -140px } .burst i:nth-child(3) { --x: 180px; --y: 170px } .burst i:nth-child(4) { --x: -170px; --y: 190px }
+.burst i:nth-child(5) { --x: 300px; --y: 10px } .burst i:nth-child(6) { --x: -300px; --y: -10px } .burst i:nth-child(7) { --x: 40px; --y: -260px } .burst i:nth-child(8) { --x: -60px; --y: 250px }
+.burst i:nth-child(9) { --x: 120px; --y: -230px } .burst i:nth-child(10) { --x: -130px; --y: -240px } .burst i:nth-child(11) { --x: 260px; --y: 120px } .burst i:nth-child(12) { --x: -250px; --y: 130px }
+@keyframes burst { 0% { opacity: 1; transform: translate(0, 0) scale(1.4); } 100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(.6); } }
+@media (prefers-reduced-motion: reduce) { .burst i, .reveal li { animation: none; opacity: 1; transform: none; } }

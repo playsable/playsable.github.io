@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="robots" content="noindex, follow">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#070406">
   <meta name="description" content="Ashbound is Seyble's $4.99/month membership pass: a red-flame cape, animated calling cards, glowing flair, 300 Aether a month and a reward track. Cosmetics only, no paid advantage.">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; media-src 'self'; connect-src https://cbabwpvvwerumifvbema.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>Ashbound membership | Seyble</title>
   <link rel="canonical" href="https://seyble.com/ashbound/">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="preload" href="/assets/ashbound/Jacquard24-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/site.css?v=8">
-  <link rel="stylesheet" href="ashbound.css?v=1">
+  <link rel="stylesheet" href="ashbound.css?v=2">
 </head>
 <body class="ash">
   <a class="skip" href="#main">Skip to content</a>
@@ -28,14 +27,18 @@
       <p class="lede">Light yourself up. A red-flame look nobody else on the road has, plus a reward track you burn through just by playing.</p>
       <figure class="card hero-card glow"><img src="/assets/ashbound/card-ashbound.png" width="300" height="128" alt="The Ashbound red-flame animated calling card"></figure>
       <div class="price glow"><span class="amt">$4.99</span><span class="per">per month</span>
-        <button type="button" class="join" disabled aria-describedby="soon">Join Ashbound &middot; $4.99/mo</button>
-        <p id="soon" class="soon">Coming soon &middot; payments aren&rsquo;t open yet</p>
+        <button type="button" class="join" id="ash-join">Join Ashbound &middot; $4.99/mo</button>
+        <p class="soon">Renews monthly &middot; cancel anytime &middot; secure checkout by Stripe</p>
+        <button type="button" class="starter" id="ash-starter">Get the Ember Starter Pack &middot; $0.99</button>
+        <p class="soon">One time &middot; Kindled Wanderer cape + 200 Aether &middot; one per account</p>
+        <p class="acct"><span id="ash-who"></span> <button type="button" class="linkish" id="ash-signin-link">Sign in with your Seyble account</button><button type="button" class="linkish" id="ash-manage" hidden>Manage or cancel membership</button><button type="button" class="linkish" id="ash-signout" hidden>Sign out</button></p>
+        <p id="ash-status" class="ash-status" role="status" aria-live="polite"></p>
       </div>
       <p class="promise"><b>Cosmetics only, no paid advantage.</b> Seyble is currently free to play.</p>
     </section>
     <section class="pane" aria-labelledby="inc">
       <h2 id="inc">Included the moment you join</h2>
-      <ul class="included"><li><span class="ico ico-cape" aria-hidden="true"></span><div><b>Ashbound Flame Cape</b><small>A red-flame cape that glows in the dark.</small></div><em>Included</em></li><li><span class="ico ico-card" aria-hidden="true"></span><div><b>Red-flame calling card</b><small>Animated, with embers rising off the frame.</small></div><em>Included</em></li><li><span class="ico ico-flair" aria-hidden="true"></span><div><b>Glowing name flair</b><small>Your name burns a little brighter in chat and overhead.</small></div><em>Included</em></li><li><span class="ico ico-aether" aria-hidden="true"></span><div><b>300 Aether every month</b><small>Spend it in the Emporium on cosmetics.</small></div><em>Included</em></li><li><span class="ico ico-month" aria-hidden="true"></span><div><b>A new card every month</b><small>A monthly animated calling card, only for members that month.</small></div><em>Included</em></li><li><span class="ico ico-track" aria-hidden="true"></span><div><b>The reward track</b><small>Eight more cosmetics you unlock just by playing.</small></div><em>Included</em></li></ul>
+      <ul class="included"><li><span class="ico ico-cape" aria-hidden="true"></span><div><b>Ashbound Flame Cape</b><small>A red-flame cape that glows in the dark.</small></div><em>Included</em></li><li><span class="ico ico-card" aria-hidden="true"></span><div><b>Red-flame calling card</b><small>Animated, with embers rising off the frame.</small></div><em>Included</em></li><li><span class="ico ico-flair" aria-hidden="true"></span><div><b>Glowing name flair</b><small>A glowing ASHBOUND tab on your nameplate, seen by everyone.</small></div><em>Included</em></li><li><span class="ico ico-aether" aria-hidden="true"></span><div><b>300 Aether every month</b><small>Spend it in the Emporium on cosmetics.</small></div><em>Included</em></li><li><span class="ico ico-month" aria-hidden="true"></span><div><b>A new card every month</b><small>A monthly animated calling card, only for members that month.</small></div><em>Included</em></li><li><span class="ico ico-track" aria-hidden="true"></span><div><b>The reward track</b><small>Eight cosmetics you unlock with embers just by playing.</small></div><em>Included</em></li></ul>
     </section>
     <section class="pane beta glow" aria-labelledby="beta">
       <p class="badge">Beta bonus</p>
@@ -46,7 +49,7 @@
     <section class="pane" aria-labelledby="track-h">
       <h2 id="track-h">The reward track</h2>
       <p class="sub">Earn 1 ember for every 30 seconds you play. Members claim each reward as they reach it.</p>
-      <ol class="track"><li class="node lit"><span class="cost">0</span><b>The Ashbound</b><small>title</small></li><li class="node lit"><span class="cost">40</span><b>Ember flair</b><small>name flair</small></li><li class="node lit"><span class="cost">100</span><b>Cinder frame</b><small>card frame</small></li><li class="node lit"><span class="cost">180</span><b>Kindle</b><small>emote</small></li><li class="node"><span class="cost">280</span><b>Emberfall</b><small>animated card</small></li><li class="node"><span class="cost">400</span><b>Cinderwake Cape</b><small>cape</small></li><li class="node"><span class="cost">540</span><b>Ashen Wyrm</b><small>animated card</small></li><li class="node"><span class="cost">720</span><b>Crown of the Ashbound</b><small>title</small></li></ol>
+      <ol class="track"><li class="node lit"><span class="cost">0</span><b>The Ashbound</b><small>title</small></li><li class="node lit"><span class="cost">40</span><b>Kindled</b><small>title</small></li><li class="node lit"><span class="cost">100</span><b>Cinder frame</b><small>card frame</small></li><li class="node lit"><span class="cost">180</span><b>Flamekeeper</b><small>title</small></li><li class="node"><span class="cost">280</span><b>Cinder Tempest</b><small>animated card</small></li><li class="node"><span class="cost">400</span><b>Cinderwake Cape</b><small>cape &middot; trails sparks</small></li><li class="node"><span class="cost">540</span><b>Ashen Wyrm</b><small>animated card</small></li><li class="node"><span class="cost">720</span><b>Crown of the Ashbound</b><small>nameplate crest</small></li></ol>
     </section>
     <section class="pane month" aria-labelledby="mo">
       <h2 id="mo">This month: Emberfall</h2>
@@ -63,9 +66,29 @@
       </div>
     </section>
     <section class="pane fine">
-      <p>Ashbound is cosmetic only. It never changes stats, damage, drops or matchmaking. Price shown in USD. Billing, cancellation and refund details will be posted here before payments open. See the <a href="/terms/">Terms</a>.</p>
+      <p>Ashbound is cosmetic only. It never changes stats, damage, drops or matchmaking. Price shown in USD. <b>Ashbound renews automatically every month at $4.99 until you cancel.</b> Cancel anytime with &ldquo;Manage or cancel membership&rdquo; on this page (sign in first); it ends at the close of your billing period and you won&rsquo;t be charged again. You keep the cape, cards, aura, Aether and track rewards you&rsquo;ve already received; the Ashbound title, nameplate flair and new track claims end with the membership. No partial-month refunds except where the law requires. Purchases go to the Seyble account you&rsquo;re signed in with. See the <a href="/terms/">Terms</a>.</p>
     </section>
   </main>
+  <dialog id="ash-signin" class="ash-dialog" aria-labelledby="ash-signin-h">
+    <h2 id="ash-signin-h">Sign in to Seyble</h2>
+    <p class="sub">Use the email on your Seyble account. Your purchase lands on that account automatically.</p>
+    <form id="ash-form-email"><div id="ash-step-email"><label for="ash-email">Email</label><input id="ash-email" type="email" autocomplete="email" required><button type="submit" class="join small">Send me a code</button></div></form>
+    <form id="ash-form-code"><div id="ash-step-code" hidden><label for="ash-code">Code from your email</label><input id="ash-code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required><button type="submit" class="join small">Sign in</button><button type="button" class="linkish" id="ash-resend">Send a new code</button></div></form>
+    <p id="ash-signin-msg" class="ash-status" role="status" aria-live="polite"></p>
+    <button type="button" class="linkish" id="ash-cancel">Close</button>
+  </dialog>
+  <div id="ash-success" class="ash-success" hidden role="dialog" aria-labelledby="ash-success-h">
+    <div class="burst" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="ash-success-box glow">
+      <p class="kicker">Payment received</p>
+      <h2 id="ash-success-h">Welcome to the fire</h2>
+      <button type="button" class="join" id="ash-reveal">Reveal your rewards</button>
+      <ul class="reveal"><li><span class="ico ico-cape"></span>Ashbound Flame Cape</li><li><span class="ico ico-card"></span>Red-flame calling card</li><li><span class="ico ico-flair"></span>Glowing nameplate flair</li><li><span class="ico ico-aether"></span>300 Aether</li><li><span class="aura mini"></span>Emberheart Aura</li></ul>
+      <p id="ash-success-note" class="ash-status" role="status" aria-live="polite"></p>
+      <button type="button" class="linkish" id="ash-success-close">Close</button>
+    </div>
+  </div>
+  <script src="ashbound.js?v=1" defer></script>
   <footer class="site-footer"><div class="footer-wrap"><p>© 2026 Barrier Holdings LLC. All rights reserved.<br>Seyble is owned by Barrier Holdings LLC and developed by Seyble Studios.</p><nav aria-label="Footer"><a href="/">Home</a><a href="/terms/">Terms</a><a href="/privacy/">Privacy</a><a href="https://discord.gg/6zd7WXVFGQ" target="_blank" rel="noopener">Join our Discord</a><a href="/press/">Press kit</a><a href="/press/#seyble-ip">Seyble IP</a></nav></div></footer>
 </body>
 </html>
