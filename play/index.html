@@ -13,9 +13,9 @@
 		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.stripe.com https://*.link.com; frame-src https://*.stripe.com https://*.link.com; connect-src 'self' https: wss: blob: http://localhost:* http://127.0.0.1:* ws:">
 		<title>Seyble</title>
 		<script id="seyble-boot-assets">
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.5059f0d755ec","experimentalVK":false,"fileSizes":{"index.5059f0d755ec.pck":25068940,"index.5059f0d755ec.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.b67142230f5a","experimentalVK":false,"fileSizes":{"index.b67142230f5a.pck":25074720,"index.b67142230f5a.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 // The release script stamps the pack filename. Direct exports can have a custom name.
-const SEYBLE_BOOT = {mainPack: "index.5059f0d755ec.pck"};
+const SEYBLE_BOOT = {mainPack: "index.b67142230f5a.pck"};
 if (!(SEYBLE_BOOT.mainPack in GODOT_CONFIG.fileSizes)) {
 	SEYBLE_BOOT.mainPack = GODOT_CONFIG.executable + '.pck';
 }
@@ -121,7 +121,7 @@ const startupAssets = (() => {
 		<style>
 @font-face {
 	font-family: 'SeybleTitle';
-	src: url('index.5059f0d755ec.title.ttf') format('truetype');
+	src: url('index.b67142230f5a.title.ttf') format('truetype');
 	font-display: swap;
 }
 
@@ -416,7 +416,7 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<script src="index.5059f0d755ec.voice.js"></script>
+<script src="index.b67142230f5a.voice.js"></script>
 			<script>window.SABLE_SERVER="wss://51-81-86-210.sslip.io/ws";</script>
 	</head>
 	<body>
@@ -801,7 +801,7 @@ body {
 	window.addEventListener('pagehide', () => window.SeybleHostedCheckout.reset());
 })();
 		</script>
-		<script src="index.5059f0d755ec.js"></script>
+		<script src="index.b67142230f5a.js"></script>
 		<script>
 const GODOT_THREADS_ENABLED = false;
 
@@ -841,6 +841,7 @@ canvas.getContext = function (kind, ...options) {
 };
 const renderCaps = [null, [1280, 720], [1280, 720]];
 let renderQuality = 0;
+let renderCap = null;
 
 function resizeCanvas() {
 	const width = canvas.clientWidth;
@@ -848,17 +849,28 @@ function resizeCanvas() {
 	if (width === 0 || height === 0) return;
 	const density = window.devicePixelRatio || 1;
 	const phone = matchMedia('(pointer: coarse)').matches;
-	const cap = phone ? (width >= height ? [1280, 720] : [720, 1280]) : renderCaps[renderQuality];
+	const cap = phone ? (width >= height ? [1280, 720] : [720, 1280]) : (renderCap || renderCaps[renderQuality]);
 	const scale = cap ? Math.min(density, cap[0] / width, cap[1] / height) : density;
 	const pixelWidth = Math.max(1, Math.floor(width * scale));
 	const pixelHeight = Math.max(1, Math.floor(height * scale));
 	if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
 	if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
+	if (cap && (pixelWidth < width * density || pixelHeight < height * density)) {
+		canvas.style.imageRendering = 'pixelated';
+	}
 }
 
+window.SABLE_SET_RENDER_SCALE = function (maxW, maxH, nearest) {
+	const w = Number(maxW) || 0;
+	const h = Number(maxH) || 0;
+	renderCap = (w > 0 && h > 0) ? [w, h] : null;
+	if (nearest) canvas.style.imageRendering = 'pixelated';
+	else if (!renderCap) canvas.style.imageRendering = '';
+	resizeCanvas();
+};
 window.SABLE_SET_RENDER_QUALITY = function (level) {
 	renderQuality = level;
-	canvas.style.imageRendering = level === 2 ? 'pixelated' : '';
+	if (renderCap == null) canvas.style.imageRendering = level === 2 ? 'pixelated' : '';
 	resizeCanvas();
 };
 window.addEventListener('resize', resizeCanvas);
@@ -1005,7 +1017,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "5059f0d755ec";
+const SABLE_BUILD = "b67142230f5a";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
