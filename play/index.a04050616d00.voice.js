@@ -5,6 +5,8 @@
  * browser JS. Godot drives it through JavaScriptBridge (sandbox/social/voice_web.gd):
  *   - the game server decides WHO may connect (range, blocks) and relays offers / answers / ICE
  *     over the game socket (the Social node), and sends a per-peer gain at 4 Hz;
+ *     party members stay linked across the map: the server floors their gain and sends
+ *     radio (0 = proximity, 1 = remote) and pan (-1 left .. 1 right) with each row;
  *   - this file owns the microphone, one RTCPeerConnection per peer, one GainNode per peer,
  *     push-to-talk (track.enabled), self-mute, per-peer mute and a speaking detector.
  * Audio is peer to peer (STUN, or the TURN relay from _voice_config when one is configured).
@@ -14,7 +16,9 @@
  *   enable()                    ask for the mic; listen-only if it is refused. Reports via onState
  *   disable()                   hang up everyone, release the mic
  *   setConfig(configJson)       _voice_config payload: {ice_servers:[{urls, username?, credential?}], ttl}
- *   setPeers(peersJson, localId) _voice_peers payload: [{peer, name, gain}]. The LOWER peer id offers
+ *   setPeers(peersJson, localId) _voice_peers payload: [{peer, name, gain, party?, radio?, pan?}].
+ *                               The LOWER peer id offers. Per peer: source -> GainNode -> (dry | radio
+ *                               band-pass) -> StereoPanner -> speakers; missing nodes fall back to dry
  *   handleSignal(from, kind, data)  _voice_signal: kind offer | answer | ice, data is a JSON string
  *   hangup(peer)                _voice_hangup, or a peer that left the list
  *   setPtt(on)                  push-to-talk mode (default true): transmit only while talking
@@ -23,6 +27,8 @@
  *   mutePeer(peer, on)          local mute of one peer (gain 0)
  *   setMasterVolume(v)          0..2, multiplies every peer gain
  *   getState()                  JSON string (same shape as onState)
+ *   levels()                    JSON {self: 0..1, peers: {id: 0..1}}: mic level while transmitting and
+ *                               each remote stream's level (for the speaking diamond), polled by Godot
  */
 (function (global) {
   'use strict';
@@ -33,6 +39,10 @@
   var SPEAK_HOLD_MS = 250;
   var DETECT_MS = 50;
   var GAIN_RAMP = 0.05; // seconds (setTargetAtTime time constant)
+  var MIX_RAMP = 0.25;  // proximity <-> radio crossfade and pan glide
+  var RADIO_LOW = 320, RADIO_HIGH = 3200; // band of the remote-party "radio" voice
+  var RADIO_MAKEUP = 1.15; // the band-pass loses body; a touch of makeup keeps it as loud
+  var LEVEL_FLOOR = 0.008, LEVEL_SPAN = 0.12; // RMS -> 0..1 level for the speaking diamond
 
   var cb = { signal: null, speaking: null, state: null };
   var st = {
@@ -41,7 +51,7 @@
     iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }]
   };
   var ctx = null, stream = null, track = null, analyser = null, sampleBuf = null;
-  var detectTimer = null, speakingNow = false, lastLoud = 0;
+  var detectTimer = null, speakingNow = false, lastLoud = 0, selfLevel = 0;
   var peers = {}; // id -> {id, pc, gain, audio, source, muted, target, pendingIce, name, offerer}
 
   function fire(fn) {
@@ -63,7 +73,7 @@
     var list = [];
     Object.keys(peers).forEach(function (k) {
       var p = peers[k];
-      list.push({ peer: p.id, name: p.name, gain: p.target, muted: p.muted,
+      list.push({ peer: p.id, name: p.name, gain: p.target, muted: p.muted, party: p.party, radio: p.radio,
         state: p.pc ? (p.pc.connectionState || p.pc.iceConnectionState || '') : 'closed' });
     });
     return { enabled: st.enabled, mic: st.mic, ptt: st.ptt, talking: st.talking, selfMuted: st.selfMuted,
@@ -93,11 +103,12 @@
       sampleBuf = new Float32Array(analyser.fftSize);
     } catch (e) { analyser = null; return; }
     detectTimer = setInterval(function () {
-      if (!analyser || !transmitting()) { setSpeaking(false); return; }
+      if (!analyser || !transmitting()) { selfLevel = 0; setSpeaking(false); return; }
       analyser.getFloatTimeDomainData(sampleBuf);
       var sum = 0;
       for (var i = 0; i < sampleBuf.length; i++) sum += sampleBuf[i] * sampleBuf[i];
       var rms = Math.sqrt(sum / sampleBuf.length);
+      selfLevel = toLevel(rms);
       var now = Date.now();
       if (rms > SPEAK_THRESHOLD) lastLoud = now;
       setSpeaking(now - lastLoud < SPEAK_HOLD_MS);
@@ -107,6 +118,46 @@
     if (detectTimer) clearInterval(detectTimer);
     detectTimer = null; analyser = null;
     setSpeaking(false);
+  }
+
+  function toLevel(rms) { return Math.max(0, Math.min(1, (rms - LEVEL_FLOOR) / LEVEL_SPAN)); }
+  function rmsOf(node, buf) {
+    if (!node || !node.getFloatTimeDomainData) return 0;
+    node.getFloatTimeDomainData(buf);
+    var sum = 0;
+    for (var i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+    return Math.sqrt(sum / buf.length);
+  }
+  function ramp(param, v, tc) {
+    if (!param) return;
+    try { param.setTargetAtTime(v, ctx.currentTime, tc); } catch (e) { param.value = v; }
+  }
+  // Proximity (dry, panned by position) <-> remote party radio (band-passed, centred).
+  function applyMix(p) {
+    if (!ctx) return;
+    var r = Math.max(0, Math.min(1, p.radio || 0));
+    if (p.dry) ramp(p.dry.gain, p.wet ? 1 - r : 1, MIX_RAMP);
+    if (p.wet) ramp(p.wet.gain, r * RADIO_MAKEUP, MIX_RAMP);
+    if (p.panner) ramp(p.panner.pan, Math.max(-1, Math.min(1, p.pan || 0)) * (1 - r), MIX_RAMP);
+  }
+  // source -> gain -> dry ------------------------> panner -> destination
+  //                \-> highpass -> lowpass -> wet -/
+  function buildChain(c, p) {
+    p.gain = c.createGain(); p.gain.gain.value = 0;
+    var out = c.destination;
+    try { if (c.createStereoPanner) { p.panner = c.createStereoPanner(); p.panner.connect(out); out = p.panner; } } catch (e) { p.panner = null; }
+    try {
+      if (c.createBiquadFilter) {
+        p.dry = c.createGain(); p.dry.gain.value = 1;
+        p.wet = c.createGain(); p.wet.gain.value = 0;
+        p.hp = c.createBiquadFilter(); p.hp.type = 'highpass'; p.hp.frequency.value = RADIO_LOW; p.hp.Q.value = 0.7;
+        p.lp = c.createBiquadFilter(); p.lp.type = 'lowpass'; p.lp.frequency.value = RADIO_HIGH; p.lp.Q.value = 0.9;
+        p.gain.connect(p.dry); p.dry.connect(out);
+        p.gain.connect(p.hp); p.hp.connect(p.lp); p.lp.connect(p.wet); p.wet.connect(out);
+        return;
+      }
+    } catch (e) { p.dry = null; p.wet = null; p.hp = null; p.lp = null; }
+    p.gain.connect(out);
   }
 
   function effectiveGain(p) { return p.muted ? 0 : Math.max(0, Math.min(1, p.target)) * st.master; }
@@ -122,12 +173,13 @@
     var pc;
     try { pc = new RTCPeerConnection({ iceServers: st.iceServers }); } catch (e) { st.error = 'webrtc_unsupported'; return null; }
     var p = { id: id, pc: pc, gain: null, audio: null, source: null, muted: false, target: 0, pendingIce: [],
-      name: name || '', offerer: st.localId > 0 && st.localId < id };
+      name: name || '', offerer: st.localId > 0 && st.localId < id, party: false, radio: 0, pan: 0,
+      dry: null, wet: null, hp: null, lp: null, panner: null, meter: null, meterBuf: null };
     peers[id] = p;
     if (track && stream) pc.addTrack(track, stream);
     else pc.addTransceiver('audio', { direction: 'recvonly' });
     var c = ensureCtx();
-    if (c) { p.gain = c.createGain(); p.gain.gain.value = 0; p.gain.connect(c.destination); }
+    if (c) buildChain(c, p);
     pc.onicecandidate = function (e) {
       if (e.candidate) send(id, 'ice', e.candidate.toJSON ? e.candidate.toJSON() : e.candidate);
     };
@@ -161,6 +213,9 @@
         if (p.source) p.source.disconnect();
         p.source = ctx.createMediaStreamSource(ms);
         p.source.connect(p.gain);
+        p.meter = ctx.createAnalyser(); p.meter.fftSize = 256; // level only, never to the speakers
+        p.meterBuf = new Float32Array(p.meter.fftSize || 256);
+        p.source.connect(p.meter);
       } catch (e) {}
     }
     applyGain(p);
@@ -186,7 +241,7 @@
     delete peers[id];
     try { p.pc.onicecandidate = null; p.pc.ontrack = null; p.pc.onconnectionstatechange = null; p.pc.close(); } catch (e) {}
     try { if (p.source) p.source.disconnect(); } catch (e) {}
-    try { if (p.gain) p.gain.disconnect(); } catch (e) {}
+    ['gain', 'dry', 'wet', 'hp', 'lp', 'panner'].forEach(function (k) { try { if (p[k]) p[k].disconnect(); } catch (e) {} });
     if (p.audio) { try { p.audio.pause(); p.audio.srcObject = null; } catch (e) {} }
   }
 
@@ -259,7 +314,11 @@
         }
         p.name = String(row.name || p.name);
         p.target = Number(row.gain) || 0;
+        p.party = !!row.party;
+        p.radio = Number(row.radio) || 0;
+        p.pan = Number(row.pan) || 0;
         applyGain(p);
+        applyMix(p);
       });
       Object.keys(peers).forEach(function (k) { if (!want[k]) closePeer(Number(k)); });
     },
@@ -302,6 +361,14 @@
       Object.keys(peers).forEach(function (k) { applyGain(peers[k]); });
     },
     getState: function () { return JSON.stringify(stateObject()); },
+    levels: function () {
+      var out = { self: transmitting() ? selfLevel : 0, peers: {} };
+      Object.keys(peers).forEach(function (k) {
+        var p = peers[k];
+        out.peers[k] = (p.muted || effectiveGain(p) <= 0) ? 0 : toLevel(rmsOf(p.meter, p.meterBuf));
+      });
+      return JSON.stringify(out);
+    },
     _peers: peers // tests only
   };
   global.SableVoice = api;
