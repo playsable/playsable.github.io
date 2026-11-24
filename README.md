@@ -1,6 +1,6 @@
 # Seyble
 
-Promotional site for **Seyble**, a free-to-play 2D top-down pixel-art dark-fantasy MMO by Sable Studios (`@playseyble`), made in Godot.
+Promotional site for **Seyble**, a free-to-play 2D top-down pixel-art dark-fantasy MMO by Seyble Studios (`@playseyble`), made in Godot.
 
 Live at [https://seyble.com/](https://seyble.com/). The game plays at [/play/](https://seyble.com/play/).
 

@@ -2,7 +2,7 @@ SEYBLE | PRESS FACT SHEET
 
 Seyble is a free-to-play multiplayer pixel RPG set in a dark-fantasy world. Learn spells, build a home in the Gloamwood, travel the mainland, or crew a ship with friends from Lantern Cape.
 
-Developer / studio: Sable Studios
+Developer / studio: Seyble Studios
 Owner: Barrier Holdings LLC
 Status: Open beta
 Platforms: Web browser; Windows and macOS launcher
@@ -19,6 +19,6 @@ kings-road.jpg: In-game screenshot of the King's Road.
 lantern-cape-ships.jpg: In-game screenshot of ships at Lantern Cape.
 cinderwatch.webp: Cinderwatch key art, not gameplay.
 
-For editorial coverage, credit Sable Studios and link to https://seyble.com/.
+For editorial coverage, credit Seyble Studios and link to https://seyble.com/.
 Copyright 2026 Barrier Holdings LLC. All rights reserved for material it owns.
 Third-party material remains subject to the rights and licenses of its owners.

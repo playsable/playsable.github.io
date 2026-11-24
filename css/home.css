@@ -143,6 +143,13 @@
 .community p:not(.eyebrow) { margin-top: 10px; color: var(--quiet); max-width: 46ch; }
 .community-links { display: flex; flex-wrap: wrap; gap: 14px; }
 
+/* One-person team note */
+.solo-note { background: var(--deep); border-top: 1px solid var(--line); }
+.solo-note p { margin: 0 auto; padding-block: 20px 22px; color: var(--quiet); font: 1.05rem/1.55 var(--reading); max-width: 70ch; }
+.solo-note strong { color: var(--brass-hi); font-weight: 600; }
+.solo-note a { color: var(--brass); font-family: var(--ui); font-weight: 600; font-size: .92em; text-decoration: underline; text-underline-offset: .23em; }
+.solo-note a:hover { color: var(--brass-hi); }
+
 /* Final call to action */
 .final-cta { position: relative; isolation: isolate; text-align: center; background: url("/assets/ob/bg-gloamwood-1280.webp") center 40% / cover no-repeat; image-rendering: pixelated; }
 .final-cta::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, var(--ground) 0%, rgba(13,12,17,.55) 35%, rgba(13,12,17,.7) 100%); }
