@@ -29,6 +29,14 @@
 .homepage .download-jump { display: inline-flex; align-items: center; min-height: 44px; }
 .homepage .world-status { margin-top: 15px; }
 .homepage .art-credit { border: 1px solid #fff2; }
+.trailer { padding-top: clamp(34px,5vw,72px); }
+.trailer .section-heading { align-items: end; }
+.trailer h2 { margin-top: .11em; }
+.trailer-frame { margin: 0; border: 1px solid var(--line); background: #090d10; }
+.trailer-frame video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #090d10; }
+.trailer-frame figcaption { padding: .65em .9em; border-top: 1px solid var(--line); color: var(--quiet); font: .78rem/1.4 var(--ui); }
+.trailer-frame figcaption a { color: var(--brass); margin-left: .5em; }
+.homepage .hero-actions { flex-wrap: wrap; }
 .dispatch { padding-block: clamp(46px,6.8vw,100px) clamp(28px,4vw,56px); }
 .eyebrow { color: var(--brass); font: 700 .72rem/1.55 var(--ui); letter-spacing: .14em; text-transform: uppercase; }
 .dispatch-heading { align-items: end; margin-bottom: 24px; }
@@ -73,6 +81,8 @@
   .homepage .hero-actions { margin-top: 17px; }
   .homepage .world-status { margin-top: 12px; }
   .dispatch-heading { display: block; }
+  .trailer .section-heading { display: block; }
+  .trailer .section-heading > a { display: inline-block; margin-top: .65rem; }
   .dispatch-heading > a { display: inline-block; margin: .65rem 0 0; }
   .dispatch-grid { grid-template-columns: minmax(0,1fr); }
 }
