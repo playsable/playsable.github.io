@@ -114,6 +114,7 @@ if (trailerDialog && typeof trailerDialog.showModal === "function") {
 const notes = document.querySelector("[data-latest-notes]");
 if (notes && "IntersectionObserver" in window) {
   const known = {
+    "tides-and-tethers": "/assets/ob/notes/tides-and-tethers.webp",
     "stay-near-the-fire": "/assets/ob/notes/stay-near-the-fire.webp",
     "ember-and-ale": "/assets/ob/notes/ember-and-ale.webp",
   };
