@@ -1,8 +1,8 @@
 {
-  "sha": "74ff7388b740",
-  "full": "74ff7388b740f8b1559c251ec17ef87cdae20b20",
-  "built": "2026-11-25T15:03:41Z",
-  "pck": "index.74ff7388b740.pck",
-  "wasm": "index.004bdadd878d.wasm",
-  "js": "index.004bdadd878d.js"
+  "sha": "bbb79155d99d",
+  "full": "bbb79155d99d5213682dc417a194504b97eacd12",
+  "built": "2026-11-25T22:35:16Z",
+  "pck": "index.bbb79155d99d.pck",
+  "wasm": "index.bbb79155d99d.wasm",
+  "js": "index.bbb79155d99d.js"
 }
