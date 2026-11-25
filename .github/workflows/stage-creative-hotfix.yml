@@ -1,0 +1,49 @@
+name: Validate Seyble browser hotfix
+on:
+  push:
+    branches: [prepare-creative-74ff7388]
+permissions:
+  contents: write
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Assemble release on its original site revision
+        run: |
+          cp candidate.patch /tmp/candidate.patch
+          git switch --detach HEAD^
+          test "$(git rev-parse HEAD)" = fe1be70d3691ae7f9c0cbf751e79fb067a562d69
+          cp play/index.004bdadd878d.pck candidate.pck
+          git apply /tmp/candidate.patch
+          test "$(git hash-object candidate.pck)" = a50751bb0848e23825d0084be7b8860f77648afa
+          mv candidate.pck play/index.74ff7388b740.pck
+          sed -i -e 's/index.004bdadd878d.pck/index.74ff7388b740.pck/g' -e 's/25155528/25476872/g' -e 's/SABLE_BUILD = "004bdadd878d"/SABLE_BUILD = "74ff7388b740"/' play/index.html
+          jq --arg built "$(date -u +%FT%TZ)" '.sha="74ff7388b740" | .full="74ff7388b740f8b1559c251ec17ef87cdae20b20" | .pck="index.74ff7388b740.pck" | .built=$built' play/version.json > /tmp/version.json
+          mv /tmp/version.json play/version.json
+          python tools/retain_web_builds.py play
+      - name: Verify release in Chromium
+        run: |
+          python -m http.server 4799 >/tmp/server.log 2>&1 &
+          npm install --prefix /tmp/qa playwright
+          node --input-type=commonjs <<'JS'
+          const {chromium} = require('/tmp/qa/node_modules/playwright');
+          (async()=>{
+            const browser = await chromium.launch({channel:'chrome',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+            try {
+              const p=await browser.newPage();
+              await p.goto('http://127.0.0.1:4799/play/');
+              await p.waitForFunction(()=>performance.getEntriesByName('seyble-title-presented').length>0,null,{timeout:120000});
+            } finally {await browser.close();}
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+      - name: Stage validated release
+        run: |
+          git config user.name "Seyble release"
+          git config user.email "release@users.noreply.github.com"
+          git add -A play
+          git commit -m "Ship Creative boot cancellation fix with browser entry disabled"
+          git push origin HEAD:refs/heads/validated-creative-74ff7388
