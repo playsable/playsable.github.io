@@ -108,6 +108,7 @@
         <p>the camera can scroll past ground and scenery the game has already prepared. it reuses the rows that are still in view as you move in any direction. when a tile changes, its row and the neighboring details refresh while the rest can stay cached.</p>
         <p>shoreline details, grass tufts and tree shadows reuse the pieces still in view. the forest keeps its wind and canopy cutaways on foot. in high detail, editing a shoreline also refreshes the banks across the next chunk.</p>
         <p>grass keeps the same pixel-by-pixel sway in the wind. it now reuses its drawing buffers from one frame to the next.</p>
+        <p>cut repeated terrain checks, fountain buff parsing and nearby fire audio lookups. quest markers reuse their pixel glyphs and look up the quests attached to each npc.</p>
         <p>on a griffin, the game prepares the ground in the direction you bank, including along the coast. the canopy stays whole beneath you when you fly over the woods. the friends constellation and title portrait pause their animations when those screens are closed.</p>
         <p>ducks reuse the shoreline they&rsquo;ve already checked and update it as nearby terrain comes in. the game looks up torches and hearths in the area it has already loaded, so the lights are ready as you approach. the combat HUD reuses target and buff calculations within each frame.</p>
         <p>medium and low lighting keep the same look with a simpler shader. the browser also gets the forest and water shaders ready during loading, before you reach them in the world.</p>
