@@ -13,9 +13,9 @@
 		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.stripe.com https://*.link.com; frame-src https://*.stripe.com https://*.link.com; connect-src 'self' https: wss: blob: http://localhost:* http://127.0.0.1:* ws:">
 		<title>Seyble</title>
 		<script id="seyble-boot-assets">
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.8792581a9849","experimentalVK":false,"fileSizes":{"index.8792581a9849.pck":25195308,"index.8792581a9849.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.b3c8dfdb7ef3","experimentalVK":false,"fileSizes":{"index.b3c8dfdb7ef3.pck":25207724,"index.b3c8dfdb7ef3.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 // The release script stamps the pack filename. Direct exports can have a custom name.
-const SEYBLE_BOOT = {mainPack: "index.8792581a9849.pck"};
+const SEYBLE_BOOT = {mainPack: "index.b3c8dfdb7ef3.pck"};
 if (!(SEYBLE_BOOT.mainPack in GODOT_CONFIG.fileSizes)) {
 	SEYBLE_BOOT.mainPack = GODOT_CONFIG.executable + '.pck';
 }
@@ -121,7 +121,7 @@ const startupAssets = (() => {
 		<style>
 @font-face {
 	font-family: 'SeybleTitle';
-	src: url('index.8792581a9849.title.ttf') format('truetype');
+	src: url('index.b3c8dfdb7ef3.title.ttf') format('truetype');
 	font-display: swap;
 }
 
@@ -416,7 +416,7 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<script src="index.8792581a9849.voice.js"></script>
+<script src="index.b3c8dfdb7ef3.voice.js"></script>
 			<script>window.SABLE_SERVER="wss://51-81-86-210.sslip.io/ws";</script>
 	</head>
 	<body>
@@ -801,11 +801,12 @@ body {
 	window.addEventListener('pagehide', () => window.SeybleHostedCheckout.reset());
 })();
 		</script>
-		<script src="index.8792581a9849.js"></script>
+		<script src="index.b3c8dfdb7ef3.js"></script>
 		<script>
 const GODOT_THREADS_ENABLED = false;
 
-// Own the backing buffer while keeping CSS layout and input coordinates stable.
+// Keep the canvas at display resolution for legible chat and HUD text.
+// World render scale is handled inside the game.
 // Godot observes changes to canvas.width/height with canvasResizePolicy 0.
 const canvas = document.getElementById('canvas');
 // The WebGL export reads SCISSOR_TEST before the final blit. Chrome can block
@@ -839,40 +840,17 @@ canvas.getContext = function (kind, ...options) {
 	canvas.addEventListener('webglcontextrestored', () => { scissorEnabled = undefined; });
 	return gl;
 };
-const renderCaps = [null, [1280, 720], [1280, 720]];
-let renderQuality = 0;
-let renderCap = null;
-
 function resizeCanvas() {
 	const width = canvas.clientWidth;
 	const height = canvas.clientHeight;
 	if (width === 0 || height === 0) return;
 	const density = window.devicePixelRatio || 1;
-	const phone = matchMedia('(pointer: coarse)').matches;
-	const cap = phone ? (width >= height ? [1280, 720] : [720, 1280]) : (renderCap || renderCaps[renderQuality]);
-	const scale = cap ? Math.min(density, cap[0] / width, cap[1] / height) : density;
-	const pixelWidth = Math.max(1, Math.floor(width * scale));
-	const pixelHeight = Math.max(1, Math.floor(height * scale));
+	const pixelWidth = Math.max(1, Math.round(width * density));
+	const pixelHeight = Math.max(1, Math.round(height * density));
 	if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
 	if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
-	if (cap && (pixelWidth < width * density || pixelHeight < height * density)) {
-		canvas.style.imageRendering = 'pixelated';
-	}
 }
 
-window.SABLE_SET_RENDER_SCALE = function (maxW, maxH, nearest) {
-	const w = Number(maxW) || 0;
-	const h = Number(maxH) || 0;
-	renderCap = (w > 0 && h > 0) ? [w, h] : null;
-	if (nearest) canvas.style.imageRendering = 'pixelated';
-	else if (!renderCap) canvas.style.imageRendering = '';
-	resizeCanvas();
-};
-window.SABLE_SET_RENDER_QUALITY = function (level) {
-	renderQuality = level;
-	if (renderCap == null) canvas.style.imageRendering = level === 2 ? 'pixelated' : '';
-	resizeCanvas();
-};
 window.addEventListener('resize', resizeCanvas);
 if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(canvas);
 resizeCanvas();
@@ -1017,7 +995,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "8792581a9849";
+const SABLE_BUILD = "b3c8dfdb7ef3";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
