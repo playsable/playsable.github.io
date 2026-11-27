@@ -112,6 +112,8 @@
         <p>on a griffin, the game prepares the ground in the direction you bank, including along the coast. the canopy stays whole beneath you when you fly over the woods. the friends constellation and title portrait pause their animations when those screens are closed.</p>
         <p>ducks reuse the shoreline they&rsquo;ve already checked and update it as nearby terrain comes in. the game looks up torches and hearths in the area it has already loaded, so the lights are ready as you approach. the combat HUD reuses target and buff calculations within each frame.</p>
         <p>medium and low lighting keep the same look with a simpler shader. the browser also gets the forest and water shaders ready during loading, before you reach them in the world.</p>
+        <p>the first switch to the wide view prepares its ground buffer ahead of time instead of resizing it repeatedly. the hover glow gets ready during loading too, and hovering over the same scenery reuses the recent check. footsteps, hoofbeats and duck sounds skip repeated compressed-audio decoding in the browser. muted ambience no longer starts new bird calls.</p>
+        <p>browser frame rates still need work during movement, especially when zoomed out. these fixes do not yet reach the steady 60 fps target.</p>
       </article>
 
       <article class="patch-entry" id="roads-to-new-towns">
