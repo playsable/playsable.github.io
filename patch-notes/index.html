@@ -51,12 +51,31 @@
   <main class="document" id="notes">
     <div class="doc-wrap">
       <h1>Patch notes</h1>
+      <article class="patch-entry" id="a-map-worth-opening">
+        <p class="patch-date"><time datetime="2026-11-27">Nov 27, 2026</time></p>
+        <h2>A map worth opening</h2>
+        <p>local and world maps now fill the screen and share the same terrain. the controls use the same authored frames as the inventory. zoom out from your surroundings into the countries and the islands, then zoom back in without the map changing its whole look. borders stay in place. important places get icons as you move closer, and smaller marks fade back to diamonds when you pull away.</p>
+        <figure><a class="shot" href="/patch-notes/seyble-unified-atlas.png" aria-label="Open the unified world map screenshot"><img src="/patch-notes/seyble-unified-atlas.png" width="1280" height="720" loading="lazy" alt="Seyble's fullscreen world map with country borders, terrain relief and offshore islands. Captured in a disposable development save." /></a></figure>
+        <p>set a personal waypoint with a click or tap, or use the controller cursor. it stays with that character and world and gives you a marker to follow when you close the map. fast travel has moved out of chronicle and onto discovered waystones on the map. you still need to stand at a safe waystone, and the same gold, arcana and attunement rules apply. dropping a pin somewhere does not let you teleport there.</p>
+        <p>seeds and gathered herbs now live in a seed pouch inside your inventory. open it to see what you have, then drag, plant, craft or store them as usual. pumpkin and watermelon seeds go in the pouch. the actual pumpkins, watermelons and other food stay in your pack. your existing items move into the group automatically.</p>
+        <p>hovering an inventory item now gives you one item card. that includes armor, the hotbar and things inside a chest. clicking your character keeps the close-up centered and the back button on screen, including after a phone rotation.</p>
+        <p>books have room to breathe. pages, quest steps, journal entries and the skill list wrap and scroll instead of piling over each other. checked the chronicle tabs at desktop and phone sizes.</p>
+        <p>horses get a small 10% speed boost on public roads. the mount prompt clearly shows r on keyboard, and touch players can tap to mount. projectile spells can fire into open space when you have the arcana, with their normal cooldowns. walls, protected areas and the existing combat permissions still decide what a spell can hit.</p>
+        <p>stuck on a broken beta objective? settings &rarr; world now has quest recovery. <code>/questnext</code> opens the same confirmation. it advances one objective of your tracked quest and forfeits that quest&rsquo;s completion rewards. it does not choose your soul or hand out items, gold or xp. you see the exact step before you confirm.</p>
+        <p>the high-pitched tinnitus ring is gone from the opening adventure scene. the other music and opening sounds are still there.</p>
+        <p>starmote works now. light every star in one skill sky constellation, then equip it under customize &rarr; sprite fairy. it follows you, works with magelight and stays equipped when you leave and come back. other players can see it too.</p>
+        <p>rest, cold, food and water have little status squares with three indicators. they stay out of the way while you&rsquo;re fine. for food, one lit dot means slightly hungry, two hungry and three starving. the other needs use the same more-dots-means-more-urgent rule.</p>
+        <p>food and water go down slowly while you play adventure. they stay where you left them while you&rsquo;re offline, and empty food or water meters do not damage you or stop you playing. every food has its own hunger and satiation values based on what it is. a proper meal keeps you full longer than a handful of berries. satiation goes down before hunger does.</p>
+        <p>hold to eat or drink as usual. you get the benefit of the portion you actually use, and the rest stays in the item for you or a friend. food stops being used when it has nothing useful left to do. drinkable potions also give a little water. splash and aoe potions do not.</p>
+        <p class="patch-date" data-source-commit="351e7a9ca3cc8ac9eb4ad7995b4691643e2b6575">v0.1.0</p>
+      </article>
+
       <article class="patch-entry" id="links-and-live-status">
         <p class="patch-date"><time datetime="2026-11-27">Nov 27, 2026</time></p>
         <h2>Links and live status</h2>
         <p>the phone menu no longer calls the server offline because a status check took too long. it retries, checks again when you come back to the game, and tells you when it can&rsquo;t confirm the status. play online stays available. a confirmed offline response still shows as offline.</p>
         <p>copy invite link works in the desktop launcher again. the button tells you when the link is copied, and there&rsquo;s a selectable link if your device blocks copying. existing launchers get the fix the next time you open them. no reinstall needed.</p>
-        <p class="patch-date">Build <code>6a7d8cc9d2caca1bc46134d580ca9aba9273dcb6</code></p>
+        <p class="patch-date"><span data-source-commit="6a7d8cc9d2caca1bc46134d580ca9aba9273dcb6">v0.0.3</span></p>
       </article>
 
       <article class="patch-entry" id="creatures-worth-knowing">
@@ -65,7 +84,7 @@
         <p>there&rsquo;s a bestiary in chronicle now. press j and open the bestiary tab. getting close enough to see a creature adds it to your book, and a credited kill counts too. there are 25 creatures to discover, with their habitats, behavior, basic stats and possible drops. entries stay unknown until you find them. your discoveries stay with your character when you leave and come back.</p>
         <figure><a class="shot" href="/patch-notes/bestiary.png" aria-label="Open the Bestiary screenshot"><img src="/patch-notes/bestiary.png" width="1280" height="800" loading="lazy" alt="The Bestiary in Seyble's Chronicle, with a discovered boar's habitat, behavior, stats and possible drops. Captured in a disposable development save." /></a></figure>
         <p>also fixed dragging from the hotbar into a chest. grabbing an item no longer closes the chest, and you can drop it anywhere inside the panel to store it. shift stores one. canceling the drag or trying a full chest keeps your items where they belong. unfinished food and potions keep exactly how much is left.</p>
-        <p class="patch-date">Build <code>4b1c8866e1411c38d7e74eff600e84ab99625b4d</code></p>
+        <p class="patch-date"><span data-source-commit="4b1c8866e1411c38d7e74eff600e84ab99625b4d">v0.0.2</span></p>
       </article>
 
       <article class="patch-entry" id="above-the-trees">
@@ -139,7 +158,7 @@
         <p>the new towns have over a thousand buildings you can walk into, with doors, windows, workstations and fireplaces. city ground has more variety too, from worn lanes and stone squares to pale terraces and weathered boardwalks. street torches light the way. zoom in on the world map for town names and the smaller roads. aurel vesta is still the capital.</p>
         <p>saved homes, claims and belongings keep their ground. cinderwatch, the capital, the castle and the existing highways are still where you left them. quest markers also draw correctly far from the starting area.</p>
         <figure><a class="shot" href="/patch-notes/regional-cities-world.png" aria-label="Open the expanded mainland map"><img src="/patch-notes/regional-cities-world.png" width="1280" height="800" loading="lazy" alt="Seyble world map showing the new settlements and connecting roads across the mainland." /></a></figure>
-        <p class="patch-date">Build <code>abc6ff529c90052ae39378fdcd76b181cd37d76a</code></p>
+        <p class="patch-date"><span data-source-commit="abc6ff529c90052ae39378fdcd76b181cd37d76a">v0.0.1</span></p>
       </article>
 
       <article class="patch-entry" id="arrivals-and-open-doors">
