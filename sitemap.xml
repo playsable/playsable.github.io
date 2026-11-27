@@ -23,4 +23,9 @@
   <url>
     <loc>https://seyble.com/press/</loc>
   </url>
+  <url>
+    <loc>https://seyble.com/ashbound/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
