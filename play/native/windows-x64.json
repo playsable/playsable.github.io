@@ -1,9 +1,9 @@
 {
   "format": 1,
-  "version": "v0.5.0",
-  "full": "3c66bbf5e89a74c7e1f538b82b31a9c1f7f9c891",
-  "built": "2026-11-28T09:28:09Z",
+  "version": "v0.5.1",
+  "full": "2e22227a2ab471e65c37f50ea07cfeace8efb7cb",
+  "built": "2026-11-28T10:44:17Z",
   "engine_sha256": "d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562",
-  "pack_bytes": 72907380,
-  "pack_sha256": "bde1b32f69167f441118a1f2493f737407a3d740f0e0f67b61b1acbedafd0f66"
+  "pack_bytes": 72917960,
+  "pack_sha256": "a16036538a9a002521ec04cd745fb7016bcdbfd1fbc6f11f643ab8f534721285"
 }
