@@ -51,6 +51,15 @@
   <main class="document" id="notes">
     <div class="doc-wrap">
       <h1>Patch notes</h1>
+      <article class="patch-entry" id="xbox-graphics-stability">
+        <p class="patch-date"><time datetime="2026-11-27">Nov 27, 2026</time></p>
+        <h2>Xbox graphics stability</h2>
+        <p>xbox edge now renders the game at up to 1080p, even on a 4k tv. this uses less graphics memory during play. the game also waits for the browser to finish resizing before it reallocates the canvas.</p>
+        <p>on xbox, the pause compass and customize screen skip the large starfield animation, and the compass skips its needle drift. the game also frees the extra world render buffer when it switches back to drawing directly.</p>
+        <p>if the browser loses graphics on xbox, use Restart with safer graphics to try up to 720p for that tab. press a or menu on your controller, or select the button. the game stops active sounds before closing and tries to save your solo world before restarting. recent unsaved changes may be lost.</p>
+        <p class="patch-date" data-source-commit="65d6ca048542a2ec0cf300a62facbbe34852befc">v0.2.1</p>
+      </article>
+
       <article class="patch-entry" id="a-floor-for-every-room">
         <p class="patch-date"><time datetime="2026-11-27">Nov 27, 2026</time></p>
         <h2>A floor for every room</h2>

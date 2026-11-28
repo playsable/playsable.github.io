@@ -13,9 +13,9 @@
 		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.stripe.com https://*.link.com; frame-src https://*.stripe.com https://*.link.com; connect-src 'self' https: wss: blob: http://localhost:* http://127.0.0.1:* ws:">
 		<title>Seyble</title>
 		<script id="seyble-boot-assets">
-const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.8b2857ffce55","experimentalVK":false,"fileSizes":{"index.8b2857ffce55.pck":32601036,"index.8b2857ffce55.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":["--audio-output-latency","190"],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index.65d6ca048542","experimentalVK":false,"fileSizes":{"index.65d6ca048542.pck":32603392,"index.65d6ca048542.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 // The release script stamps the pack filename. Direct exports can have a custom name.
-const SEYBLE_BOOT = {mainPack: "index.8b2857ffce55.pck"};
+const SEYBLE_BOOT = {mainPack: "index.65d6ca048542.pck"};
 if (!(SEYBLE_BOOT.mainPack in GODOT_CONFIG.fileSizes)) {
 	SEYBLE_BOOT.mainPack = GODOT_CONFIG.executable + '.pck';
 }
@@ -121,7 +121,7 @@ const startupAssets = (() => {
 		<style>
 @font-face {
 	font-family: 'SeybleTitle';
-	src: url('index.8b2857ffce55.title.ttf') format('truetype');
+	src: url('index.65d6ca048542.title.ttf') format('truetype');
 	font-display: swap;
 }
 
@@ -178,6 +178,31 @@ body {
 #seyble-fullscreen-help::backdrop { background: #080c0fbb; }
 #seyble-fullscreen-help h2, #seyble-fullscreen-help p { margin: 0 0 .65rem; }
 #seyble-fullscreen-help button { min-height: 44px; padding: 0 .8rem; font: inherit; background: #233038; color: inherit; border: 1px solid #8b7758; }
+#seyble-graphics-recovery {
+	box-sizing: border-box;
+	position: fixed;
+	z-index: 3;
+	width: min(25rem, calc(100% - 2rem));
+	max-height: calc(100% - 2rem);
+	padding: 1.35rem;
+	border: 1px solid #99835d;
+	background: #141d22;
+	color: #eee3cd;
+	font: 16px/1.45 Georgia, serif;
+}
+#seyble-graphics-recovery::backdrop { background: #080c0fe8; }
+#seyble-graphics-recovery h2 { margin: 0; color: #f1dfb3; font-family: SeybleTitle, Georgia, serif; }
+#seyble-graphics-recovery p { margin: .65rem 0; }
+#seyble-graphics-recovery button {
+	min-height: 44px;
+	padding: .45rem .85rem;
+	border: 1px solid #8b7758;
+	background: #233038;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+}
+#seyble-graphics-recovery button:focus-visible { outline: 2px solid #e5c887; outline-offset: 2px; }
 @media (pointer: coarse) {
 	#canvas {
 		left: env(safe-area-inset-left, 0px);
@@ -416,7 +441,7 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<script src="index.8b2857ffce55.voice.js"></script>
+<script src="index.65d6ca048542.voice.js"></script>
 			<script>window.SABLE_SERVER="wss://51-81-86-210.sslip.io/ws";</script>
 	</head>
 	<body>
@@ -450,6 +475,13 @@ body {
 			<p id="seyble-checkout-message">Open Stripe to pay securely. Your game will stay open here.</p>
 			<a id="seyble-checkout-link" target="_blank" rel="noopener noreferrer" autofocus>Continue to Stripe</a>
 			<form method="dialog"><button>Back to game</button></form>
+		</dialog>
+		<dialog id="seyble-graphics-recovery" aria-labelledby="seyble-graphics-title" aria-describedby="seyble-graphics-message">
+			<h2 id="seyble-graphics-title">Graphics stopped</h2>
+			<p id="seyble-graphics-message">Restart Seyble to return to the game. Your saved progress stays available. Recent unsaved changes may be lost.</p>
+			<button type="button">Restart Seyble</button>
+			<p data-controller-hint hidden>Press A or Menu on your controller.</p>
+			<p role="status"></p>
 		</dialog>
 
 		<noscript>
@@ -789,13 +821,213 @@ body {
 	window.addEventListener('pagehide', () => window.SeybleHostedCheckout.reset());
 })();
 		</script>
-		<script src="index.8b2857ffce55.js"></script>
+		<script id="seyble-graphics">
+(() => {
+	const canvas = document.getElementById('canvas');
+	const recovery = document.getElementById('seyble-graphics-recovery');
+	const restart = recovery.querySelector('button');
+	const message = recovery.querySelector('[role=status]');
+	const xboxToken = /\bXbox(?:One|Series[XS]?)?\b/i;
+	const isXbox = xboxToken.test(navigator.userAgent) || xboxToken.test(navigator.userAgentData?.platform || '');
+	const safeKey = 'seyble-xbox-safer-graphics';
+	let xboxStorage;
+	let safeMode = false;
+	if (isXbox) {
+		try {
+			safeMode = window.sessionStorage.getItem(safeKey) === '1';
+			xboxStorage = window.sessionStorage;
+		} catch {
+			// Private browsing or browser policy may disable tab storage.
+		}
+	}
+
+	// Bound console GPU allocations without changing CSS size, aspect or input coordinates.
+	// Other devices keep their native backing resolution.
+	const maxEdge = safeMode ? 1280 : 1920;
+	const maxPixels = safeMode ? 1280 * 720 : 1920 * 1080;
+	let resizeTimer = 0;
+	let densityWatch;
+	let contextLost = false;
+
+	function resizeCanvas() {
+		const width = canvas.clientWidth;
+		const height = canvas.clientHeight;
+		if (contextLost || width === 0 || height === 0) return;
+		const density = window.devicePixelRatio || 1;
+		let pixelWidth = Math.max(1, Math.round(width * density));
+		let pixelHeight = Math.max(1, Math.round(height * density));
+		if (isXbox && (pixelWidth > maxEdge || pixelHeight > maxEdge || pixelWidth * pixelHeight > maxPixels)) {
+			const scale = Math.min(maxEdge / Math.max(width, height), Math.sqrt(maxPixels / (width * height)));
+			pixelWidth = Math.max(1, Math.floor(width * scale));
+			pixelHeight = Math.max(1, Math.floor(height * scale));
+		}
+		// Shrink the old axis first to avoid a larger temporary buffer during rotation.
+		if (pixelWidth < canvas.width) canvas.width = pixelWidth;
+		if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
+		if (pixelWidth > canvas.width) canvas.width = pixelWidth;
+	}
+
+	function queueCanvasResize() {
+		if (contextLost) return;
+		window.clearTimeout(resizeTimer);
+		resizeTimer = window.setTimeout(resizeCanvas, 120);
+	}
+
+	function watchDensity() {
+		densityWatch?.removeEventListener?.('change', densityChanged);
+		densityWatch = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+		densityWatch.addEventListener?.('change', densityChanged);
+	}
+
+	function densityChanged() {
+		watchDensity();
+		queueCanvasResize();
+	}
+
+	window.addEventListener('resize', queueCanvasResize);
+	document.addEventListener('fullscreenchange', queueCanvasResize);
+	document.addEventListener('webkitfullscreenchange', queueCanvasResize);
+	const observer = window.ResizeObserver ? new window.ResizeObserver(queueCanvasResize) : null;
+	observer?.observe(canvas);
+	watchDensity();
+	resizeCanvas();
+
+	let lossHandler = null;
+	let cleanupStarted = false;
+	let cleanupComplete = false;
+	let restartRequested = false;
+	let restartTimer = 0;
+	let reloading = false;
+
+	function beginCleanup() {
+		if (!contextLost || !lossHandler || cleanupStarted) return;
+		cleanupStarted = true;
+		try {
+			lossHandler();
+		} catch (error) {
+			console.error('Seyble could not close the game after graphics stopped.', error);
+		}
+	}
+
+	function reloadGame() {
+		if (reloading) return;
+		reloading = true;
+		window.clearTimeout(restartTimer);
+		if (xboxStorage) {
+			try {
+				xboxStorage.setItem(safeKey, '1');
+			} catch (error) {
+				console.warn('Seyble could not enable safer Xbox graphics for this tab.', error);
+			}
+		}
+		window.location.reload();
+	}
+
+	function requestRestart() {
+		if (!contextLost || restartRequested) return;
+		restartRequested = true;
+		restart.disabled = true;
+		message.textContent = 'Restarting Seyble…';
+		if (cleanupComplete || !cleanupStarted) {
+			reloadGame();
+		} else {
+			// A stalled engine may never exit, so a manual restart always has a way out.
+			restartTimer = window.setTimeout(reloadGame, 1800);
+		}
+	}
+
+	window.SeybleGraphics = {
+		isXbox,
+		safeMode,
+		set onContextLost(handler) {
+			lossHandler = typeof handler === 'function' ? handler : null;
+			beginCleanup();
+		},
+		notifyCleanupComplete() {
+			cleanupComplete = true;
+			if (restartRequested) reloadGame();
+		}
+	};
+
+	const armedPads = new Set();
+	window.addEventListener('gamepaddisconnected', event => armedPads.delete(event.gamepad.index));
+	function checkController() {
+		if (restartRequested) return;
+		let pads;
+		try {
+			pads = navigator.getGamepads?.();
+		} catch {
+			// Embedded pages may deny Gamepad access. The focused button still works.
+			return;
+		}
+		if (!pads) return;
+		for (const i of armedPads) if (!pads[i]?.connected) armedPads.delete(i);
+		for (let i = 0; i < pads.length; i++) {
+			const pad = pads[i];
+			if (!pad?.connected || pad.mapping !== 'standard') {
+				armedPads.delete(i);
+				continue;
+			}
+			const pressed = pad.buttons[0]?.pressed || pad.buttons[9]?.pressed;
+			if (!pressed) armedPads.add(i);
+			else if (armedPads.has(i)) {
+				requestRestart();
+				return;
+			}
+		}
+		window.requestAnimationFrame(checkController);
+	}
+
+	restart.addEventListener('click', requestRestart);
+	recovery.addEventListener('cancel', event => event.preventDefault());
+	recovery.addEventListener('keydown', event => {
+		if (event.repeat && (event.key === 'Enter' || event.key === ' ')) event.preventDefault();
+	});
+
+	function releaseBrowserCapture() {
+		const warn = error => console.warn('Seyble could not release fullscreen or pointer lock.', error);
+		if (document.pointerLockElement) {
+			try { document.exitPointerLock?.()?.catch(warn); } catch (error) { warn(error); }
+		}
+		if (document.fullscreenElement || document.webkitFullscreenElement) {
+			try {
+				const exit = document.exitFullscreen || document.webkitExitFullscreen;
+				exit?.call(document)?.catch(warn);
+			} catch (error) { warn(error); }
+		}
+	}
+
+	canvas.addEventListener('webglcontextlost', event => {
+		// This Godot Web renderer cannot rebuild its graphics resources in place.
+		// Replace its blocking alert with a restart action, leaving native loss visible in logs.
+		event.stopImmediatePropagation();
+		if (contextLost) return;
+		contextLost = true;
+		console.error('Seyble lost its WebGL graphics context.', event.statusMessage || '');
+		window.clearTimeout(resizeTimer);
+		observer?.disconnect();
+		densityWatch?.removeEventListener?.('change', densityChanged);
+		window.seybleArrivalFreeze?.();
+		releaseBrowserCapture();
+		canvas.blur();
+		canvas.inert = true;
+		if (xboxStorage && !safeMode) restart.textContent = 'Restart with safer graphics';
+		if (isXbox) recovery.querySelector('[data-controller-hint]').hidden = false;
+		try {
+			recovery.showModal();
+		} catch {
+			recovery.setAttribute('open', '');
+		}
+		restart.focus();
+		window.requestAnimationFrame(checkController);
+		beginCleanup();
+	}, {capture: true});
+})();
+		</script>
+		<script src="index.65d6ca048542.js"></script>
 		<script>
 const GODOT_THREADS_ENABLED = false;
 
-// Keep the canvas at display resolution for legible chat and HUD text.
-// World render scale is handled inside the game.
-// Godot observes changes to canvas.width/height with canvasResizePolicy 0.
 const canvas = document.getElementById('canvas');
 // The WebGL export reads SCISSOR_TEST before the final blit. Chrome can block
 // the main thread until the GPU catches up to answer this boolean. This canvas
@@ -828,22 +1060,14 @@ canvas.getContext = function (kind, ...options) {
 	canvas.addEventListener('webglcontextrestored', () => { scissorEnabled = undefined; });
 	return gl;
 };
-function resizeCanvas() {
-	const width = canvas.clientWidth;
-	const height = canvas.clientHeight;
-	if (width === 0 || height === 0) return;
-	const density = window.devicePixelRatio || 1;
-	const pixelWidth = Math.max(1, Math.round(width * density));
-	const pixelHeight = Math.max(1, Math.round(height * density));
-	if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
-	if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
-}
-
-window.addEventListener('resize', resizeCanvas);
-if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(canvas);
-resizeCanvas();
 GODOT_CONFIG.experimentalVK = navigator.maxTouchPoints > 0;
+// Let Godot observe the backing size chosen by the shell.
 GODOT_CONFIG.canvasResizePolicy = 0;
+const onGameExit = GODOT_CONFIG.onExit;
+GODOT_CONFIG.onExit = code => {
+	window.SeybleGraphics.notifyCleanupComplete();
+	onGameExit?.(code);
+};
 const engine = new Engine(GODOT_CONFIG);
 
 // Give Godot the already-started transfers. Its own retry logic can make fresh
@@ -983,7 +1207,7 @@ function startGameWithCachedPack(config) {
 		</script>
 	
 		<script>
-const SABLE_BUILD = "8b2857ffce55";
+const SABLE_BUILD = "65d6ca048542";
 (function () {
 	// Recovery for stale/broken loads. Each recovery reload happens at most once per tab session.
 	function bust(sha, why) {
